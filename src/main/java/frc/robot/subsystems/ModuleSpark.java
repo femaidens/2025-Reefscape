@@ -25,7 +25,7 @@ import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 
 /** Add your docs here. */
-public class Module {
+public class ModuleSpark {
     private final SparkMax driveMotor;
     private final SparkMax turnMotor;
 
@@ -51,7 +51,7 @@ public class Module {
      * @param turnID Turn motor ID Port
      * @param chassisAngularOffset In radians (ideally), Angular offset of module (since they're all oriented in a different direction)
      */
-    public Module(int driveID, int turnID, double chassisAngularOffset){
+    public ModuleSpark(int driveID, int turnID, double chassisAngularOffset){
         this.chassisAngularOffset = chassisAngularOffset;
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
