@@ -74,8 +74,9 @@ public class Module {
         turnConfig.smartCurrentLimit(Turn.CURRENT_LIMIT);
         turnConfig.apply(turnEncoderConfig);
 
-        driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-        turnMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);        
+        driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        turnMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); 
+        // for an explanation on why kNoPersistParameters: https://github.com/wpilibsuite/2025Beta/discussions/27#discussioncomment-11217925       
 
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = turnMotor.getAbsoluteEncoder();
