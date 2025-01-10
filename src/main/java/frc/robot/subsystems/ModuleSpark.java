@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -31,8 +32,6 @@ public class ModuleSpark {
 
     private final RelativeEncoder driveEncoder;
     private final AbsoluteEncoder turnEncoder;
-
-    private final AbsoluteEncoderConfig turnEncoderConfig;
 
     private final SparkMaxConfig driveConfig;
     private final SparkMaxConfig turnConfig;
@@ -62,24 +61,29 @@ public class ModuleSpark {
         driveMotor = new SparkMax(driveID, MotorType.kBrushless);
         turnMotor = new SparkMax(turnID, MotorType.kBrushless);
 
+        driveEncoder = driveMotor.getEncoder();
+        turnEncoder = turnMotor.getAbsoluteEncoder();
+
         driveConfig = new SparkMaxConfig();
         driveConfig.idleMode(IdleMode.kBrake);
         driveConfig.smartCurrentLimit(Translation.CURRENT_LIMIT);
 
-        turnEncoderConfig = new AbsoluteEncoderConfig();
-        turnEncoderConfig.inverted(true);
+        // encoder set up based on https://github.com/wpilibsuite/2025Beta/discussions/27#discussioncomment-11522637
+        driveConfig.encoder.positionConversionFactor(Translation.POS_CONVERSION_FACTOR);
+        driveConfig.encoder.velocityConversionFactor(Translation.VEL_CONVERSION_FACTOR);
+        driveConfig.encoder.inverted(false);
 
         turnConfig = new SparkMaxConfig();
         turnConfig.idleMode(IdleMode.kBrake);
         turnConfig.smartCurrentLimit(Turn.CURRENT_LIMIT);
-        turnConfig.apply(turnEncoderConfig);
+        
+        turnConfig.absoluteEncoder.positionConversionFactor(Turn.POS_CONVERSION_FACTOR);
+        turnConfig.absoluteEncoder.velocityConversionFactor(Turn.VEL_CONVERSION_FACTOR);
+        turnConfig.absoluteEncoder.inverted(true);
 
         driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         turnMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); 
         // for an explanation on why kNoPersistParameters: https://github.com/wpilibsuite/2025Beta/discussions/27#discussioncomment-11217925       
-
-        driveEncoder = driveMotor.getEncoder();
-        turnEncoder = turnMotor.getAbsoluteEncoder();
     }
 
     public void setDesiredState(SwerveModuleState state){
@@ -89,7 +93,9 @@ public class ModuleSpark {
             turnMotor.set(0);
             return;
         }
-        state = SwerveModuleState.optimize(state, getState().angle);
+        
+        //possily change this optimize, since its different.
+        state.optimize(state.angle);
         driveMotor.setVoltage(
             driveFFController.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond)
         );
