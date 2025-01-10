@@ -137,7 +137,7 @@ public class ModuleSpark {
      * @return meters per second (ideally)
      */
     public double getDriveVelocity(){
-        return driveEncoder.getVelocity() * Translation.VEL_CONVERSION_FACTOR;
+        return driveEncoder.getVelocity(); // * Translation.VEL_CONVERSION_FACTOR;
     }
 
     /**
@@ -145,7 +145,7 @@ public class ModuleSpark {
      * @return radians per second (ideally)
      */
     public double getTurnVelocity(){
-        return turnEncoder.getVelocity() * Turn.VEL_CONVERSION_FACTOR;
+        return turnEncoder.getVelocity(); // * Turn.VEL_CONVERSION_FACTOR;
     }
 
     /**
@@ -153,7 +153,7 @@ public class ModuleSpark {
      * @return meters (ideally)
      */
     public double getDrivePosition(){
-        return driveEncoder.getPosition() * Translation.POS_CONVERSION_FACTOR;
+        return driveEncoder.getPosition(); // * Translation.POS_CONVERSION_FACTOR;
     }
 
     /**
@@ -161,7 +161,7 @@ public class ModuleSpark {
      * @return in radians (ideally)
      */
     public double getTurnAngle(){
-        return turnEncoder.getPosition() * Turn.POS_CONVERSION_FACTOR;
+        return turnEncoder.getPosition(); // * Turn.POS_CONVERSION_FACTOR;
     }
 
     /**
