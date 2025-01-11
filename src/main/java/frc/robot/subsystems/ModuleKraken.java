@@ -3,16 +3,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.DeviceType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
 import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Turn;
 
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.DeviceConstructor;
 
 public class ModuleKraken {
     private final TalonFX driveMotor; 
@@ -22,20 +18,22 @@ public class ModuleKraken {
     //private final ParentDevice driveEncoder;
     //private final ParentDevice turnEncoder; 
     
-    //This is what I used for PID 
+    //PID? 
     private final Slot0Configs slot0Turn; 
     private final Slot1Configs slot1Drive; 
        
+
     // IDK what canbus we use so i just set it to the robot rio for now. 
     //THIS SHOULD BE SUBJECT TO CHANGE?! 
     public ModuleKraken(int driveID, int turnID){
         driveMotor = new TalonFX(driveID, "rio"); 
         driveMotor.setNeutralMode(NeutralModeValue.Brake); 
-        driveMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(Translation.CURRENT_LIMIT)); 
+        driveMotor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(Translation.CURRENT_LIMIT)); 
+
 
         turnMotor = new TalonFX(turnID, "rio"); 
         turnMotor.setNeutralMode(NeutralModeValue.Brake); 
-        turnMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(Translation.CURRENT_LIMIT)); 
+        turnMotor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(Turn.CURRENT_LIMIT)); 
 
         // Highkey don't know how to work the encoders broooooooooooooooooo...
         ///driveEncoder = new ParentDevice(driveID, "encoder", "rio"); 
