@@ -68,8 +68,19 @@ public class Drive extends SubsystemBase {
       driveRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
           volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
+
+      SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
     }
+
   //PLEASE CHECK THE SPEED FACTOR
+  //consider changing to profiledpid control
+  /**
+   * drivin
+   * @param xSpeed x direction (front and back)
+   * @param ySpeed y direction (right is positive, left is negative)
+   * @param rotSpeed 
+   * @return
+   */
   public Command drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
     double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
@@ -171,6 +182,6 @@ public class Drive extends SubsystemBase {
       new SwerveModulePosition[] {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
-    SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
+    SmartDashboard.updateValues();
   }
 }
