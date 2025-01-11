@@ -4,11 +4,15 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.photonvision.PhotonPoseEstimator;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
-  public Vision() {}
+  public Vision() {
+    // private final PhotonPoseEstimator poseEstimators;
+  }
 
   @Override
   public void periodic() {
