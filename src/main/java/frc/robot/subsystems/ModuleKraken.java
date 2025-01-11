@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.DeviceType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
@@ -21,35 +22,41 @@ public class ModuleKraken {
     //private final ParentDevice driveEncoder;
     //private final ParentDevice turnEncoder; 
     
+    //This is what I used for PID 
     private final Slot0Configs slot0Turn; 
     private final Slot1Configs slot1Drive; 
-    
-    private final TalonFXConfiguration driveConfig; 
-    private final CurrentLimitsConfigs driveCurrentLimit;
-    private final TalonFXConfiguration turnConfig;
-    private final CurrentLimitsConfigs turnCurrentLimit;  
+       
     // IDK what canbus we use so i just set it to the robot rio for now. 
     //THIS SHOULD BE SUBJECT TO CHANGE?! 
     public ModuleKraken(int driveID, int turnID){
         driveMotor = new TalonFX(driveID, "rio"); 
-        turnMotor = new TalonFX(turnID, "rio"); 
+        driveMotor.setNeutralMode(NeutralModeValue.Brake); 
+        driveMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(Translation.CURRENT_LIMIT)); 
 
-        // Highkey don't know how to do this...
+        turnMotor = new TalonFX(turnID, "rio"); 
+        turnMotor.setNeutralMode(NeutralModeValue.Brake); 
+        turnMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(Translation.CURRENT_LIMIT)); 
+
+        // Highkey don't know how to work the encoders broooooooooooooooooo...
         ///driveEncoder = new ParentDevice(driveID, "encoder", "rio"); 
         //turnEncoder.create(driveID, "rio");
 
+        //This has all the PID values, but IDK how to calculate with them... erm 
         slot0Turn = new Slot0Configs().withKP(Translation.PID.P).withKI(Translation.PID.I).withKD(Translation.PID.D);
-        slot1Drive = new Slot1Configs().withKP(0).withKI(0).withKD(0); 
+        slot1Drive = new Slot1Configs().withKP(Translation.PID.P).withKI(Translation.PID.I).withKD(Translation.PID.D); 
 
-        driveConfig = new TalonFXConfiguration();
-        driveCurrentLimit = new CurrentLimitsConfigs();
-        driveCurrentLimit.withStatorCurrentLimit(Translation.CURRENT_LIMIT);  
-        driveConfig.withCurrentLimits(driveCurrentLimit); 
-        
-        turnConfig = new TalonFXConfiguration(); 
-        turnCurrentLimit = new CurrentLimitsConfigs(); 
-        turnCurrentLimit.withStatorCurrentLimit(Translation.CURRENT_LIMIT); 
-        
+         
+    }
+
+
+
+
+    public void setDriveVoltage(double volts){
+        driveMotor.setVoltage(volts); 
+    }
+
+    public void setTurnVoltage(double volts){
+        turnMotor.setVoltage(volts); 
     }
 
 
