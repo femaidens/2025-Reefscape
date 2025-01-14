@@ -82,6 +82,15 @@ public class Elevator extends SubsystemBase {
         elevatorPID.calculate( elevatorEncoder.getPosition().getValueAsDouble() ) +  ff.calculate(elevatorPID.getSetpoint().velocity) );
     }
 
+    /**
+     * if the limit switch is activated, the elevator motor stops moving
+     */
+    public static void hitBotLimit(){
+      if(botLimitSwitch.get()){
+        stopMotor();
+      }
+    }
+
     //Cmds
     /**
      * @return run elevator motor command
@@ -96,7 +105,7 @@ public class Elevator extends SubsystemBase {
     public Command reverseRunMotorCmd() {
       return this.run(() -> reverseRunMotor());
     }
-    
+
     /**
      * @return stop elevator motor command
      */
