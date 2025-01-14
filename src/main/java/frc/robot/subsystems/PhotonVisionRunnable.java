@@ -46,23 +46,9 @@ public class PhotonVisionRunnable implements Runnable{
     public void run() {      
         // Get AprilTag data
         var emptyAprilTagArray = new AprilTag[0];
-    while (!Thread.interrupted()) {
-      // Block the thread until new data comes in from PhotonVision
-      int[] signaledHandles = null;
-      try {
-        signaledHandles = WPIUtilJNI.waitForObjects(waitHandles);
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
       }
-        
-        var currentRobotPose = poseSupplier.get();
-      for (int i = 0; i < signaledHandles.length; i++) {
-        int cameraIndex = getCameraIndex(signaledHandles[i]);
-        var aprilTagPublisher = aprilTagPublishers[cameraIndex];
-        var photonPoseEstimator = photonPoseEstimators[cameraIndex];
 
         // Get AprilTag data
-        var photonResults = getLatestResult(cameraIndex);
         if (photonResults.hasTargets() && (photonResults.targets.size() > 1
             || (photonResults.targets.get(0).getPoseAmbiguity() < APRILTAG_AMBIGUITY_THRESHOLD))) {
 
