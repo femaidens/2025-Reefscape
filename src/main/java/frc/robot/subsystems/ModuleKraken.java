@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -9,6 +10,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Translation.PID;
 import frc.robot.subsystems.DriveConstants.Turn;
@@ -19,8 +22,8 @@ public class ModuleKraken {
     private final TalonFX turnMotor; 
     
     // This is both an absolute and relative encoder 
-    private final CANcoder encoder;
-    
+    private final CANcoder driveEncoder;
+    private final CANcoder turnEncoder; 
     //PID? 
     private PhoenixPIDController drivePidController; 
     private PhoenixPIDController turnPidController; 
@@ -38,8 +41,8 @@ public class ModuleKraken {
         drivePidController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPidController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
 
-        encoder = new CANcoder(0, "rio"); 
-        
+        driveEncoder = new CANcoder(0, "rio"); 
+        turnEncoder = new CANcoder(0,  "rio"); 
          
     }
 
@@ -53,9 +56,7 @@ public class ModuleKraken {
         motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(Translation.CURRENT_LIMIT)); 
      }
 
-     
-
-
+    
 
     public void setDriveVoltage(double volts){
         driveMotor.setVoltage(volts); 
@@ -64,7 +65,17 @@ public class ModuleKraken {
     public void setTurnVoltage(double volts){
         turnMotor.setVoltage(volts); 
     }
+   
+    // STILL HAVE TO DO THE CONVERSION 
+  
+    public StatusSignal<AngularVelocity> getTurnVelocity(){
+        return turnEncoder.getVelocity(); 
+    }
 
+    public StatusSignal<Angle> getTurnAngle(){
+        return driveEncoder.getAbsolutePosition(); 
+    }
+    
 
 
 }
