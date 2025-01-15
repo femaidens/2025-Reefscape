@@ -35,5 +35,12 @@ public final class Constants {
       public static final double kG = 0;
       public static final double kV = 0;
     }
+
+    public static class SetpointConstants {
+      public static final double firstLvl = 0;
+      public static final double secondLvl = 0;
+      public static final double thirdLvl = 0;
+      public static final double fourthLvl = 0;
+    }
   }
 }

@@ -77,9 +77,9 @@ public class Elevator extends SubsystemBase {
     /**
      * sets motor voltage using calculations from PID and FF values 
      */
-    public static void elevatorPID(){
+    public static void elevatorPID(double setpoint){
       elevatorMotor.setVoltage(
-        elevatorPID.calculate( elevatorEncoder.getPosition().getValueAsDouble() ) +  ff.calculate(elevatorPID.getSetpoint().velocity) );
+        elevatorPID.calculate( elevatorEncoder.getPosition().getValueAsDouble() ) +  ff.calculate(elevatorPID.getSetpoint().velocity, setpoint));
     }
 
     /**
@@ -111,6 +111,15 @@ public class Elevator extends SubsystemBase {
      */
     public Command stopMotorCmd() {
       return this.run(() -> stopMotor());
+    }
+
+    /**
+     * 
+     * @param setpoint
+     * @return lifts elevator to specified setpoint
+     */
+    public Command setLevel(double setpoint) {
+      return this.run(() -> elevatorPID(setpoint));
     }
 
   @Override
