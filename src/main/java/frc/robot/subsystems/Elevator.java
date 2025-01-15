@@ -65,6 +65,7 @@ public class Elevator extends SubsystemBase {
      * reverse motor
      */
     public static void reverseRunMotor(){
+      
       elevatorMotor.set(-Constants.ElevatorConstants.motorSpeed);
     }
     /**
@@ -125,5 +126,7 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    this.hitBotLimit();
+    
   }
 }
