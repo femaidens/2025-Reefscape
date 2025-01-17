@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -38,6 +39,24 @@ public class Outtake extends SubsystemBase {
 
   }
 
+  /* Commands */
+
+  public Command runMotorCmd() {
+    return this.run(()-> runMotor());
+  }
+
+  public Command reverseMotorCmd() {
+    return this.run(()-> reverseMotor());
+  }
+
+  public Command setVoltageCmd() {
+    return this.run(()-> setVoltage());
+  }
+
+  public Command stopMotorCmd() {
+    return this.run(()-> stopMotor());
+  }
+
   public void runMotor() {
     outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
   }
@@ -51,7 +70,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopMotor() {
-    outtakeMotor.stopMotor();
+    outtakeMotor.setVoltage(0);
   }
 
   @Override
