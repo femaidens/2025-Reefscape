@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -56,7 +57,23 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
+    driveJoy.a()
+    .whileTrue(
+        drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward)
+    );
+
+    driveJoy.b()
+    .whileTrue(
+        drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse)
+    );
+    driveJoy.x()
+    .whileTrue(
+        drivetrain.driveDynamic(SysIdRoutine.Direction.kForward)
+    );
+    driveJoy.y()
+    .whileTrue(
+        drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse)
+    );
   }
 
   

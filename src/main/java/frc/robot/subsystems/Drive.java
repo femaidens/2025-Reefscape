@@ -52,7 +52,7 @@ public class Drive extends SubsystemBase {
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kI2C); 
+    gyro = new AHRS(NavXComType.kMXP_UART); 
 
     odometry = new SwerveDriveOdometry(
       Drivetrain.kDriveKinematics, 
