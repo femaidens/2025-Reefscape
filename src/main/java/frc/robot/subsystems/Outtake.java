@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
@@ -17,18 +19,39 @@ public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
 
-  private final DigitalOutput emitter;
-  private final DigitalInput reciever; 
-
+  private final RelativeEncoder outtakeEncoder;
+  private final Ultrasonic ultrasonic;
+  private final PIDController ultrasonicPID;
 
   /** Creates a new Outtake. */
   public Outtake() {
 
     outtakeMotor = new SparkMax(Ports.OuttakePorts.OUTTAKE_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
-    reciever = new DigitalInput(Ports.UltrasonicPorts.RECIEVER);
-    emitter = new DigitalOutput(Ports.UltrasonicPorts.EMITTER);
+    outtakeEncoder = outtakeMotor.getEncoder();
+    ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort, Ports.UltrasonicPorts.UltrasonicEchoPort);
+    ultrasonicPID = new PIDController(
+      Constants.UltrasonicConstants.PIDConstants.kP,
+      Constants.UltrasonicConstants.PIDConstants.kI,
+      Constants.UltrasonicConstants.PIDConstants.kD
+      );
 
+  }
+
+  public void runMotor() {
+    outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
+  }
+
+  public void reverseMotor() {
+    outtakeMotor.set(-Constants.OutakeConstants.motorSpeed);
+  }
+
+  public void setVoltage() {
+    outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
+  }
+
+  public void stopMotor() {
+    outtakeMotor.stopMotor();
   }
 
   @Override
