@@ -70,7 +70,10 @@ public class DriveSim extends SubsystemBase{
           poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
           publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
           arrayPublisherSwerve = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();      
-           
+          arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
+          arrayPublisher.set(new Pose2d[] {poseA, poseB});
+          m_field.setRobotPose(m_odometry.getPoseMeters()); 
+
         SmartDashboard.putNumber("angle", angle.get());  
         
         // this is my only change so i can push 
@@ -81,11 +84,8 @@ public class DriveSim extends SubsystemBase{
     }
   @Override
   public void simulationPeriodic() {
-    m_field.setRobotPose(m_odometry.getPoseMeters()); 
     publisherPose.set(poseA);
-    arrayPublisher.set(new Pose2d[] {poseA, poseB});
     publisherSwerve.set(poseA3d);
-    arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
         
   }
 

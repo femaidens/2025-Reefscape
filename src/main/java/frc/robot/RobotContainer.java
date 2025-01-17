@@ -6,7 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.subsystems.Drive;
+//import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveSim;
 
 import java.util.function.DoubleSupplier;
 
@@ -23,7 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  Drive drivetrain = new Drive();
+ // Drive drivetrain = new Drive();
+ DriveSim driveSim = new DriveSim(); 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -33,10 +35,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    configureDefaultCmds();
+    //configureDefaultCmds();
 
   }
-
+/* 
   private void configureDefaultCmds(){
     drivetrain.setDefaultCommand(
       drivetrain.drive(
@@ -45,7 +47,7 @@ public class RobotContainer {
         () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
       );
   }
-
+*/
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary

@@ -69,17 +69,17 @@ public class ModuleSpark {
         driveConfig.smartCurrentLimit(Translation.CURRENT_LIMIT);
 
         // encoder set up based on https://github.com/wpilibsuite/2025Beta/discussions/27#discussioncomment-11522637
-        driveConfig.encoder.positionConversionFactor(Translation.POS_CONVERSION_FACTOR);
-        driveConfig.encoder.velocityConversionFactor(Translation.VEL_CONVERSION_FACTOR);
-        driveConfig.encoder.inverted(false);
+       // driveConfig.encoder.positionConversionFactor(Translation.POS_CONVERSION_FACTOR);
+       // driveConfig.encoder.velocityConversionFactor(Translation.VEL_CONVERSION_FACTOR);
+        //driveConfig.encoder.inverted(false);
 
         turnConfig = new SparkMaxConfig();
         turnConfig.idleMode(IdleMode.kBrake);
         turnConfig.smartCurrentLimit(Turn.CURRENT_LIMIT);
         
-        turnConfig.absoluteEncoder.positionConversionFactor(Turn.POS_CONVERSION_FACTOR);
-        turnConfig.absoluteEncoder.velocityConversionFactor(Turn.VEL_CONVERSION_FACTOR);
-        turnConfig.absoluteEncoder.inverted(true);
+        // turnConfig.absoluteEncoder.positionConversionFactor(Turn.POS_CONVERSION_FACTOR);
+        // turnConfig.absoluteEncoder.velocityConversionFactor(Turn.VEL_CONVERSION_FACTOR);
+        // turnConfig.absoluteEncoder.inverted(true);
 
         driveMotor.configure(driveConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         turnMotor.configure(turnConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters); 

@@ -41,7 +41,7 @@ public class ModuleKraken {
         drivePidController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPidController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
 
-        driveEncoder = new CANcoder(0, "rio"); 
+        driveEncoder = new CANcoder(1, "rio"); 
         turnEncoder = new CANcoder(0,  "rio"); 
          
     }
