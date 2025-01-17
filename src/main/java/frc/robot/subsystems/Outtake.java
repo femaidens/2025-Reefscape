@@ -4,12 +4,11 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,22 +19,24 @@ public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
 
-  private final RelativeEncoder outtakeEncoder;
   private final Ultrasonic ultrasonic;
   private final PIDController ultrasonicPID;
+  private final MedianFilter filter;
 
   /** Creates a new Outtake. */
   public Outtake() {
 
     outtakeMotor = new SparkMax(Ports.OuttakePorts.OUTTAKE_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
-    outtakeEncoder = outtakeMotor.getEncoder();
     ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort, Ports.UltrasonicPorts.UltrasonicEchoPort);
     ultrasonicPID = new PIDController(
       Constants.UltrasonicConstants.PIDConstants.kP,
       Constants.UltrasonicConstants.PIDConstants.kI,
       Constants.UltrasonicConstants.PIDConstants.kD
       );
+    filter = new MedianFilter(5);
+    ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.setpoint);
+
 
   }
 
@@ -57,6 +58,13 @@ public class Outtake extends SubsystemBase {
     return this.run(()-> stopMotor());
   }
 
+  public void outtakeCoral() {
+      if(ultrasonicPID.atSetpoint()) {
+        runMotor();
+      }
+      stopMotor();
+    }
+
   public void runMotor() {
     outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
   }
@@ -69,8 +77,14 @@ public class Outtake extends SubsystemBase {
     outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
   }
 
+  public double getDistance() {
+    double measurement = ultrasonic.getRangeInches();
+    double filteredMeasurement = filter.calculate(measurement);
+    return ultrasonicPID.calculate(filteredMeasurement);
+  }
+
   public void stopMotor() {
-    outtakeMotor.setVoltage(0);
+    outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
   }
 
   @Override
