@@ -5,4 +5,15 @@
 package frc.robot;
 
 /** Add your docs here. */
-public class Ports {}
+public class Ports {
+    public class OuttakePorts {
+        public static int OUTTAKE_MOTOR = 0;
+
+
+    }
+
+    public class UltrasonicPorts {
+        public static int RECIEVER = 0;
+        public static int EMITTER = 0; 
+    }
+}
