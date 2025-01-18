@@ -4,5 +4,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Outtake;
+
 /** Add your docs here. */
-public class OuttakingCoral {}
+public class OuttakingCoral {
+    private final Outtake outtake; 
+
+    public OuttakingCoral(Outtake outtake) {
+       this.outtake = outtake;
+
+    }
+
+    public Command releaseCoral() {
+        return outtake.reverseMotorCmd();
+    }
+}
