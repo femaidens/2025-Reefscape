@@ -17,4 +17,7 @@ public final class Constants {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
   }
+  public class ModuleSimConstants{
+    public static final double loopPeriodSecs = 0;
+  }
 }

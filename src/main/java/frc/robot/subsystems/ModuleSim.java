@@ -1,40 +1,41 @@
 
-    /*package frc.robot.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.robot.subsystems.Module;
+import frc.robot.subsystems.ModuleSpark;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
+import frc.robot.Constants;
 
 public class ModuleSim{
     private FlywheelSim driveSim;
     private FlywheelSim turnSim;
 
-    // public double drivePositionRad;
-    // public double driveVelocityRadPerSec;
+    public double drivePositionRad;
+    public double driveVelocityRadPerSec;
     public double driveAppliedVolts;
-    // public double[] driveCurrentAmps;
+    public double[] driveCurrentAmps;
     
     public double turnAbsolutePositionRad;
     public double turnRelativePositionRad;
-    // public double turnVelocityRadPerSec;
+    public double turnVelocityRadPerSec;
     public double turnAppliedVolts;
-    // public double[] turnCurrentAmps;
+    public double[] turnCurrentAmps;
 
     public ModuleSim(){
-        driveSim = new FlywheelSim(DCMotor.getNEO(0), 0, 0);
-        turnSim = new FlywheelSim(DCMotor.getNEO(0), 0, 0);
+        driveSim = new FlywheelSim(null, null, Math.random()*Integer.MAX_VALUE);
+        turnSim = new FlywheelSim(null, null, Math.random()*Integer.MAX_VALUE);
     
-        // drivePositionRad = 0.0;
-        // driveVelocityRadPerSec = 0.0;
+        drivePositionRad = 0.0;
+        driveVelocityRadPerSec = 0.0;
         driveAppliedVolts = 0.0;
-        // driveCurrentAmps = new double[4];
+        driveCurrentAmps = new double[4];
 
         turnAbsolutePositionRad = 0.0;
         turnRelativePositionRad = 0.0;
-        // turnVelocityRadPerSec = 0.0;
+        turnVelocityRadPerSec = 0.0;
         turnAppliedVolts = 0.0;
-        // turnCurrentAmps = new double[4];
+        turnCurrentAmps = new double[4];
     }
 
 
@@ -55,11 +56,11 @@ public class ModuleSim{
         }
 
         this.drivePositionRad = drivePositionRad + (driveSim.getAngularVelocityRadPerSec()*0);
-        this.driveVelocityRadPerSec driveSim.getAngularVelocityRadPerSec();
+        this.driveVelocityRadPerSec = driveSim.getAngularVelocityRadPerSec();
         this.driveAppliedVolts = driveAppliedVolts;
         this.driveCurrentAmps = new double[] {Math.abs(driveSim.getCurrentDrawAmps())};
-        this.driveTempCelcius = new double[] {};//inputs comes from climb inputs
-
+        // this.driveTempCelcius = new double[] {};//inputs comes from climb inputs
+    }
     public void setDriveVoltage(double volts) {
         driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         driveSim.setInputVoltage(driveAppliedVolts);
@@ -71,5 +72,5 @@ public class ModuleSim{
     }
 
 }
-*/
+
 
