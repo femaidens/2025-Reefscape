@@ -84,7 +84,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopMotor() {
-    outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
+    outtakeMotor.setVoltage(0);
   }
 
   @Override
