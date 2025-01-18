@@ -30,15 +30,15 @@ import frc.robot.subsystems.DriveConstants.Translation;
 
 public class DriveSim extends SubsystemBase{
     
-    private final int dev; 
-    private final SimDouble angle; 
-    private final Field2d m_field; 
-    private final Odometry m_odometry; 
-    private final AHRS gyro; 
-    private final ModuleSpark frontLeft;
-    private final ModuleSpark frontRight;
-    private final ModuleSpark rearLeft;
-    private final ModuleSpark rearRight;
+    private  int dev; 
+    private  SimDouble angle; 
+    // private  Field2d m_field; 
+    private  Odometry m_odometry; 
+    private  AHRS gyro; 
+    private final ModuleSim frontLeft;
+    private final ModuleSim frontRight;
+    private final ModuleSim rearLeft;
+    private final ModuleSim rearRight;
     private Pose2d poseA;
     private Pose2d poseB;
     private Pose3d poseA3d;
@@ -50,24 +50,29 @@ public class DriveSim extends SubsystemBase{
     // private Trajectory m_trajectory; 
   
     public DriveSim(){
-      frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
-      frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
-      rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
-      rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
-        dev = SimDeviceDataJNI.getSimDeviceHandle("name"); 
-        gyro = new AHRS(NavXComType.kI2C); 
-        angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")); 
-        angle.set(5.0); 
-        m_field = new Field2d();
-        m_odometry = new SwerveDriveOdometry(
-          Drivetrain.kDriveKinematics, 
-          gyro.getRotation2d(), 
-          new SwerveModulePosition[] {
-            frontLeft.getSwerveModulePosition(),
-            frontRight.getSwerveModulePosition(),
-            rearLeft.getSwerveModulePosition(),
-            rearRight.getSwerveModulePosition()
-          });
+      // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
+      // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
+      // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
+      // rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
+
+      frontLeft = new ModuleSim();
+      frontRight = new ModuleSim();
+      rearRight = new ModuleSim();
+      rearLeft = new ModuleSim();
+        // dev = SimDeviceDataJNI.getSimDeviceHandle("name"); 
+        // gyro = new AHRS(NavXComType.kI2C); 
+        // angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")); 
+        // angle.set(5.0); 
+        // m_field = new Field2d();
+        // m_odometry = new SwerveDriveOdometry(
+        //   Drivetrain.kDriveKinematics, 
+        //   gyro.getRotation2d(), 
+        //   new SwerveModulePosition[] {
+        //     frontLeft.getSwerveModulePosition(),
+        //     frontRight.getSwerveModulePosition(),
+        //     rearLeft.getSwerveModulePosition(),
+        //     rearRight.getSwerveModulePosition()
+        //   });
           //  m_trajectory = TrajectoryGenerator.generateTrajectory(
           //               new Pose2d(20,50,Rotation2d.fromDegrees(0)),
           //               List.of(new Translation2d(1,1), new Translation2d(2,-1)), 
@@ -76,34 +81,47 @@ public class DriveSim extends SubsystemBase{
           //  ); 
 
           poseA = new Pose2d();
-          poseB = new Pose2d(); //creates a 2d representation of the swerve drive
-          publisherPose = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
-          arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-          poseA3d = new Pose3d();
-          poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
-          publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
-          arrayPublisherSwerve = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();      
-          arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
-          arrayPublisher.set(new Pose2d[] {poseA, poseB});
+          // poseB = new Pose2d(); //creates a 2d representation of the swerve drive
+          // publisherPose = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose2d.struct).publish();
+          // arrayPublisher = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
+          // poseA3d = new Pose3d();
+          // poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
+          // publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
+         // arrayPublisherSwerve = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();      
+          //arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
+         // arrayPublisher.set(new Pose2d[] {poseA, poseB});
           
 
-        SmartDashboard.putNumber("angle", angle.get());  
-        SmartDashboard.putData("Field", m_field); 
+        // SmartDashboard.putNumber("angle", angle.get());  
+        // SmartDashboard.putData("Field", m_field); 
 
         // this is my only change so i can push 
-    }
-    @Override
-    public void periodic(){
+    // }
+    // @Override
+    // public void periodic(){
 
     }
+    public void driveForward(){
+      frontLeft.setDriveVoltage(12);
+      frontRight.setDriveVoltage(12);
+      rearLeft.setDriveVoltage(12);
+      rearRight.setDriveVoltage(12);
+    }
+    public void close(){
+      frontLeft.setDriveVoltage(0);
+      frontRight.setDriveVoltage(0);
+      rearLeft.setDriveVoltage(0);
+      rearRight.setDriveVoltage(0);
+    }
+
   @Override
   public void simulationPeriodic() {
-    m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
-    publisherPose.set(poseA);
-    publisherSwerve.set(poseA3d);
-    m_field.setRobotPose(m_odometry.getPoseMeters()); 
+    // m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
+    // publisherPose.set(poseA);
+    // publisherSwerve.set(poseA3d);
+    // m_field.setRobotPose(m_odometry.getPoseMeters()); 
     // m_field.getObject("traj").setTrajectory(m_trajectory);
 
-  }
+   }
 
 }

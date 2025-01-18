@@ -3,17 +3,20 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.subsystems.ModuleSpark;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import frc.robot.Constants;
 
 public class ModuleSim{
-    private FlywheelSim driveSim;
-    private FlywheelSim turnSim;
+    private DCMotorSim driveSim;
 
     private ModuleSpark motor;
 
@@ -29,14 +32,15 @@ public class ModuleSim{
     public double[] turnCurrentAmps;
 
     public ModuleSim(){
-        driveSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 1., 0.5), DCMotor.getNEO(1), 5);
-        turnSim = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 1., 0.5), DCMotor.getNEO(1), 5);
+        driveSim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1),1, .5), DCMotor.getNEO(1),1, 1);
 
        // motor = new ModuleSpark(164 , 9, 3);
+
     
         drivePositionRad = 3.0;
         driveVelocityRadPerSec = 5.0;
-        driveAppliedVolts = 123; 
+        driveAppliedVolts = 12.0; 
         driveCurrentAmps = new double[]{1, 2, 3, 4};
 
         turnAbsolutePositionRad = 2.0;
@@ -72,15 +76,27 @@ public class ModuleSim{
     public void setDriveVoltage(double volts) {
         double v = MathUtil.clamp(volts, -12.0, 12.0);
         driveSim.setInputVoltage(v);
+        driveSim.update(0.02);
     }
 
-    public void setTurnVoltage(double volts) {
-        double v = MathUtil.clamp(volts, -12.0, 12.0);
-        turnSim.setInputVoltage(v);
-    }
+    // public void setTurnVoltage(double volts) {
+    //     double v = MathUtil.clamp(volts, -12.0, 12.0);
+    //     turnSim.setInputVoltage(v);
+    // }
 
     public double getDriveAppliedVolts(){
         return driveAppliedVolts;
+    }
+
+       public SwerveModulePosition getSwerveModulePosition(){
+        return new SwerveModulePosition(getDrivePosition(), getState().angle);
+    }
+      public SwerveModuleState getState(){
+        return new SwerveModuleState(5, 
+            Rotation2d.fromDegrees(90));
+    }
+    public double getDrivePosition(){
+        return 0;
     }
 
        /** Advance the simulation. */
