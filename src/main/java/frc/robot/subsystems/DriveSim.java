@@ -21,6 +21,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -91,6 +93,9 @@ public class DriveSim extends SubsystemBase{
           //arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
          // arrayPublisher.set(new Pose2d[] {poseA, poseB});
           
+          
+          m_field.setRobotPose(m_odometry.getPoseMeters()); 
+          m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
 
         // SmartDashboard.putNumber("angle", angle.get());  
         SmartDashboard.putData("Field", m_field); 
