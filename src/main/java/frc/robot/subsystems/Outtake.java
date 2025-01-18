@@ -56,13 +56,20 @@ public class Outtake extends SubsystemBase {
   public Command stopMotorCmd() {
     return this.run(()-> stopMotor());
   }
-  // need intake to do this properly
-  public void outtakeCoral() {
-    ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
-      if(ultrasonicPID.atSetpoint()) {
-        runMotor();
+  // this might 
+  // public void outtakeCoral() {
+  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
+  //     if(ultrasonicPID.atSetpoint()) {
+  //       runMotor();
+  //     }
+  //     stopMotor();
+  //   }
+
+    public boolean isCoral() {
+      if (ultrasonicPID.atSetpoint()) {
+        return true;
       }
-      stopMotor();
+      return false;
     }
 
   public void intakeAlgae() {
@@ -82,7 +89,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void setVoltage() {
-    outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
+    outtakeMotor.setVoltage(0);
   }
 
   public double getDistance() {
@@ -92,7 +99,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public void stopMotor() {
-    outtakeMotor.setVoltage(Constants.OutakeConstants.voltage);
+    outtakeMotor.setVoltage(0);
   }
 
   /*  testing more command based code */
