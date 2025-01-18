@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Elevator implements AutoCloseable {
   // This gearbox represents a gearbox containing 4 Vex 775pro motors.
@@ -33,18 +35,33 @@ public class Elevator implements AutoCloseable {
           Constants.kElevatorKi,
           Constants.kElevatorKd,
           new TrapezoidProfile.Constraints(2.45, 2.45));
+
   ElevatorFeedforward m_feedforward =
       new ElevatorFeedforward(
           Constants.kElevatorkS,
           Constants.kElevatorkG,
           Constants.kElevatorkV,
           Constants.kElevatorkA);
+
   private final Encoder m_encoder =
-      new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel);
-  private final PWMSparkMax m_motor = new PWMSparkMax(Constants.kMotorPort);
+      new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel); // its a relative encoder
+
+  private final PWMSparkMax m_motor = new PWMSparkMax(Constants.kMotorPort); 
 
   // Simulation classes help us simulate what's going on, including gravity.
-  private final ElevatorSim m_elevatorSim1 =
+  private final ElevatorSim m_elevatorSimStage1 = 
+  new ElevatorSim(
+    m_elevatorGearbox,
+      Constants.kElevatorGearing,
+      Constants.kCarriageMass,
+      Constants.kElevatorDrumRadius,
+      10.0,
+      Constants.kMaxElevatorHeightMeters,
+      true,
+      10,
+      0.01,
+      0.0);
+  private final ElevatorSim m_elevatorSimStage2 =
       new ElevatorSim(
           m_elevatorGearbox,
           Constants.kElevatorGearing,
@@ -56,7 +73,7 @@ public class Elevator implements AutoCloseable {
           0,
           0.01,
           0.0);
-  private final ElevatorSim m_elevatorSim2 =
+  private final ElevatorSim m_elevatorSimStage3 =
           new ElevatorSim(
               m_elevatorGearbox,
               Constants.kElevatorGearing,
@@ -74,14 +91,26 @@ public class Elevator implements AutoCloseable {
 
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
-  private final MechanismRoot2d m_mech2dRoot1 = m_mech2d.getRoot("Elevator Root 1", 10, 0); //bottom
-  private final MechanismRoot2d m_mech2dRoot2 = m_mech2d.getRoot("Elevator Root 2", 10.25, 0.5); // from 1st to 2nd m_encoder.getDistance()
-  private final MechanismLigament2d m_elevatorMech2d1 =
-      m_mech2dRoot1.append(
-          new MechanismLigament2d("Elevator1", m_elevatorSim1.getPositionMeters(), 90));
-  private MechanismLigament2d m_elevatorMech2d2 = 
-      m_mech2dRoot2.append(
-        new MechanismLigament2d("Elevator2", m_elevatorSim2.getPositionMeters(), 90)
+
+  private final MechanismRoot2d m_mech2dRootStage1 = m_mech2d.getRoot("Elevator Root 1", 9.75,0);//stage 1
+  private final MechanismRoot2d m_mech2dRootStage2 = m_mech2d.getRoot("Elevator Root 2", 10, 10); //stage 2
+  private final MechanismRoot2d m_mech2dRootStage3 = m_mech2d.getRoot("Elevator Root 3", 10.25, 1); // stage 3
+
+  private final Color8Bit stage1 = new Color8Bit(Color.kRed);
+  private final Color8Bit stage2 = new Color8Bit(Color.kGreen);
+  private final Color8Bit stage3 = new Color8Bit(Color.kBlue);
+
+
+  private MechanismLigament2d m_elevatorMech2dStage1 =
+      m_mech2dRootStage1.append(
+        new MechanismLigament2d("Elevator1", m_elevatorSimStage1.getPositionMeters(), 90, 5, stage1)
+      );
+  private MechanismLigament2d m_elevatorMech2dStage2 = 
+      m_mech2dRootStage2.append(
+          new MechanismLigament2d("Elevator2", m_elevatorSimStage2.getPositionMeters(), 90, 5, stage2));
+  private MechanismLigament2d m_elevatorMech2dStage3 = 
+      m_mech2dRootStage3.append(
+        new MechanismLigament2d("Elevator3", m_elevatorSimStage3.getPositionMeters(), 90, 5, stage3)
       );
 
   /** Subsystem constructor. */
@@ -97,16 +126,18 @@ public class Elevator implements AutoCloseable {
   public void simulationPeriodic() {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
-    m_elevatorSim1.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    m_elevatorSimStage2.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    m_elevatorSimStage1.setInput(0);
+    m_elevatorSimStage3.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
 
     // Next, we update it. The standard loop time is 20ms.
-    m_elevatorSim1.update(0.020);
+    m_elevatorSimStage2.update(0.020);
 
     // Finally, we set our simulated encoder's readings and simulated battery voltage
-    m_encoderSim.setDistance(m_elevatorSim1.getPositionMeters());
+    m_encoderSim.setDistance(m_elevatorSimStage2.getPositionMeters());
     // SimBattery estimates loaded battery voltages
     RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim1.getCurrentDrawAmps()));
+        BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage2.getCurrentDrawAmps()));
   }
 
   /**
@@ -125,8 +156,10 @@ public class Elevator implements AutoCloseable {
 
   public void setStageTwoStart(){
     // m_elevatorSim2.setState(m_elevatorSim1.getPositionMeters(), m_elevatorSim1.getVelocityMetersPerSecond());
-    m_mech2dRoot2.setPosition(10.25,m_elevatorSim1.getPositionMeters());
-    System.out.println("updating");
+    m_mech2dRootStage2.setPosition(10.25,  m_elevatorMech2dStage1.getLength()); //m_elevatorSimStage3.getPositionMeters()
+    m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength()); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
+    m_mech2dRootStage1.setPosition(10, 0);
+    // System.out.println("updating"); 
   }
 
   /** Stop the control loop and motor output. */
@@ -138,9 +171,10 @@ public class Elevator implements AutoCloseable {
   /** Update telemetry, including the mechanism visualization. */
   public void updateTelemetry() {
     // Update elevator visualization with position
-    m_elevatorMech2d1.setLength(m_encoder.getDistance());
-    m_elevatorMech2d2.setLength(m_encoder.getDistance());
-    SmartDashboard.putNumber("Position", m_elevatorSim1.getPositionMeters());
+    m_elevatorMech2dStage2.setLength(m_encoder.getDistance());
+    m_elevatorMech2dStage3.setLength(m_encoder.getDistance());
+    m_elevatorMech2dStage1.setLength(10);
+    SmartDashboard.putNumber("Position", m_elevatorSimStage2.getPositionMeters());
   }
 
   @Override
