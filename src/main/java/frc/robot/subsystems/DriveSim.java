@@ -32,7 +32,7 @@ public class DriveSim extends SubsystemBase{
     
     private  int dev; 
     private  SimDouble angle; 
-    // private  Field2d m_field; 
+    private  Field2d m_field; 
     private  Odometry m_odometry; 
     private  AHRS gyro; 
     private final ModuleSim frontLeft;
@@ -63,16 +63,16 @@ public class DriveSim extends SubsystemBase{
         // gyro = new AHRS(NavXComType.kI2C); 
         // angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")); 
         // angle.set(5.0); 
-        // m_field = new Field2d();
-        // m_odometry = new SwerveDriveOdometry(
-        //   Drivetrain.kDriveKinematics, 
-        //   gyro.getRotation2d(), 
-        //   new SwerveModulePosition[] {
-        //     frontLeft.getSwerveModulePosition(),
-        //     frontRight.getSwerveModulePosition(),
-        //     rearLeft.getSwerveModulePosition(),
-        //     rearRight.getSwerveModulePosition()
-        //   });
+        m_field = new Field2d();
+        m_odometry = new SwerveDriveOdometry(
+          Drivetrain.kDriveKinematics, 
+          new Rotation2d(), 
+          new SwerveModulePosition[] {
+            frontLeft.getSwerveModulePosition(),
+            frontRight.getSwerveModulePosition(),
+            rearLeft.getSwerveModulePosition(),
+            rearRight.getSwerveModulePosition()
+          });
           //  m_trajectory = TrajectoryGenerator.generateTrajectory(
           //               new Pose2d(20,50,Rotation2d.fromDegrees(0)),
           //               List.of(new Translation2d(1,1), new Translation2d(2,-1)), 
@@ -93,7 +93,7 @@ public class DriveSim extends SubsystemBase{
           
 
         // SmartDashboard.putNumber("angle", angle.get());  
-        // SmartDashboard.putData("Field", m_field); 
+        SmartDashboard.putData("Field", m_field); 
 
         // this is my only change so i can push 
     // }
@@ -119,7 +119,7 @@ public class DriveSim extends SubsystemBase{
     // m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
     // publisherPose.set(poseA);
     // publisherSwerve.set(poseA3d);
-    // m_field.setRobotPose(m_odometry.getPoseMeters()); 
+    m_field.setRobotPose(m_odometry.getPoseMeters()); 
     // m_field.getObject("traj").setTrajectory(m_trajectory);
 
    }
