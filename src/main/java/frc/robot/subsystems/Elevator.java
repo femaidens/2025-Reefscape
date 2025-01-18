@@ -141,29 +141,36 @@ public class Elevator implements AutoCloseable {
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage2.getCurrentDrawAmps()));
   }
 
+  public void setMotorVoltage(double voltage){
+    m_motor.setVoltage(voltage);
+  }
+
   /**
    * Run control loop to reach and maintain goal.
    *
    * @param goal the position to maintain
    */
-  public void reachGoal(double goal) {
+  public double reachGoal(double goal) {
     m_controller.setGoal(goal);
 
     // With the setpoint value we run PID control like normalg
     double totalLength = m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength();
     double difference = goal - totalLength;
+    System.out.println("Goal difference: " + difference);
     if(difference < .3 && difference > -.3) {
-      m_motor.setVoltage(0);
+      // m_motor.setVoltage(0);
       System.out.println("Voltage when triggered: " + m_motor.getVoltage());
       System.out.println("at goal");
+      return 0;
     }
     else{
       System.out.println("Not at goal");
       System.out.println("Length of stage 3: " + (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength()));
       double pidOutput = m_controller.calculate(m_encoder.getDistance());
       double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-      m_motor.setVoltage(pidOutput + feedforwardOutput);
+      // m_motor.setVoltage(pidOutput + feedforwardOutput);
       System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
+      return pidOutput + feedforwardOutput;
     }
     
   }

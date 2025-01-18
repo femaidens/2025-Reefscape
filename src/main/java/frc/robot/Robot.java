@@ -33,12 +33,19 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     if (m_joystick.getTrigger()) {
       // Here, we set the constant setpoint of 0.75 meters.
-      m_elevator.reachGoal(Constants.kSetpointMetersFirst);
+      System.out.println("Goal: " + Constants.kSetpointMetersFirst);
+      m_elevator.setMotorVoltage(m_elevator.reachGoal(Constants.kSetpointMetersFirst));
     } 
     else {
       // Otherwise, we update the setpoint to 0.
       System.out.println("released trigger");
-      m_elevator.reachGoal(0.0);
+      // m_elevator.setMotorVoltage(0);
+      if(m_elevator.reachGoal(0.0) > 0 ){
+        m_elevator.setMotorVoltage(0);
+      }
+      else{
+        m_elevator.setMotorVoltage(m_elevator.reachGoal(0.0));
+      }
     }
   }
 
