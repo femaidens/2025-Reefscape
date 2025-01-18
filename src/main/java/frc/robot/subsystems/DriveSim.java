@@ -21,6 +21,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,8 +49,10 @@ public class DriveSim extends SubsystemBase{
     private StructArrayPublisher<Pose2d> arrayPublisher;
     private StructPublisher<Pose3d> publisherSwerve;
     private StructArrayPublisher<Pose3d> arrayPublisherSwerve;
-    private Trajectory m_trajectory; 
-  
+    private Trajectory m_trajectory;
+    private JoystickSim driveJoySim;  
+    private Joystick driveJoy; 
+
     public DriveSim(){
       frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
       frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
@@ -69,11 +73,15 @@ public class DriveSim extends SubsystemBase{
             rearRight.getSwerveModulePosition()
           });
            m_trajectory = TrajectoryGenerator.generateTrajectory(
-                        new Pose2d(20,50,Rotation2d.fromDegrees(0)),
+                        new Pose2d(7.488986,6.662293,Rotation2d.fromDegrees(.392)),
                         List.of(new Translation2d(1,1), new Translation2d(2,-1)), 
-                        new Pose2d(3,0,Rotation2d.fromDegrees(0)),
+                        new Pose2d(3,4,Rotation2d.fromDegrees(0)),
                         new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
            ); 
+          driveJoy = new Joystick(0); 
+          driveJoySim = new JoystickSim(driveJoy); 
+          driveJoySim.setTrigger(driveJoy.getTrigger());
+
 
           poseA = new Pose2d();
           poseB = new Pose2d(); //creates a 2d representation of the swerve drive
@@ -83,12 +91,14 @@ public class DriveSim extends SubsystemBase{
           poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
           publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose", Pose3d.struct).publish();
           arrayPublisherSwerve = NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();      
-          arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
-          arrayPublisher.set(new Pose2d[] {poseA, poseB});
           
+          
+          m_field.setRobotPose(m_odometry.getPoseMeters()); 
+          m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
 
-        SmartDashboard.putNumber("angle", angle.get());  
-        SmartDashboard.putData("Field", m_field); 
+          SmartDashboard.putNumber("angle", angle.get());  
+          SmartDashboard.putData("Field", m_field); 
+
 
         // this is my only change so i can push 
     }
@@ -98,12 +108,11 @@ public class DriveSim extends SubsystemBase{
     }
   @Override
   public void simulationPeriodic() {
-    m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
     publisherPose.set(poseA);
     publisherSwerve.set(poseA3d);
-    m_field.setRobotPose(m_odometry.getPoseMeters()); 
     m_field.getObject("traj").setTrajectory(m_trajectory);
-
+    arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
+    arrayPublisher.set(new Pose2d[] {poseA, poseB});
   }
 
 }
