@@ -5,19 +5,24 @@
 package frc.robot.subsystems;
 
 import java.util.List;
+import java.util.Vector;
 import java.util.function.DoubleSupplier;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +45,8 @@ public class Drive extends SubsystemBase {
   private final AHRS gyro;
 
   private final SwerveDriveOdometry odometry;
+
+  private final SwerveDrivePoseEstimator poseEstimator;
 
   private final SysIdRoutine driveRoutine;
 
@@ -64,6 +71,20 @@ public class Drive extends SubsystemBase {
         rearRight.getSwerveModulePosition()
       });
       zeroHeading();
+      var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+      var visionStdDevs = VecBuilder.fill(1, 1, 1);
+
+      poseEstimator = new SwerveDrivePoseEstimator(
+        Drivetrain.kDriveKinematics,
+        gyro.getRotation2d(),
+        new SwerveModulePosition[]{
+          frontLeft.getSwerveModulePosition(),
+          frontRight.getSwerveModulePosition(),
+          rearLeft.getSwerveModulePosition(),
+          rearRight.getSwerveModulePosition()},
+        new Pose2d(),
+        stateStdDevs,
+        visionStdDevs);
 
       driveRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
@@ -111,6 +132,20 @@ public class Drive extends SubsystemBase {
    */
   public Pose2d getPose(){
     return odometry.getPoseMeters();
+  }
+
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+  }
+
+  public Command driveTo(Pose2d target){
+    return run(()-> {
+      Transform2d transform = getPose().minus(target);
+      Vector<N3> difference = VecBuilder.fill(
+        transform.getX(),
+        transform.getY(),
+        transform.getRotation().getRadians());
+    }
   }
 
   /**
@@ -182,6 +217,9 @@ public class Drive extends SubsystemBase {
       new SwerveModulePosition[] {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
+    poseEstimator.update(gyro.getRotation2d(), 
+      new SwerveModulePosition[] {
+        frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()});
     SmartDashboard.updateValues();
   }
 }
