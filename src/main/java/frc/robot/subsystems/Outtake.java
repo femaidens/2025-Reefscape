@@ -60,7 +60,7 @@ public class Outtake extends SubsystemBase {
 
   public void outtakeCoral() {
       if(ultrasonicPID.atSetpoint()) {
-        runMotor();
+        reverseMotor();
       }
       stopMotor();
     }

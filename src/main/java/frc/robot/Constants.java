@@ -19,5 +19,16 @@ public final class Constants {
 
   public static class OutakeConstants {
     public static final double motorSpeed = 0;
+    public static final double voltage = 0;
+  }
+
+  public static class UltrasonicConstants {
+    public static final double setpoint = 0;
+    public static class PIDConstants {
+      public static final double kP = 0;
+      public static final double kI = 0;
+      public static final double kD = 0;
+
+    }
   }
 }

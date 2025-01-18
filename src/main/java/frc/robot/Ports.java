@@ -13,7 +13,8 @@ public class Ports {
     }
 
     public class UltrasonicPorts {
-        public static int RECIEVER = 0;
-        public static int EMITTER = 0; 
+        public static int UltrasonicPingPort = 0;
+        public static int UltrasonicEchoPort = 1;
+      
     }
 }
