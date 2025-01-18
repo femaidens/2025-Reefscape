@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.*;
@@ -18,33 +19,41 @@ public class Intake extends SubsystemBase {
 
   private final SparkMax intakeMotor;
   private final PIDController pidController;
+  private final DigitalInput beamBreak;
 
   public Intake() {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     pidController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
+    beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
   }
 
-  public Command runMotor(){
+  public Command runMotor() {
     return this.run(() -> intakeMotor.set(IntakeConstants.motorSpeed));
-  } 
+  }
 
-  public Command reverseMotor(){
+  public Command reverseMotor() {
     return this.run(() -> intakeMotor.set(-IntakeConstants.motorSpeed));
   }
 
-  public Command stopMotorCmd(){
+  public Command stopMotorCmd() {
     return this.run(() -> intakeMotor.stopMotor());
   }
 
-  public Command setVoltageCmd(){
+  public Command setVoltage() {
     return this.run(() -> intakeMotor.setVoltage(IntakeConstants.voltage));
   }
 
-
-  public void intakeCoral(){
-    
+  public boolean isBeamBroken() {
+    return !beamBreak.get(); // true = broke, false = unbroken
   }
-  
+
+  public Command intakeCoral() {
+    if (isBeamBroken())
+      return this.run(() -> runMotor());
+    else
+      return this.run(() -> stopMotorCmd());
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

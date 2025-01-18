@@ -8,5 +8,6 @@ package frc.robot;
 public class Ports {
     public class IntakePorts{
         public static int INTAKE_MOTOR = 0;
+        public static int BEAM_BREAK = 1;
     }
 }
