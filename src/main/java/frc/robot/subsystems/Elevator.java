@@ -85,6 +85,7 @@ public class Elevator implements AutoCloseable {
               0,
               0.01,
               0.0);
+  
       
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
   private final PWMSim m_motorSim = new PWMSim(m_motor);
@@ -148,17 +149,30 @@ public class Elevator implements AutoCloseable {
   public void reachGoal(double goal) {
     m_controller.setGoal(goal);
 
-    // With the setpoint value we run PID control like normal
-    double pidOutput = m_controller.calculate(m_encoder.getDistance());
-    double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-    m_motor.setVoltage(pidOutput + feedforwardOutput);
+    // With the setpoint value we run PID control like normalg
+    double totalLength = m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength();
+    double difference = goal - totalLength;
+    if(difference < .3 && difference > -.3) {
+      m_motor.setVoltage(0);
+      System.out.println("Voltage when triggered: " + m_motor.getVoltage());
+      System.out.println("at goal");
+    }
+    else{
+      System.out.println("Not at goal");
+      System.out.println("Length of stage 3: " + (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength()));
+      double pidOutput = m_controller.calculate(m_encoder.getDistance());
+      double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
+      m_motor.setVoltage(pidOutput + feedforwardOutput);
+      System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
+    }
+    
   }
 
   public void setStageTwoStart(){
     // m_elevatorSim2.setState(m_elevatorSim1.getPositionMeters(), m_elevatorSim1.getVelocityMetersPerSecond());
-    m_mech2dRootStage2.setPosition(10.25,  m_elevatorMech2dStage1.getLength()); //m_elevatorSimStage3.getPositionMeters()
-    m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength()); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
     m_mech2dRootStage1.setPosition(10, 0);
+    m_mech2dRootStage2.setPosition(10,  m_elevatorMech2dStage1.getLength()*0.75); //m_elevatorSimStage3.getPositionMeters()
+    m_mech2dRootStage3.setPosition(10, (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength())*0.75); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
     // System.out.println("updating"); 
   }
 

@@ -34,8 +34,10 @@ public class Robot extends TimedRobot {
     if (m_joystick.getTrigger()) {
       // Here, we set the constant setpoint of 0.75 meters.
       m_elevator.reachGoal(Constants.kSetpointMetersFirst);
-    } else {
+    } 
+    else {
       // Otherwise, we update the setpoint to 0.
+      System.out.println("released trigger");
       m_elevator.reachGoal(0.0);
     }
   }
