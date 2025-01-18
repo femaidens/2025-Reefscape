@@ -28,7 +28,7 @@ public class Constants {
   public static final double kSetpointMetersFirst = 15;
   public static final double kSetpointMetersSecond = 20;
   // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-  public static final double kMinElevatorHeightMeters = 1;
+  public static final double kMinElevatorHeightMeters = 0;
   public static final double kMaxElevatorHeightMeters = 10;
 
   // distance per pulse = (distance per revolution) / (pulses per revolution)

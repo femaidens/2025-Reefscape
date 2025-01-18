@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Elevator implements AutoCloseable {
-  // This gearbox represents a gearbox containing 4 Vex 775pro motors.
-  private final DCMotor m_elevatorGearbox = DCMotor.getVex775Pro(4);
+  // This gearbox represents a gearbox containing 4 NEO motors.
+  private final DCMotor m_elevatorGearbox = DCMotor.getNEO(4);
 
   // Standard classes for controlling our elevator
   private final ProfiledPIDController m_controller =
@@ -55,10 +55,10 @@ public class Elevator implements AutoCloseable {
       Constants.kElevatorGearing,
       Constants.kCarriageMass,
       Constants.kElevatorDrumRadius,
-      10.0,
+      1.0, //10
       Constants.kMaxElevatorHeightMeters,
       true,
-      10,
+      1, //10
       0.01,
       0.0);
   private final ElevatorSim m_elevatorSimStage2 =
