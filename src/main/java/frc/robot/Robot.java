@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj.Joystick;
+
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -15,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private ModuleSim bobot = new ModuleSim();
+  private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kJoystickPort);
+
 
   private final RobotContainer m_robotContainer;
 
@@ -41,12 +47,16 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    // CommandScheduler.getInstance().run();
+    // bobot.simulationPeriodic();
+    // bobot.setDriveVoltage(bobot.getDriveAppliedVolts());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    bobot.setDriveVoltage(0);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -79,7 +89,18 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    
+    if (m_joystick.getTrigger()) {
+      // Here, we set the constant setpoint of 0.75 meters.
+      bobot.setDriveVoltage(bobot.getDriveAppliedVolts());
+
+    } else {
+      // Otherwise, we update the setpoint to 0.
+      bobot.setDriveVoltage(0);
+
+    }
+  }
 
   @Override
   public void testInit() {

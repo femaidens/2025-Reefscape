@@ -47,7 +47,7 @@ public class DriveSim extends SubsystemBase{
     private StructArrayPublisher<Pose2d> arrayPublisher;
     private StructPublisher<Pose3d> publisherSwerve;
     private StructArrayPublisher<Pose3d> arrayPublisherSwerve;
-    private Trajectory m_trajectory; 
+    // private Trajectory m_trajectory; 
   
     public DriveSim(){
       frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
@@ -68,12 +68,12 @@ public class DriveSim extends SubsystemBase{
             rearLeft.getSwerveModulePosition(),
             rearRight.getSwerveModulePosition()
           });
-           m_trajectory = TrajectoryGenerator.generateTrajectory(
-                        new Pose2d(20,50,Rotation2d.fromDegrees(0)),
-                        List.of(new Translation2d(1,1), new Translation2d(2,-1)), 
-                        new Pose2d(3,0,Rotation2d.fromDegrees(0)),
-                        new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
-           ); 
+          //  m_trajectory = TrajectoryGenerator.generateTrajectory(
+          //               new Pose2d(20,50,Rotation2d.fromDegrees(0)),
+          //               List.of(new Translation2d(1,1), new Translation2d(2,-1)), 
+          //               new Pose2d(3,0,Rotation2d.fromDegrees(0)),
+          //               new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
+          //  ); 
 
           poseA = new Pose2d();
           poseB = new Pose2d(); //creates a 2d representation of the swerve drive
@@ -102,7 +102,7 @@ public class DriveSim extends SubsystemBase{
     publisherPose.set(poseA);
     publisherSwerve.set(poseA3d);
     m_field.setRobotPose(m_odometry.getPoseMeters()); 
-    m_field.getObject("traj").setTrajectory(m_trajectory);
+    // m_field.getObject("traj").setTrajectory(m_trajectory);
 
   }
 
