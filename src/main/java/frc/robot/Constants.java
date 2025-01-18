@@ -23,7 +23,8 @@ public final class Constants {
   }
 
   public static class UltrasonicConstants {
-    public static final double setpoint = 0;
+    public static final double coralSetpoint = 0;
+    public static final double algaeSetpoint = 0;
     public static class PIDConstants {
       public static final double kP = 0;
       public static final double kI = 0;
