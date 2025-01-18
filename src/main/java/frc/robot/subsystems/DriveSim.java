@@ -98,6 +98,7 @@ public class DriveSim extends SubsystemBase{
     }
   @Override
   public void simulationPeriodic() {
+    m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
     publisherPose.set(poseA);
     publisherSwerve.set(poseA3d);
     m_field.setRobotPose(m_odometry.getPoseMeters()); 
