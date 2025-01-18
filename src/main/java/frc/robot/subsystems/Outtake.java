@@ -54,9 +54,9 @@ public class Outtake extends SubsystemBase {
   }
 
   public Command stopMotorCmd() {
-    return this.run(()-> stopMotor());
+    return this.runOnce(()-> stopMotor());
   }
-  // this might 
+  // this might not work
   // public void outtakeCoral() {
   //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
   //     if(ultrasonicPID.atSetpoint()) {
@@ -66,26 +66,36 @@ public class Outtake extends SubsystemBase {
   //   }
 
     public boolean isCoral() {
+      ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
       if (ultrasonicPID.atSetpoint()) {
         return true;
       }
       return false;
     }
 
-  public void intakeAlgae() {
-    ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
-      if(ultrasonicPID.atSetpoint()) {
-        stopMotor();
+    public boolean isAlgae() {
+      ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
+      if (ultrasonicPID.atSetpoint()) {
+        return true;
       }
-      reverseMotor();
-  }
 
-  public void runMotor() {
+      return false;
+    }
+  // do not need
+  // public void intakeAlgae() {
+  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
+  //     if(ultrasonicPID.atSetpoint()) {
+  //       stopMotor();
+  //     }
+  //     reverseMotor();
+  // }
+
+  public void runMotor() { //sets velocity
     outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
   }
 
   public void reverseMotor() {
-    outtakeMotor.set(-Constants.OutakeConstants.motorSpeed);
+    outtakeMotor.set(-Constants.OutakeConstants.motorSpeed); //negative value outtakes the coral
   }
 
   public void setVoltage() {
