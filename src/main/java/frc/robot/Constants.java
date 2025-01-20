@@ -25,8 +25,9 @@ public class Constants {
   public static final double kElevatorDrumRadius = Units.inchesToMeters(2.0);
   public static final double kCarriageMass = 4.0; // kg
 
-  public static final double kSetpointMetersFirst = 15;
-  public static final double kSetpointMetersSecond = 20;
+  public static final double kSetpointMetersFirst = 30;
+  public static final double kStage2Velocity = 1.5;
+  public static final double kStage3Velocity = 3;
   // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
   public static final double kMinElevatorHeightMeters = 0;
   public static final double kMaxElevatorHeightMeters = 10;

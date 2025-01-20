@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {
     // Update the simulation model.
     m_elevator.simulationPeriodic();
-    m_elevator.setStageTwoStart();
   }
 
   @Override

@@ -93,9 +93,9 @@ public class Elevator implements AutoCloseable {
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
 
-  private final MechanismRoot2d m_mech2dRootStage1 = m_mech2d.getRoot("Elevator Root 1", 9.75,0);//stage 1
+  private final MechanismRoot2d m_mech2dRootStage1 = m_mech2d.getRoot("Elevator Root 1", 9,0);//stage 1
   private final MechanismRoot2d m_mech2dRootStage2 = m_mech2d.getRoot("Elevator Root 2", 10, 10); //stage 2
-  private final MechanismRoot2d m_mech2dRootStage3 = m_mech2d.getRoot("Elevator Root 3", 10.25, 1); // stage 3
+  private final MechanismRoot2d m_mech2dRootStage3 = m_mech2d.getRoot("Elevator Root 3", 11, 1); // stage 3
 
   private final Color8Bit stage1 = new Color8Bit(Color.kRed);
   private final Color8Bit stage2 = new Color8Bit(Color.kGreen);
@@ -133,12 +133,16 @@ public class Elevator implements AutoCloseable {
 
     // Next, we update it. The standard loop time is 20ms.
     m_elevatorSimStage2.update(0.020);
+    m_elevatorSimStage3.update(0.020);
 
     // Finally, we set our simulated encoder's readings and simulated battery voltage
     m_encoderSim.setDistance(m_elevatorSimStage2.getPositionMeters());
+    m_encoderSim.setDistance(m_elevatorSimStage3.getPositionMeters());
     // SimBattery estimates loaded battery voltages
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage2.getCurrentDrawAmps()));
+    RoboRioSim.setVInVoltage(
+      BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage3.getCurrentDrawAmps()));
   }
 
   public void setMotorVoltage(double voltage){
@@ -153,9 +157,10 @@ public class Elevator implements AutoCloseable {
   public double reachGoal(double goal) {
     m_controller.setGoal(goal);
 
-    // With the setpoint value we run PID control like normalg
-    double totalLength = m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength();
-    double difference = goal - totalLength;
+    // With the setpoint value we run PID control like normal
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
+    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength(); //distance from the bottom to the top of stage 3
+    double difference = goal - totalDistance;
     System.out.println("Goal difference: " + difference);
     if(difference < .3 && difference > -.3) {
       // m_motor.setVoltage(0);
@@ -175,14 +180,6 @@ public class Elevator implements AutoCloseable {
     
   }
 
-  public void setStageTwoStart(){
-    // m_elevatorSim2.setState(m_elevatorSim1.getPositionMeters(), m_elevatorSim1.getVelocityMetersPerSecond());
-    m_mech2dRootStage1.setPosition(10, 0);
-    m_mech2dRootStage2.setPosition(10,  m_elevatorMech2dStage1.getLength()*0.75); //m_elevatorSimStage3.getPositionMeters()
-    m_mech2dRootStage3.setPosition(10, (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength())*0.75); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
-    // System.out.println("updating"); 
-  }
-
   /** Stop the control loop and motor output. */
   public void stop() {
     m_controller.setGoal(0.0);
@@ -192,10 +189,29 @@ public class Elevator implements AutoCloseable {
   /** Update telemetry, including the mechanism visualization. */
   public void updateTelemetry() {
     // Update elevator visualization with position
-    m_elevatorMech2dStage2.setLength(m_encoder.getDistance());
-    m_elevatorMech2dStage3.setLength(m_encoder.getDistance());
+     m_elevatorMech2dStage2.setLength(7); //m_encoder.getDistance()
+     m_elevatorMech2dStage3.setLength(5); //m_encoder.getDistance()
+     m_mech2dRootStage1.setPosition(9.5, 0);
+     m_mech2dRootStage2.setPosition(10,  m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength() + m_encoder.getDistance()*Constants.kStage2Velocity); //m_elevatorSimStage3.getPositionMeters()
+    m_mech2dRootStage3.setPosition(10.5, (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())+ m_encoder.getDistance()*Constants.kStage3Velocity); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
     m_elevatorMech2dStage1.setLength(10);
-    SmartDashboard.putNumber("Position", m_elevatorSimStage2.getPositionMeters());
+    double distanceStage2 = m_elevatorSimStage2.getPositionMeters()*Constants.kStage2Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength(); //distance from bottom to stage 2 root
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
+    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength(); //distance from the bottom to the top of stage 3
+    if(distanceStage2 > m_elevatorMech2dStage1.getLength()) {
+      m_motor.setVoltage(0);
+    }
+    if (distanceStage3 > distanceStage2+m_elevatorMech2dStage2.getLength()) {
+      m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage2.getLength()+ m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength() + m_encoder.getDistance()*Constants.kStage2Velocity);
+    }
+    // if (distanceStage3 > m_elevatorMech2dStage2.getLength()+m_elevatorMech2dStage1.getLength()) {
+    //   m_motor.setVoltage(0);
+    // }
+    SmartDashboard.putNumber("Position Stage 2", distanceStage2);
+    SmartDashboard.putNumber("GetPositionMeters Stage 2", m_elevatorSimStage2.getPositionMeters());
+    SmartDashboard.putNumber("GetPositionMeters Stage 3", m_elevatorSimStage3.getPositionMeters());
+    SmartDashboard.putNumber("Position Stage 3", distanceStage3);
+    SmartDashboard.putNumber("Position Stage Total", totalDistance); 
   }
 
   @Override
