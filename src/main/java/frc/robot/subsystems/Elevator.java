@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Elevator implements AutoCloseable {
   // This gearbox represents a gearbox containing 4 NEO motors.
@@ -158,12 +160,12 @@ public class Elevator implements AutoCloseable {
     m_controller.setGoal(goal);
 
     // With the setpoint value we run PID control like normal
-    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
     double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength(); //distance from the bottom to the top of stage 3
     double difference = goal - totalDistance;
     System.out.println("Goal difference: " + difference);
-    if(difference < .3 && difference > -.3) {
-      // m_motor.setVoltage(0);
+    if(difference < .25 && difference > -.25) {
+      m_motor.setVoltage(0);
       System.out.println("Voltage when triggered: " + m_motor.getVoltage());
       System.out.println("at goal");
       return 0;
@@ -173,7 +175,7 @@ public class Elevator implements AutoCloseable {
       System.out.println("Length of stage 3: " + (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength() + m_elevatorMech2dStage3.getLength()));
       double pidOutput = m_controller.calculate(m_encoder.getDistance());
       double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-      // m_motor.setVoltage(pidOutput + feedforwardOutput);
+      m_motor.setVoltage(pidOutput + feedforwardOutput);
       System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
       return pidOutput + feedforwardOutput;
     }
@@ -198,20 +200,25 @@ public class Elevator implements AutoCloseable {
     double distanceStage2 = m_elevatorSimStage2.getPositionMeters()*Constants.kStage2Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength(); //distance from bottom to stage 2 root
     double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
     double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength(); //distance from the bottom to the top of stage 3
-    if(distanceStage2 > m_elevatorMech2dStage1.getLength()) {
+    if(distanceStage2 > m_elevatorMech2dStage1.getLength()) { //need to change this
       m_motor.setVoltage(0);
     }
     if (distanceStage3 > distanceStage2+m_elevatorMech2dStage2.getLength()) {
       m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage2.getLength()+ m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength() + m_encoder.getDistance()*Constants.kStage2Velocity);
     }
-    // if (distanceStage3 > m_elevatorMech2dStage2.getLength()+m_elevatorMech2dStage1.getLength()) {
-    //   m_motor.setVoltage(0);
-    // }
+
     SmartDashboard.putNumber("Position Stage 2", distanceStage2);
-    SmartDashboard.putNumber("GetPositionMeters Stage 2", m_elevatorSimStage2.getPositionMeters());
-    SmartDashboard.putNumber("GetPositionMeters Stage 3", m_elevatorSimStage3.getPositionMeters());
+    SmartDashboard.putNumber("GetPositionMeters Stage 2", m_elevatorSimStage2.getPositionMeters()); //distance from original position of stage 2
+    SmartDashboard.putNumber("GetPositionMeters Stage 3", m_elevatorSimStage3.getPositionMeters()); //distance from original position of stage 3
     SmartDashboard.putNumber("Position Stage 3", distanceStage3);
     SmartDashboard.putNumber("Position Stage Total", totalDistance); 
+    SmartDashboard.putNumber("kP", Constants.kElevatorKp); 
+    SmartDashboard.putNumber("kI", Constants.kElevatorKi); 
+    SmartDashboard.putNumber("kD", Constants.kElevatorKd); 
+    SmartDashboard.putNumber("kS", Constants.kElevatorkS); 
+    SmartDashboard.putNumber("kG", Constants.kElevatorkG); 
+    SmartDashboard.putNumber("kV", Constants.kElevatorkV); 
+    SmartDashboard.putNumber("kA", Constants.kElevatorkA); 
   }
 
   @Override
