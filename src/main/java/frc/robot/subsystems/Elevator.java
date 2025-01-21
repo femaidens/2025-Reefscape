@@ -201,10 +201,13 @@ public class Elevator implements AutoCloseable {
     double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength(); //distance from bottom to stage 3 root
     double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength(); //distance from the bottom to the top of stage 3
     if(distanceStage2 > m_elevatorMech2dStage1.getLength()) { //need to change this
-      m_motor.setVoltage(0);
-    }
-    if (distanceStage3 > distanceStage2+m_elevatorMech2dStage2.getLength()) {
-      m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage2.getLength()+ m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength() + m_encoder.getDistance()*Constants.kStage2Velocity);
+      //m_motor.setVoltage(0);
+      m_mech2dRootStage2.setPosition(10,  m_elevatorMech2dStage1.getLength());
+      m_mech2dRootStage3.setPosition(10.5, (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())+ m_encoder.getDistance()*Constants.kStage3Velocity);
+      if (distanceStage3 > m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength()) {
+        //m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage2.getLength()+ m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength() + m_encoder.getDistance()*Constants.kStage2Velocity);
+        m_mech2dRootStage3.setPosition(10.5, m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength());
+      }
     }
 
     SmartDashboard.putNumber("Position Stage 2", distanceStage2);
