@@ -16,6 +16,19 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static class IntakeConstants{
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double motorSpeed = 0.5;
+    public static final double voltage = 0;
+  }
+
+  // public static class PIDConstants{
+    
+  // }
+
 
   public static class OutakeConstants {
     public static final double motorSpeed = 0;
