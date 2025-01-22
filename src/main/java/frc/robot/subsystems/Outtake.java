@@ -41,12 +41,26 @@ public class Outtake extends SubsystemBase {
 
   /* Commands */
 
-  public Command runMotorCmd() {
-    return this.run(()-> runMotor());
+
+  /**
+   * 
+   * Positive velocity = intake! 
+   * 
+   * @return command that sets the speed of the outtake motor to take in a coral 
+   */
+
+  public Command setIntakeCoralSpeedCmd() {
+    return this.run(()-> setIntakeCoralSpeed());
   }
 
-  public Command reverseMotorCmd() {
-    return this.run(()-> reverseMotor());
+  /**
+   * Negative velocity = outtake!
+   * 
+   * @return a command that sets the speed of the outtake motor to release a coral
+   */
+
+  public Command setOuttakeCoralSpeedCmd() {
+    return this.run(()-> setOuttakeCoralSpeed());
   }
 
   public Command setVoltageCmd() {
@@ -64,6 +78,11 @@ public class Outtake extends SubsystemBase {
   //     }
   //     stopMotor();
   //   }
+
+  /**
+   * 
+   * @return true if coral is detected passing through from intake to outtake
+   */
 
     public boolean isCoral() {
       ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
@@ -90,11 +109,11 @@ public class Outtake extends SubsystemBase {
   //     reverseMotor();
   // }
 
-  public void runMotor() { //sets velocity
+  public void setIntakeCoralSpeed() { //sets velocity
     outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
   }
 
-  public void reverseMotor() {
+  public void setOuttakeCoralSpeed() {
     outtakeMotor.set(-Constants.OutakeConstants.motorSpeed); //negative value outtakes the coral
   }
 
