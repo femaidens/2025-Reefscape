@@ -160,7 +160,7 @@ public class Elevator implements AutoCloseable {
     m_controller.setGoal(goal);
 
     // With the setpoint value we run PID control like normal
-    double distanceStage3 = (m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
     double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
     double difference = goal - totalDistance;
     System.out.println("Goal difference: " + difference);
@@ -181,7 +181,7 @@ public class Elevator implements AutoCloseable {
     
   }
   public Command reachGoalCommand(double goal) {
-    return Commands.run(() -> reachGoal(goal)).asProxy();
+    return Commands.run(() -> reachGoal(goal*Math.sin(0.61))).asProxy();
   }
 
   /** Stop the control loop and motor output. */
@@ -193,14 +193,14 @@ public class Elevator implements AutoCloseable {
   /** Update telemetry, including the mechanism visualization. */
   public void updateTelemetry() {
     // Update elevator visualization with position
-     m_elevatorMech2dStage2.setLength(7); 
-     m_elevatorMech2dStage3.setLength(5); 
+     m_elevatorMech2dStage2.setLength(Constants.stage2Height); 
+     m_elevatorMech2dStage3.setLength(Constants.stage3Height); 
+     m_elevatorMech2dStage1.setLength(Constants.stage1Height);
      m_mech2dRootStage1.setPosition(0, 0);
      m_mech2dRootStage2.setPosition((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.cos(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.cos(0.61),  
         (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.sin(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.sin(0.61)); 
     m_mech2dRootStage3.setPosition((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.cos(0.61) + + m_encoder.getDistance()*Constants.kStage3Velocity*Math.cos(0.61), 
     (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.sin(0.61)); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
-    m_elevatorMech2dStage1.setLength(10);
     double distanceStage2 = (m_elevatorSimStage2.getPositionMeters()*Constants.kStage2Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.sin(0.61); //distance from bottom to stage 2 root
     double distanceStage3 = (m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
     double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
