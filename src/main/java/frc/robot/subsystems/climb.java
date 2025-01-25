@@ -2,22 +2,20 @@ package frc.robot.subsystems;
 import frc.robot.Ports;
 import frc.robot.Constants.ClimbConstants;
 
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import com.revrobotics.AbsoluteEncoder;
 import frc.robot.Constants;
 
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class climb extends SubsystemBase {
-    private final SparkMax LEADER = new SparkMax(Ports.LEADER_PORT, MotorType.kBrushless);
-    private final SparkMax FOLLOWER = new SparkMax (Ports.FOLLOWER_PORT, MotorType.kBrushless);
+    private final TalonFX LEADER = new TalonFX(Ports.LEADER_PORT);
+    private final TalonFX FOLLOWER = new TalonFX (Ports.FOLLOWER_PORT);
 
     AbsoluteEncoder Encoder;
 
