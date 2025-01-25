@@ -18,15 +18,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class climb extends SubsystemBase {
     private final TalonFX LEADER = new TalonFX(Ports.LEADER_PORT);
     private final TalonFX FOLLOWER = new TalonFX (Ports.FOLLOWER_PORT);
-    Object leaderMotor;
 
-    double MAXPosition = 360.0;
-    double MINPosition = 0; //subject to change, need to change to rotation??
+    double MAXRotation = 90.0;
+    double MINRotation = 0; //subject to change, need to change to rotation??
+
+    public double getSelectedMotorRotation(TalonFX motor){
+      final double TICKS_PER_REVOLUTION = 1000;
+      double ticks = LEADER.getSelectedSensorPosition();
+    // use the encoders whatamidoing
+      return (ticks / TICKS_PER_REVOLUTION) * 360;
+    }
 
 
-
-
-  public Command climbUPCommand () {
+  
+    public Command climbUPCommand () {
         return this.run (() -> climbUP());
   }
 
@@ -35,9 +40,8 @@ public class climb extends SubsystemBase {
   }
 
   public void climbUP(){
-    double currentPosition = leaderMotor.getSelectedEncoderPosition();
-
-        if (currentPosition < MAXPosition) {
+    double currentRotation = getSelectedMotorRotation();
+        if (currentRotation < MAXRotation) {
             LEADER.set (ClimbConstants.ClimbSpeed);
             FOLLOWER.set (ClimbConstants.ClimbSpeed);
         } else {
@@ -48,8 +52,8 @@ public class climb extends SubsystemBase {
     }
 
   public void climbDOWN (){
-        double currentPosition = leaderMotor.getSelectedEncoderPosition();
-        if (currentPosition > MINPosition){
+        double currentRotation = getSelectedMotorRotation();
+        if (currentRotation > MINRotation){
             LEADER.set(-ClimbConstants.ClimbSpeed);
             FOLLOWER.set(-ClimbConstants.ClimbSpeed);
         } else {
