@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.*;
@@ -57,5 +58,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Intake Beambreak", isBeamBroken());
   }
 }
