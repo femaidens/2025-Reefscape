@@ -43,22 +43,22 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
         // stage 1
-        operJoy.rightBumper()
+        operJoy.a()
             .onTrue(new ElevatorCommands(elevator).stage1Command()
             );
             
         // stage 2
-        operJoy.leftBumper()
+        operJoy.b()
             .onTrue(new ElevatorCommands(elevator).stage2Command()
             );
 
         // stage 3
-        operJoy.a()
+        operJoy.y()
             .onTrue(new ElevatorCommands(elevator).stage3Command()
             );
 
         // stage 4
-        operJoy.b()
+        operJoy.x()
             .onTrue(new ElevatorCommands(elevator).stage4Command()
             );
   }

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.ElevatorCommands;
 import frc.robot.subsystems.Elevator;
 
 /** This is a sample program to demonstrate the use of elevator simulation. */
@@ -15,6 +17,7 @@ public class Robot extends TimedRobot {
   private final Elevator m_elevator = new Elevator();
   //private Command m_autonomousCommand;
  // private RobotContainer robotContainer;
+ private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
   public Robot() {}
 
@@ -34,22 +37,25 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if (m_joystick.getTrigger()) {
-      // Here, we set the constant setpoint of 0.75 meters.
-      System.out.println("Goal: " + Constants.kSetpointMetersFirst);
-      m_elevator.setMotorVoltage(m_elevator.reachGoal(Constants.kSetpointMetersFirst));
-    } 
-    else {
+    operJoy.a().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersFirst));
+    operJoy.b().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersSecond));
+    operJoy.x().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersThird));
+    operJoy.y().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersFourth));
+   // if (operJoy.a().onTrue(new ElevatorCommands(m_elevator).stage1Command()) != null) { //used to be m_joystick.getTrigger()
+     // System.out.println("Goal: " + Constants.kSetpointMetersFirst);
+      //m_elevator.setMotorVoltage(m_elevator.reachGoal(Constants.kSetpointMetersFirst));
+    //} 
+    //else {
       // Otherwise, we update the setpoint to 0.
-      System.out.println("released trigger");
-      // m_elevator.setMotorVoltage(0);
-      if(m_elevator.reachGoal(0.0) > 0 ){
-        m_elevator.setMotorVoltage(0);
-      }
-      else{
-        m_elevator.setMotorVoltage(m_elevator.reachGoal(0.0));
-      }
-    }
+      //System.out.println("released trigger");
+      // m_elevator.setMotorVoltage(0)
+      //if(m_elevator.reachGoal(0.0) > 0 ){
+        //m_elevator.setMotorVoltage(0);
+      //}
+      //else{
+        //m_elevator.setMotorVoltage(m_elevator.reachGoal(0.0));
+      //}
+    //}
   }
 
   @Override
@@ -57,6 +63,7 @@ public class Robot extends TimedRobot {
     // This just makes sure that our simulation code knows that the motor's off.
     m_elevator.stop();
   }
+
   // public void autonomousInit() {
 
   //   m_autonomousCommand = robotContainer.getAutonomousCommand();

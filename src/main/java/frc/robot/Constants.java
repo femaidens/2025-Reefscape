@@ -25,7 +25,7 @@ public class Constants {
   public static final double kElevatorDrumRadius = Units.inchesToMeters(2.0);
   public static final double kCarriageMass = 4.0; // kg
 
-  public static final double kSetpointMetersFirst = 20;
+  public static final double kSetpointMetersFirst = 15;
   public static final double kSetpointMetersSecond = 12.5;
   public static final double kSetpointMetersThird = 15;
   public static final double kSetpointMetersFourth = 20;
