@@ -10,6 +10,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -222,6 +223,7 @@ public class Elevator implements AutoCloseable {
     SmartDashboard.putNumber("kG", Constants.kElevatorkG); 
     SmartDashboard.putNumber("kV", Constants.kElevatorkV); 
     SmartDashboard.putNumber("kA", Constants.kElevatorkA); 
+    SmartDashboard.putNumber("Velocity meters/s", m_elevatorSimStage2.getVelocityMetersPerSecond());
   }
 
   @Override
