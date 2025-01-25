@@ -181,6 +181,9 @@ public class Elevator implements AutoCloseable {
     }
     
   }
+  public Command reachGoalCommand(double goal) {
+    return Commands.run(() -> reachGoal(goal)).asProxy();
+  }
 
   /** Stop the control loop and motor output. */
   public void stop() {

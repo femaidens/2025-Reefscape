@@ -6,12 +6,15 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
 /** This is a sample program to demonstrate the use of elevator simulation. */
 public class Robot extends TimedRobot {
   private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
   private final Elevator m_elevator = new Elevator();
+  //private Command m_autonomousCommand;
+ // private RobotContainer robotContainer;
 
   public Robot() {}
 
@@ -19,6 +22,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     // Update the telemetry, including mechanism visualization, regardless of mode.
     m_elevator.updateTelemetry();
+    //robotContainer = new RobotContainer();
     
   }
 
@@ -53,6 +57,15 @@ public class Robot extends TimedRobot {
     // This just makes sure that our simulation code knows that the motor's off.
     m_elevator.stop();
   }
+  // public void autonomousInit() {
+
+  //   m_autonomousCommand = robotContainer.getAutonomousCommand();
+    
+  //   // schedule the autonomous command (example)
+  //   if (m_autonomousCommand != null) {
+  //     m_autonomousCommand.schedule();
+  //   }
+  // }
 
   @Override
   public void close() {
