@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.EstimatedRobotPose;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -138,15 +140,27 @@ public class Drive extends SubsystemBase {
     poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
 
-  public Command driveTo(Pose2d target){
-    return run(()-> {
-      Transform2d transform = getPose().minus(target);
-      Vector<N3> difference = VecBuilder.fill(
-        transform.getX(),
-        transform.getY(),
-        transform.getRotation().getRadians());
-    }
-  }
+  // public Command driveTo(Pose2d target){
+  //   return run(()-> {
+  //     Transform2d transform = getPose().minus(target);
+  //     Vector<N3> difference = VecBuilder.fill(
+  //       transform.getX(),
+  //       transform.getY(),
+  //       transform.getRotation().getRadians());
+  //   }
+  // }
+//   public Pose2d[] getModulePoses() {
+//     Pose2d[] modulePoses = new Pose2d[modules.size()];
+//     for (int i = 0; i < modules.size(); i++) {
+//         var module = modules.get(i);
+//         modulePoses[i] =
+//                 getPose().transformBy(
+//                     new Transform2d(
+//                         module.().centerOffset, module.getAbsoluteHeading()));
+//     }
+//     return modulePoses;
+// }
+
 
   /**
    * resets the odometry to the specified pose
@@ -222,4 +236,6 @@ public class Drive extends SubsystemBase {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()});
     SmartDashboard.updateValues();
   }
+
+  
 }

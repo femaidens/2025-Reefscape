@@ -21,6 +21,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Constants.*;
@@ -30,12 +31,12 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
-  private final PhotonCamera camera;
+  private final PhotonCamera[] cameras;
   private final PhotonPoseEstimator poseEstimator;
   private Matrix<N3, N1> currentStdDevs;
 
   public Vision() {
-    camera = new PhotonCamera(VisionConstants.cameraName);
+    cameras = new PhotonCamera[] {new PhotonCamera(VisionConstants.cameraName)};
     poseEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
   }
   @Override
