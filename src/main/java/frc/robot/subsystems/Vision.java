@@ -45,9 +45,10 @@ public class Vision extends SubsystemBase {
   }
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
-    for (var change : camera.getAllUnreadResults()) {
-      visionEst = poseEstimator.update(change);
-      updateEstimationStdDevs(visionEst, change.getTargets());
+    for (PhotonCamera change : cameras) {
+      PhotonPipelineResult c = change.getAllUnreadResults();//idk what this line is supposed to do but i fixed variable errors i think      
+      visionEst = poseEstimator.update(c);
+      updateEstimationStdDevs(visionEst, c.getTargets());
     }
     return visionEst;
   }
