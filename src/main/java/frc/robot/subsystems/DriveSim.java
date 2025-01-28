@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -32,11 +33,11 @@ import frc.robot.subsystems.DriveConstants.Translation;
 
 public class DriveSim extends SubsystemBase{
     
-    private  int dev; 
-    private  SimDouble angle; 
-    private  Field2d m_field; 
-    private  Odometry m_odometry; 
-    private  AHRS gyro; 
+    private int dev; 
+    private SimDouble angle; 
+    private Field2d m_field; 
+    private Odometry m_odometry; 
+    private AHRS gyro; 
     private final ModuleSim frontLeft;
     private final ModuleSim frontRight;
     private final ModuleSim rearLeft;
@@ -49,6 +50,10 @@ public class DriveSim extends SubsystemBase{
     private StructArrayPublisher<Pose2d> arrayPublisher;
     private StructPublisher<Pose3d> publisherSwerve;
     private StructArrayPublisher<Pose3d> arrayPublisherSwerve;
+    
+    private StructArrayPublisher<SwerveModuleState> publisher;
+
+    private SwerveModuleState[] states;
     // private Trajectory m_trajectory; 
   
     public DriveSim(){
@@ -61,6 +66,16 @@ public class DriveSim extends SubsystemBase{
       frontRight = new ModuleSim();
       rearRight = new ModuleSim();
       rearLeft = new ModuleSim();
+
+             states = new SwerveModuleState[] {
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState(),
+            new SwerveModuleState()
+        }; 
+
+        publisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
         // dev = SimDeviceDataJNI.getSimDeviceHandle("name"); 
         // gyro = new AHRS(NavXComType.kI2C); 
         // angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw")); 
@@ -94,7 +109,7 @@ public class DriveSim extends SubsystemBase{
          // arrayPublisher.set(new Pose2d[] {poseA, poseB});
           
           
-          m_field.setRobotPose(m_odometry.getPoseMeters()); 
+          // m_field.setRobotPose(m_odometry.getPoseMeters()); 
           m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
 
         // SmartDashboard.putNumber("angle", angle.get());  
@@ -112,7 +127,7 @@ public class DriveSim extends SubsystemBase{
       rearLeft.setDriveVoltage(12);
       rearRight.setDriveVoltage(12);
     }
-    public void close(){
+    public void close(){  
       frontLeft.setDriveVoltage(0);
       frontRight.setDriveVoltage(0);
       rearLeft.setDriveVoltage(0);
@@ -126,6 +141,8 @@ public class DriveSim extends SubsystemBase{
     // publisherSwerve.set(poseA3d);
     m_field.setRobotPose(m_odometry.getPoseMeters()); 
     // m_field.getObject("traj").setTrajectory(m_trajectory);
+    publisher.set(states);
+
 
    }
 
