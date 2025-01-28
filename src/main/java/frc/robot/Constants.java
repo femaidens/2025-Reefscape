@@ -30,19 +30,21 @@ public final class Constants {
   // }
 
 
-  public static class OutakeConstants {
+  public static class OuttakeConstants {
     public static final double motorSpeed = 0;
     public static final double voltage = 0;
   }
+  // no longer using Ultrasonic sensor
+  // public static class UltrasonicConstants {
+  //   public static final double coralSetpoint = 0;
+  //   public static final double algaeSetpoint = 0;
+  //   public static class PIDConstants {
+  //     public static final double kP = 0;
+  //     public static final double kI = 0;
+  //     public static final double kD = 0;
 
-  public static class UltrasonicConstants {
-    public static final double coralSetpoint = 0;
-    public static final double algaeSetpoint = 0;
-    public static class PIDConstants {
-      public static final double kP = 0;
-      public static final double kI = 0;
-      public static final double kD = 0;
+  //   }
 
-    }
+  
   }
-}
+

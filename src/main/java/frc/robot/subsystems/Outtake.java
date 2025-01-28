@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,23 +20,28 @@ import frc.robot.Ports;
 public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
+  private final DigitalInput frontReciever;
+  private final DigitalInput backReciever;
 
-  private final Ultrasonic ultrasonic;
-  private final PIDController ultrasonicPID;
-  private final MedianFilter filter;
+  // private final Ultrasonic ultrasonic;
+  // private final PIDController ultrasonicPID;
+  // private final MedianFilter filter;
 
   /** Creates a new Outtake. */
   public Outtake() {
 
     outtakeMotor = new SparkMax(Ports.OuttakePorts.OUTTAKE_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
-    ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort, Ports.UltrasonicPorts.UltrasonicEchoPort);
-    ultrasonicPID = new PIDController(
-      Constants.UltrasonicConstants.PIDConstants.kP,
-      Constants.UltrasonicConstants.PIDConstants.kI,
-      Constants.UltrasonicConstants.PIDConstants.kD
-      );
-    filter = new MedianFilter(5);
+    frontReciever = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECIEVER);
+    backReciever = new DigitalInput(Ports.BeamBreakPorts.BACK_RECIEVER);
+
+    // ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort, Ports.UltrasonicPorts.UltrasonicEchoPort);
+    // ultrasonicPID = new PIDController(
+    //   Constants.UltrasonicConstants.PIDConstants.kP,
+    //   Constants.UltrasonicConstants.PIDConstants.kI,
+    //   Constants.UltrasonicConstants.PIDConstants.kD
+    //   );
+    // filter = new MedianFilter(5);
    
   }
 
@@ -70,6 +76,60 @@ public class Outtake extends SubsystemBase {
   public Command stopMotorCmd() {
     return this.runOnce(()-> stopMotor());
   }
+  
+
+  public void setIntakeCoralSpeed() { //sets velocity
+    outtakeMotor.set(Constants.OuttakeConstants.motorSpeed);
+  }
+
+  public void setOuttakeCoralSpeed() {
+    outtakeMotor.set(-Constants.OuttakeConstants.motorSpeed); //negative value outtakes the coral
+  }
+
+  /**
+   * 
+   * @return true if coral is at the right position in outtake
+   */
+
+  public boolean isCoral() {
+  if (frontReciever.get() == false && backReciever.get()) {
+      return true;
+    }
+      return false;
+  }
+
+  public void setVoltage() {
+    outtakeMotor.setVoltage(Constants.OuttakeConstants.voltage);
+  }
+
+  public void stopMotor() {
+    outtakeMotor.setVoltage(0);
+  }
+
+  /* COMMANDS (NO METHODS) */
+  // public Command setIntakeCoralSpeed() {
+  //   return this.run(()-> outtakeMotor.set(Constants.OutakeConstants.motorSpeed));
+  // }
+
+  // public Command setOuttakeCoralSpeed() {
+  //   return this.run(()-> outtakeMotor.set(-Constants.OutakeConstants.motorSpeed));
+  // }
+
+  // public Command setVoltage() {
+  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
+  // }
+
+  // public Command stopMotor() {
+  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
+  // }
+
+   // not using ultrasonic anymore ;( 
+  // public double getDistance() {
+  //   double measurement = ultrasonic.getRangeInches();
+  //   double filteredMeasurement = filter.calculate(measurement);
+  //   return ultrasonicPID.calculate(filteredMeasurement);
+  // }
+
   // this might not work
   // public void outtakeCoral() {
   //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
@@ -84,22 +144,22 @@ public class Outtake extends SubsystemBase {
    * @return true if coral is detected passing through from intake to outtake
    */
 
-    public boolean isCoral() {
-      ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
-      if (ultrasonicPID.atSetpoint()) {
-        return true;
-      }
-      return false;
-    }
+    // public boolean isCoral() {
+    //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
+    //   if (ultrasonicPID.atSetpoint()) {
+    //     return true;
+    //   }
+    //   return false;
+    // }
 
-    public boolean isAlgae() {
-      ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
-      if (ultrasonicPID.atSetpoint()) {
-        return true;
-      }
+    // public boolean isAlgae() {
+    //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
+    //   if (ultrasonicPID.atSetpoint()) {
+    //     return true;
+    //   }
 
-      return false;
-    }
+    //   return false;
+    // }
   // do not need
   // public void intakeAlgae() {
   //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
@@ -108,68 +168,9 @@ public class Outtake extends SubsystemBase {
   //     }
   //     reverseMotor();
   // }
-
-  public void setIntakeCoralSpeed() { //sets velocity
-    outtakeMotor.set(Constants.OutakeConstants.motorSpeed);
-  }
-
-  public void setOuttakeCoralSpeed() {
-    outtakeMotor.set(-Constants.OutakeConstants.motorSpeed); //negative value outtakes the coral
-  }
-
-  public void setVoltage() {
-    outtakeMotor.setVoltage(0);
-  }
-
-  public double getDistance() {
-    double measurement = ultrasonic.getRangeInches();
-    double filteredMeasurement = filter.calculate(measurement);
-    return ultrasonicPID.calculate(filteredMeasurement);
-  }
-
-  public void stopMotor() {
-    outtakeMotor.setVoltage(0);
-  }
-
-  /*  testing more command based code */
-  
-  // public Command outakeCoral() {
-  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
-  //   if(ultrasonicPID.atSetpoint()) {
-  //     return this.run(()-> runMotor());
-  //   }
-  //   return this.run(()->stopMotor());
-  // }
-
-  // public Command intakeAlgaes() {
-  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
-  //     if(ultrasonicPID.atSetpoint()) {
-  //       return this.run(()-> reverseMotors());
-  //     }
-  //     return this.run(()->stopMotor());
-   
-  // }
-
-
-  // public Command runMotors() {
-  //   return this.run(()-> outtakeMotor.set(Constants.OutakeConstants.motorSpeed));
-  // }
-
-  // public Command reverseMotors() {
-  //   return this.run(()-> outtakeMotor.set(-Constants.OutakeConstants.motorSpeed));
-  // }
-
-  // public Command setVoltages() {
-  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
-  // }
-
-  // public Command stopMotors() {
-  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
-  // }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Distance", getDistance());
+    //SmartDashboard.putNumber("Distance", getDistance());
   }
 }

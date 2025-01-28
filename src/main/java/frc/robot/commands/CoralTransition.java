@@ -26,7 +26,7 @@ public class CoralTransition{
           .alongWith(outtake.setIntakeCoralSpeedCmd())
           .until(outtake::isCoral)
           .andThen(intake.stopMotorCmd())
-          .alongWith(outtake.stopMotorCmd());  
+          .alongWith(outtake.stopMotorCmd());
     
   }
 
