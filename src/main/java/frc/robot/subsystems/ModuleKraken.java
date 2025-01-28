@@ -10,6 +10,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.DriveConstants.Translation;
@@ -28,15 +31,19 @@ public class ModuleKraken {
     private PhoenixPIDController drivePidController; 
     private PhoenixPIDController turnPidController; 
 
+    private double chassisAngularOffset; 
+
     
     // IDK what canbus we use so i just set it to the robot rio for now. 
     //THIS SHOULD BE SUBJECT TO CHANGE?! 
-    public ModuleKraken(int driveID, int turnID){
+    public ModuleKraken(int driveID, int turnID, double chassisAngularOffset){
+        this.chassisAngularOffset = chassisAngularOffset; 
+
         driveMotor = new TalonFX(driveID, "rio"); 
-        configureTalon(driveMotor); 
+        configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
 
         turnMotor = new TalonFX(turnID, "rio"); 
-        configureTalon(turnMotor); 
+        configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
 
         drivePidController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPidController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
@@ -46,14 +53,24 @@ public class ModuleKraken {
          
     }
 
+
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(getDriveVelocity(),
+                    new Rotation2d(getTurnAngle()-chassisAngularOffset));
+    }
+
+    public SwerveModulePosition getSwerveModulePosition(){
+        return new SwerveModulePosition(getDrivePosition(), getState().angle); 
+    }
+
     /**
-     * This configures a TalonFX motor!!! 
+     * This configures a TalonFX motor's nuetral mode to brake and sets the current limit!!! 
      * @param 
      */
 
-     public static void configureTalon(TalonFX motor){
+     public static void configureTalon(TalonFX motor, int currentLimit){
         motor.setNeutralMode(NeutralModeValue.Brake); 
-        motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(Translation.CURRENT_LIMIT)); 
+        motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit)); 
      }
 
     
@@ -66,16 +83,28 @@ public class ModuleKraken {
         turnMotor.setVoltage(volts); 
     }
    
-    // STILL HAVE TO DO THE CONVERSION 
+    // STILL HAVE TO DO THE CONVERSION FACTORS AND STUFF 
   
-    public StatusSignal<AngularVelocity> getTurnVelocity(){
-        return turnEncoder.getVelocity(); 
+    public double getTurnVelocity(){
+        return turnEncoder.getVelocity().getValueAsDouble(); 
     }
 
-    public StatusSignal<Angle> getTurnAngle(){
-        return driveEncoder.getAbsolutePosition(); 
+    public double getDriveVelocity(){
+        return driveEncoder.getVelocity().getValueAsDouble(); 
+    }
+
+    public double getDrivePosition(){
+        return driveEncoder.getPosition().getValueAsDouble(); 
+    }
+
+    
+    //HELP IDK HOW TO DO CONVERSIONS BRUH 
+    public double  getTurnAngle(){
+        return turnEncoder.getAbsolutePosition().getValueAsDouble(); 
     }
     
-
+    public void resetEncoders(){
+        driveEncoder.setPosition(0); 
+    }
 
 }
