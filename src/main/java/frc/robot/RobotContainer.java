@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -40,11 +41,13 @@ public class RobotContainer {
 
   private void configureDefaultCmds(){
     drivetrain.setDefaultCommand(
-      drivetrain.drive(
+      new RunCommand(
+        () -> 
+        drivetrain.drive(
         () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
         () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-      );
+        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
+        drivetrain));
   }
 
   /**
@@ -66,13 +69,30 @@ public class RobotContainer {
     .whileTrue(
         drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse)
     );
+
     driveJoy.x()
     .whileTrue(
         drivetrain.driveDynamic(SysIdRoutine.Direction.kForward)
     );
+
     driveJoy.y()
     .whileTrue(
         drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse)
+    );
+
+    driveJoy.leftBumper()
+    .whileTrue(
+      drivetrain.setXCmd()
+    );
+
+    driveJoy.rightBumper()
+    .whileTrue(
+      drivetrain.resetGyro()
+    );
+
+    driveJoy.leftTrigger()
+    .whileTrue(
+      drivetrain.setStraightCmd()
     );
   }
 

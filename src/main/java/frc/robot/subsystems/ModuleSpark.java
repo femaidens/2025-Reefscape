@@ -22,6 +22,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 
@@ -38,11 +39,14 @@ public class ModuleSpark {
 
     
     private final double chassisAngularOffset;
+    double angleSetpoint = 0;
 
     private final PIDController drivePIDController;
     private final SimpleMotorFeedforward driveFFController;
     private final PIDController turnPIDController;
     private final SimpleMotorFeedforward turnFFController;
+
+    private SwerveModuleState desiredState = null;
 
     /**
      * Constructs a CANSpark module.
@@ -56,6 +60,7 @@ public class ModuleSpark {
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
         driveFFController = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
         turnFFController = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
 
         driveMotor = new SparkMax(driveID, MotorType.kBrushless);
@@ -87,13 +92,6 @@ public class ModuleSpark {
     }
 
     public void setDesiredState(SwerveModuleState state){
-        //conditional is found from https://github.com/SeanSun6814/FRC0ToAutonomous, but not entirely sure if we need it
-        if(Math.abs(state.speedMetersPerSecond) < 0.001){
-            driveMotor.set(0);
-            turnMotor.set(0);
-            return;
-        }
-        
         //possily change this optimize, since its different.
         state.optimize(state.angle);
         driveMotor.setVoltage(
@@ -101,6 +99,17 @@ public class ModuleSpark {
         );
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
         // SmartDashboard.putString("Swerve " + driveMotor.getDeviceId() + ":", state.toString());
+    }
+
+    public void setDesiredStateNoPID(SwerveModuleState state){
+        // maybe optimize is broken 
+        SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+        angleSetpoint = newState.angle.getRadians();
+        driveMotor.setVoltage(driveFFController.calculate(state.speedMetersPerSecond));
+        // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
+        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        SmartDashboard.putString("Swerve " + driveMotor.getDeviceId() + ":", state.toString());
+        desiredState = state;
     }
 
     /**
@@ -126,6 +135,10 @@ public class ModuleSpark {
     public SwerveModuleState getState(){
         return new SwerveModuleState(getDriveVelocity(), 
             new Rotation2d(getTurnAngle() - chassisAngularOffset));
+    }
+
+    public SwerveModuleState getDesiredState(){
+        return desiredState;
     }
 
     public SwerveModulePosition getSwerveModulePosition(){
@@ -170,6 +183,30 @@ public class ModuleSpark {
     public void resetEncoders(){
         driveEncoder.setPosition(0);
     }
+
+    public static SwerveModuleState optimizeTest(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        Rotation2d delta = desiredState.angle.minus(currentAngle);
+         if(Math.abs(delta.getRadians()) == Math.PI){
+            return new SwerveModuleState(
+                -desiredState.speedMetersPerSecond,
+                currentAngle);
+         }
+         else if (Math.abs(delta.getRadians()) > (3*Math.PI)/2) {
+            return new SwerveModuleState(
+                desiredState.speedMetersPerSecond,
+                desiredState.angle.rotateBy(Rotation2d.fromRadians(-(2*Math.PI - delta.getRadians()))));
+          }
+        else if (Math.abs(delta.getRadians()) > Math.PI/2) {
+          return new SwerveModuleState(
+              -desiredState.speedMetersPerSecond,
+              desiredState.angle.rotateBy(Rotation2d.fromRadians(-(Math.PI - delta.getRadians()))));
+        } 
+
+        else {
+          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+        }
+      }
+
 
 
 }
