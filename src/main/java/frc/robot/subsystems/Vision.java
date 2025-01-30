@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,27 +32,52 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 
 public class Vision extends SubsystemBase {
-  /** Creates a new Vision. */
   private final PhotonCamera[] cameras;
-  private final PhotonPoseEstimator poseEstimator;
+  private final PhotonPoseEstimator[] estimators;
+  private final PhotonPipelineResult[] lastResults;
   private Matrix<N3, N1> currentStdDevs;
 
   public Vision() {
-    cameras = new PhotonCamera[] {new PhotonCamera(VisionConstants.cameraName)};
-    poseEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
-  }
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    Optional<EstimatedRobotPose> visionEst = Optional.empty();
-    for (var change : camera.getAllUnreadResults()) {
-      visionEst = poseEstimator.update(change);
-      updateEstimationStdDevs(visionEst, change.getTargets());
+    cameras = new PhotonCamera[4];
+    estimators = new PhotonPoseEstimator[4];
+    lastResults = new PhotonPipelineResult[4];
+    for(int i = 0; i < cameras.length; i++) {
+      cameras[i] = new PhotonCamera("cam" + i);
+      PhotonPoseEstimator estimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
+      estimators[i] = estimator;
+      lastResults[i] = new PhotonPipelineResult();
     }
-    return visionEst;
   }
+  
+  private void updateEstimatedGlobalPoses() {
+
+    for (int i = 0; i < estimators.length; i++) {
+      var unread = cameras[i].getAllUnreadResults();
+      PhotonPipelineResult result;
+      if (unread.size() > 1) {
+        // gets the latest result if there are multiple unread results
+        int maxIndex = 0;
+        double max = 0;
+        int unreadLength = unread.size();
+        for (int ie = 0; ie < unreadLength; ie++) {
+          double temp = unread.get(ie).getTimestampSeconds();
+          if (temp > max) {
+            max = temp;
+            maxIndex = ie;
+          }
+        }
+        result = unread.get(maxIndex);
+        lastResults[i] = result;
+      } else if (unread.size() == 1) {
+        result = unread.get(0);
+        lastResults[i] = result;
+      } else {
+        result = lastResults[i];
+      }
+      var estimate = estimators[i].update(result);
+    }
+  }
+
 
   private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
@@ -58,7 +85,7 @@ public class Vision extends SubsystemBase {
       currentStdDevs = VisionConstants.kSingleTagStdDevs;
 
     } else {
-      // Pose present. Start running Heuristic
+      // Pose present
       var estStdDevs = VisionConstants.kSingleTagStdDevs;
       int numTags = 0;
       double avgDist = 0;
