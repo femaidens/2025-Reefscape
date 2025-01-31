@@ -27,12 +27,11 @@ public class Intake extends SubsystemBase {
   private final SparkMax intakeMotor;
   private final SparkMaxConfig config;
   private final DigitalInput beamBreak;
-  private final RelativeEncoder encoder;
+  
 
   public Intake() {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
-    encoder = intakeMotor.getEncoder();
     config = new SparkMaxConfig();
 
     config
