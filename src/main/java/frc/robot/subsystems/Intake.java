@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.*;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -34,6 +33,7 @@ public class Intake extends SubsystemBase {
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
     config = new SparkMaxConfig();
 
+    //Configure the motor
     config
         .inverted(true)
         .idleMode(IdleMode.kBrake);
