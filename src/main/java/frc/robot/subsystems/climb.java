@@ -29,11 +29,11 @@ public class climb extends SubsystemBase {
     return (int) (ticks / TICKS_PER_REVOLUTION) * 360;
   }
   
-    public Command climbFORWARDCommand () {
+    public Command climbFwdCmd () {
         return this.run (() -> climbFORWARD());
   }
 
-  public Command climbBACKWARDCommand (){
+  public Command climbBkwdCmd (){
         return this.run(() -> climbBACKWARD());
   }
 

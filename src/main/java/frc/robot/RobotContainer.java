@@ -45,11 +45,11 @@ public class RobotContainer {
   private void configureBindings() {
 
     xboxController.leftBumper()
-      .whileTrue(climb.climbFORWARDCommand());
+      .whileTrue(climb.climbFwdCmd());
   
 
     xboxController.rightBumper()
-      .whileTrue(climb.climbBACKWARDCommand());
+      .whileTrue(climb.climbBkwdCmd());
 
   }
 
