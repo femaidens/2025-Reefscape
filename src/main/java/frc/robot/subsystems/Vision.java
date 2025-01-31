@@ -35,12 +35,14 @@ public class Vision extends SubsystemBase {
   private final PhotonCamera[] cameras;
   private final PhotonPoseEstimator[] estimators;
   private final PhotonPipelineResult[] lastResults;
+  private final PoseEstimator poseEstimator;
   private Matrix<N3, N1> currentStdDevs;
 
   public Vision() {
     cameras = new PhotonCamera[4];
     estimators = new PhotonPoseEstimator[4];
     lastResults = new PhotonPipelineResult[4];
+    poseEstimator = new PoseEstimator<>(null, null, currentStdDevs, currentStdDevs)
     for(int i = 0; i < cameras.length; i++) {
       cameras[i] = new PhotonCamera("cam" + i);
       PhotonPoseEstimator estimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
@@ -90,7 +92,7 @@ public class Vision extends SubsystemBase {
       int numTags = 0;
       double avgDist = 0;
 
-      // Precalculation - see how many tags we found, and calculate an average-distance metric
+     // Precalculation - see how many tags we found, and calculate an average-distance metric
       for (var tgt : targets) {
         var tagPose = poseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
         if (tagPose.isEmpty()) {
