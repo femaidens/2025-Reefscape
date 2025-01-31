@@ -4,6 +4,8 @@ import frc.robot.Ports;
 import frc.robot.Constants.ClimbConstants;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants;
+
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +20,7 @@ public class climb extends SubsystemBase {
     leader = new TalonFX(Ports.LEADER_PORT);
     follower = new TalonFX(Ports.FOLLOWER_PORT);
     encoder = new Encoder(Ports.channelA, Ports.channelB);
+    leader.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public int get(){
@@ -26,19 +29,19 @@ public class climb extends SubsystemBase {
     return (int) (ticks / TICKS_PER_REVOLUTION) * 360;
   }
   
-    public Command climbUPCommand () {
-        return this.run (() -> climbUP());
+    public Command climbFORWARDCommand () {
+        return this.run (() -> climbFORWARD());
   }
 
-  public Command climbDOWNCommand (){
-        return this.run(() -> climbDOWN());
+  public Command climbBACKWARDCommand (){
+        return this.run(() -> climbBACKWARD());
   }
 
-  public void climbUP(){
+  public void climbFORWARD(){
     double currentRotation = get();
         if (currentRotation < Constants.ClimbConstants.MAXRotation) {
             leader.set (ClimbConstants.ClimbSpeed);
-            follower.set (ClimbConstants.ClimbSpeed);
+            follower.setNeutralMode(NeutralModeValue.Coast);
         } else {
             leader.set (0);
             follower.set (0);
@@ -46,11 +49,11 @@ public class climb extends SubsystemBase {
 
     }
 
-  public void climbDOWN (){
+  public void climbBACKWARD(){
         double currentRotation = get();
         if (currentRotation > Constants.ClimbConstants.MINRotation){
             leader.set(-ClimbConstants.ClimbSpeed);
-            follower.set(-ClimbConstants.ClimbSpeed);
+            follower.setNeutralMode(NeutralModeValue.Coast);
         } else {
             leader.set(0);
             follower.set(0);
