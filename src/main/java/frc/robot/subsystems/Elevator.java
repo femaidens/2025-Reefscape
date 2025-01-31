@@ -88,6 +88,7 @@ public class Elevator extends SubsystemBase {
     public static void runMotor(){
       elevatorMotorLeader.set(Constants.ElevatorConstants.motorSpeed);
       elevatorMotorFollower.resumeFollowerMode();
+      System.out.println(elevatorMotorFollower.isFollower());
     }
 
     /**
