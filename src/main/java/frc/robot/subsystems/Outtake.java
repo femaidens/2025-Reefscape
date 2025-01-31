@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -15,11 +19,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Ports;
 
 public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
+  private final SparkMaxConfig motorConfig;
   private final DigitalInput frontReciever;
   private final DigitalInput backReciever;
 
@@ -32,8 +38,18 @@ public class Outtake extends SubsystemBase {
 
     outtakeMotor = new SparkMax(Ports.OuttakePorts.OUTTAKE_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
+    //motor configs
+    motorConfig = new SparkMaxConfig();
+    motorConfig.smartCurrentLimit(OuttakeConstants.CURRENT_LIMIT);
+    motorConfig.idleMode(IdleMode.kBrake); //prevent coral from slipping out of outtake
+    outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
+  
     frontReciever = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECIEVER);
     backReciever = new DigitalInput(Ports.BeamBreakPorts.BACK_RECIEVER);
+    
+   
+    
 
     // ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort, Ports.UltrasonicPorts.UltrasonicEchoPort);
     // ultrasonicPID = new PIDController(
@@ -46,8 +62,6 @@ public class Outtake extends SubsystemBase {
   }
 
   /* Commands */
-
-
   /**
    * 
    * Positive velocity = intake! 
@@ -55,9 +69,9 @@ public class Outtake extends SubsystemBase {
    * @return command that sets the speed of the outtake motor to take in a coral 
    */
 
-  public Command setIntakeCoralSpeedCmd() {
-    return this.run(()-> setIntakeCoralSpeed());
-  }
+   public Command setIntakeCoralSpeed() { //sets velocity
+     return this.run(()-> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+    }
 
   /**
    * Negative velocity = outtake!
@@ -65,30 +79,25 @@ public class Outtake extends SubsystemBase {
    * @return a command that sets the speed of the outtake motor to release a coral
    */
 
-  public Command setOuttakeCoralSpeedCmd() {
-    return this.run(()-> setOuttakeCoralSpeed());
+  public Command setOuttakeCoralSpeed() {
+  return this.run(()-> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
   }
 
-  public Command setVoltageCmd() {
-    return this.run(()-> setVoltage());
+  public Command removeAlgae() {
+    return this.run(()-> outtakeMotor.set(OuttakeConstants.REMOVE_ALGAE_SPEED));
   }
 
-  public Command stopMotorCmd() {
-    return this.runOnce(()-> stopMotor());
-  }
-  
-
-  public void setIntakeCoralSpeed() { //sets velocity
-    outtakeMotor.set(Constants.OuttakeConstants.motorSpeed);
+  public Command setVoltage() {
+    return this.run(()-> outtakeMotor.setVoltage(OuttakeConstants.VOLTAGE));
   }
 
-  public void setOuttakeCoralSpeed() {
-    outtakeMotor.set(-Constants.OuttakeConstants.motorSpeed); //negative value outtakes the coral
+  public Command stopMotor() {
+    return this.run(()-> outtakeMotor.setVoltage(0));
   }
 
   /**
    * 
-   * @return true if coral is at the right position in outtake
+   * @return true if coral is at the right position in outtake 
    */
 
   public boolean isCoral() {
@@ -98,46 +107,12 @@ public class Outtake extends SubsystemBase {
       return false;
   }
 
-  public void setVoltage() {
-    outtakeMotor.setVoltage(Constants.OuttakeConstants.voltage);
-  }
-
-  public void stopMotor() {
-    outtakeMotor.setVoltage(0);
-  }
-
-  /* COMMANDS (NO METHODS) */
-  // public Command setIntakeCoralSpeed() {
-  //   return this.run(()-> outtakeMotor.set(Constants.OutakeConstants.motorSpeed));
-  // }
-
-  // public Command setOuttakeCoralSpeed() {
-  //   return this.run(()-> outtakeMotor.set(-Constants.OutakeConstants.motorSpeed));
-  // }
-
-  // public Command setVoltage() {
-  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
-  // }
-
-  // public Command stopMotor() {
-  //   return this.run(()-> outtakeMotor.setVoltage(Constants.OutakeConstants.voltage));
-  // }
-
    // not using ultrasonic anymore ;( 
   // public double getDistance() {
   //   double measurement = ultrasonic.getRangeInches();
   //   double filteredMeasurement = filter.calculate(measurement);
   //   return ultrasonicPID.calculate(filteredMeasurement);
   // }
-
-  // this might not work
-  // public void outtakeCoral() {
-  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
-  //     if(ultrasonicPID.atSetpoint()) {
-  //       runMotor();
-  //     }
-  //     stopMotor();
-  //   }
 
   /**
    * 
@@ -160,14 +135,7 @@ public class Outtake extends SubsystemBase {
 
     //   return false;
     // }
-  // do not need
-  // public void intakeAlgae() {
-  //   ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
-  //     if(ultrasonicPID.atSetpoint()) {
-  //       stopMotor();
-  //     }
-  //     reverseMotor();
-  // }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

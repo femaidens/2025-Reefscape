@@ -12,21 +12,23 @@ import frc.robot.subsystems.Outtake;
 public class CoralTransition{
   Intake intake; 
   Outtake outtake; 
+  //Elevator elevator;
 
-  public CoralTransition(Intake intake, Outtake outtake){
+  public CoralTransition(Intake intake, Outtake outtake ){
     this.intake = intake; 
     this.outtake = outtake; 
 
   }
 
 
-  public Command moveCoralToOuttake(){
-    return Commands.waitUntil(intake::isBeamBroken)
-          .andThen(intake.runMotor())
-          .alongWith(outtake.setIntakeCoralSpeedCmd())
+  public Command moveCoralToOuttake(){ 
+    return Commands.waitUntil(intake::isBeamBroken) // need to add elevator code 
+          //.andThen(elevator.setLevel()) maybe?
+          .andThen(intake.runMotor()) 
+          .alongWith(outtake.setIntakeCoralSpeed())
           .until(outtake::isCoral)
           .andThen(intake.stopMotorCmd())
-          .alongWith(outtake.stopMotorCmd());
+          .alongWith(outtake.stopMotor());
     
   }
 
