@@ -12,13 +12,13 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 // import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
+//import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+//import com.ctre.phoenix6.hardware.TalonFX;
 
 
 
@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
  * 
  */
 
-  private static TalonFX elevatorMotor;
+  private static SparkMax elevatorMotor;
   private static DigitalInput botLimitSwitch;
   private static ProfiledPIDController elevatorPID;
   private static CANcoder elevatorEncoder;
@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase {
    
     public Elevator() {
   
-      elevatorMotor = new TalonFX(Ports.ElevatorPorts.MOTOR_PORT);
+      elevatorMotor = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
   
       botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
   
