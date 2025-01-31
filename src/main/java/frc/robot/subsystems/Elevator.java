@@ -4,9 +4,15 @@
 
 package frc.robot.subsystems;
 
+import java.io.ObjectInputFilter.Config;
+
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.*;
-import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 // import edu.wpi.first.math.controller.PIDController;
@@ -31,15 +37,17 @@ public class Elevator extends SubsystemBase {
  * 
  */
 
-  private static SparkMax elevatorMotor;
+  private static SparkMax elevatorMotorLeader;
+  private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static ProfiledPIDController elevatorPID;
   private static CANcoder elevatorEncoder;
   private static ElevatorFeedforward ff;
    
     public Elevator() {
-  
-      elevatorMotor = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+      elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+      elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+
   
       botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
   
@@ -57,12 +65,29 @@ public class Elevator extends SubsystemBase {
           Constants.ElevatorConstants.FeedForwardConstants.kG, 
           Constants.ElevatorConstants.FeedForwardConstants.kV
         );
+
+        SparkMaxConfig config = new SparkMaxConfig();
+
+          config
+          .inverted(true)
+          .idleMode(IdleMode.kBrake);
+          config.encoder
+          .positionConversionFactor(1000)
+          .velocityConversionFactor(1000);
+          config.closedLoop
+          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .pid(1.0, 0.0, 0.0);
+          config
+          .follow(elevatorMotorLeader, true);
+
+          elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     /**
      * run the motor
      */
     public static void runMotor(){
-      elevatorMotor.set(Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorLeader.set(Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorFollower.resumeFollowerMode();
     }
 
     /**
@@ -70,21 +95,26 @@ public class Elevator extends SubsystemBase {
      */
     public static void reverseRunMotor(){
       
-      elevatorMotor.set(-Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorLeader.set(-Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorFollower.resumeFollowerMode();
+
     }
     /**
      * stops the motor from running
      */
     public static void stopMotor(){
-      elevatorMotor.set(0);
+      elevatorMotorLeader.set(0);
+      elevatorMotorFollower.resumeFollowerMode();
+
     }
   
     /**
      * sets motor voltage using calculations from PID and FF values 
      */
     public static void elevatorPID(double setpoint){
-      elevatorMotor.setVoltage(
+      elevatorMotorLeader.setVoltage(
         elevatorPID.calculate( elevatorEncoder.getPosition().getValueAsDouble() ) +  ff.calculate(elevatorPID.getSetpoint().velocity, setpoint));
+        elevatorMotorFollower.resumeFollowerMode();
     }
 
     /**
