@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class climb extends SubsystemBase {
   private final TalonFX leader;
