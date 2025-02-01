@@ -75,10 +75,6 @@ public class Intake extends SubsystemBase {
       return this.run(() -> stopMotorCmd());
   }
 
-  //Something else
-  public Command intakeAlgae(){
-    return this.run(() -> intakeMotor.set(IntakeConstants.ALGAESPEED));
-  }
 
   @Override
   public void periodic() {

@@ -18,7 +18,6 @@ public final class Constants {
   }
   public static class IntakeConstants{
     public static final double MOTORSPEED = 0.5;
-    public static final double ALGAESPEED = 0.6;
     public static final double VOLTAGE = 0.0;
     public static final double VELOCITY_CONVERSION_FACTOR = 1000.0;
     public static final double POSITION_CONVERSION_FACTOR = 1000.0;
