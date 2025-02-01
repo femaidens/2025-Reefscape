@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
-
+    config.smartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isBeamBroken() {
-    return !beamBreak.get(); // true = broke, false = unbroken
+    return beamBreak.get(); 
   }
 
   public Command intakeCoral() {
@@ -75,6 +75,10 @@ public class Intake extends SubsystemBase {
       return this.run(() -> stopMotorCmd());
   }
 
+  //I feel like I forgot smth with the algae...
+  public Command intakeAlgae(){
+    return this.run(() -> intakeMotor.set(IntakeConstants.ALGAESPEED));
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
