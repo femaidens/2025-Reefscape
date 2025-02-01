@@ -6,7 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.subsystems.Drive;
+// import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Algae_Intake;
 
 import java.util.function.DoubleSupplier;
 
@@ -23,7 +24,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  Drive drivetrain = new Drive();
+  // Drive drivetrain = new Drive();
+  Algae_Intake algae_intake = new Algae_Intake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -38,12 +40,12 @@ public class RobotContainer {
   }
 
   private void configureDefaultCmds(){
-    drivetrain.setDefaultCommand(
-      drivetrain.drive(
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-      );
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.drive(
+    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+    //   );
   }
 
   /**
