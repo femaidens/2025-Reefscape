@@ -49,12 +49,11 @@ public class RobotContainer {
 
     xboxController.rightBumper()
       .whileTrue(climb.climbBkwdCmd());
+    
+    xboxController.leftTrigger()
+      .whileTrue(climb.pulleySystemCmd());
 
-    xboxController.a()
-      .whileTrue(climb.setBrakeModeCmd());
-
-    xboxController.b()
-      .whileTrue(climb.setCoastModeCmd());
+    
   }
 
   /**
