@@ -21,6 +21,10 @@ public final class Constants {
   }
   public static class ElevatorConstants {
     public static final double motorSpeed = 0;
+    public static final double POSITIONCONVERSIONFACTOR = 1000;
+    public static final double VELOCITYCONVERSIONFACTOR = 1000;
+
+
     public static class PIDConstants {
       public static final double kP = 0;
       public static final double kI = 0;
@@ -28,6 +32,7 @@ public final class Constants {
       public static final double kMaxVelocity = 0;
       public static final double kMaxAcceleration = 0;
       public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+    
     }
 
     public static class FeedForwardConstants {

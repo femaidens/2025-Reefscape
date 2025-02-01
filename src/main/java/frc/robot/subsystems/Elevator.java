@@ -71,16 +71,20 @@ public class Elevator extends SubsystemBase {
           config
           .inverted(true)
           .idleMode(IdleMode.kBrake);
+
           config.encoder
-          .positionConversionFactor(1000)
-          .velocityConversionFactor(1000);
-          config.closedLoop
-          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-          .pid(1.0, 0.0, 0.0);
+          .positionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR)
+          .velocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+
+          // config.closedLoop
+          // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
+          //probably unneeded 
           config
-          .follow(elevatorMotorLeader, true);
+          .follow(elevatorMotorLeader, false);
 
           elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+          elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     /**
      * run the motor
