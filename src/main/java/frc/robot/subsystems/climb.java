@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Ports;
-import frc.robot.Constants.ClimbConstants;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants;
-
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,14 +32,33 @@ public class climb extends SubsystemBase {
           double currentRotation = get();
           if (currentRotation < Constants.ClimbConstants.MAXRotation) {
             leader.set (ClimbConstants.ClimbSpeed);
+        return this.run (() -> climbFORWARD());
+  }
+
+    public Command setBrakeModeCmd(){
+      return this.run(() -> setBrakeMode());
+    }
+
+    public Command setCoastModeCmd() {
+      return this.run(()-> setCoastMode());
+    }
+
+  public Command climbBkwdCmd (){
+        return this.run(() -> climbBACKWARD());
+  }
+
+  public void climbFORWARD(){
+    double currentRotation = get();
+        if (currentRotation < Constants.ClimbConstants.MAXRotation) {
+            leader.setNeutralMode(NeutralModeValue.Brake);
             follower.setNeutralMode(NeutralModeValue.Coast);
          } 
          else {
             leader.set (0);
             follower.set (0);
         }
-        });
-  }
+        };
+  
 
   public Command climbBkwdCmd (){
         return this.run(() -> {
@@ -56,6 +73,7 @@ public class climb extends SubsystemBase {
           }
         });
   }
+
 
 
   public void stopMotors(){
