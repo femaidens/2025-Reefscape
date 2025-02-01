@@ -50,7 +50,7 @@ public class RobotContainer {
     xboxController.rightBumper()
       .whileTrue(climb.climbBkwdCmd());
     
-    xboxController.leftTrigger()
+    xboxController.rightTrigger()
       .whileTrue(climb.pulleySystemCmd());
 
     
