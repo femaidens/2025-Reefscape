@@ -32,6 +32,9 @@ public class DriveConstants {
         public static final double FRONT_RIGHT_ANGOFFSET = 0;
         public static final double REAR_LEFT_ANGOFFSET = Math.PI;
         public static final double REAR_RIGHT_ANGOFFSET = Math.PI / 2; 
+        // CHANGE THIS FOR TALONS! 
+        public static final String CANBUS = "rio"; 
+        
         
         public class PID {
             public static final double P = 0.1;

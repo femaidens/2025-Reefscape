@@ -44,11 +44,14 @@ public class ModuleKraken {
             //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
             public ModuleKraken(int driveID, int turnID, double chassisAngularOffset){
                 this.chassisAngularOffset = chassisAngularOffset; 
-        
-                driveMotor = new TalonFX(driveID, "rio"); 
+                
+
+                // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
+                // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
+                driveMotor = new TalonFX(driveID, Translation.CANBUS); 
                 configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
         
-                turnMotor = new TalonFX(turnID, "rio"); 
+                turnMotor = new TalonFX(turnID, Translation.CANBUS); 
                 configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
         
                 drivePIDController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
@@ -56,9 +59,9 @@ public class ModuleKraken {
     
                 driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
                 turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
-        
-                driveEncoder = new CANcoder(0, "rio"); 
-                turnEncoder = new CANcoder(0,  "rio"); 
+                // DEVICE IDS SHOULD BE CHANGED!! 
+                driveEncoder = new CANcoder(0, Translation.CANBUS); 
+                turnEncoder = new CANcoder(0,  Translation.CANBUS); 
                  
             }
         
@@ -134,6 +137,7 @@ public class ModuleKraken {
     public void resetEncoders(){
         driveEncoder.setPosition(0); 
     }
+
     public static SwerveModuleState optimizeTest(SwerveModuleState desiredState, Rotation2d currentAngle) {
         Rotation2d delta = desiredState.angle.minus(currentAngle);
          if(Math.abs(delta.getRadians()) == Math.PI){
