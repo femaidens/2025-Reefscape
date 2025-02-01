@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -14,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,6 +35,8 @@ public class Algae_Intake extends SubsystemBase {
 
   private static SimpleMotorFeedforward intakeFF;
 
+  private static RelativeEncoder pivotEncoder;
+
   public Algae_Intake() {
     
     intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
@@ -43,6 +47,8 @@ public class Algae_Intake extends SubsystemBase {
 
     pivotConfig = new SparkMaxConfig();
     rollerConfig = new SparkMaxConfig();
+
+    pivotEncoder = intakePivotFollower.getEncoder();
 
     pivotConfig
       .inverted(true)
@@ -80,20 +86,37 @@ public class Algae_Intake extends SubsystemBase {
       Constants.AlgaeIntakeConstants.FFConstants.kV, 
       Constants.AlgaeIntakeConstants.FFConstants.kA);
   }
-
+  /**
+   * use PID in order to set angle of algae intake to score processor
+   */
+  public static void setPID(double setpoint){
+    intakePivotLeader.setVoltage(
+      intakePID.calculate(pivotEncoder.getPosition()) +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
+    intakePivotFollower.resumeFollowerMode();
+  }
+/**
+ * 
+ * @return command to run rollers
+ */
   public Command runRollers(){
     return this.run( () -> intakeRollerLeader.setVoltage(Constants.AlgaeIntakeConstants.pivotVoltage));
   }
 
+  /**
+   * 
+   * @return command to stop rollers
+   */
   public Command stopRollers() {
     return this.run(() -> intakeRollerLeader.setVoltage(0));
   }
 
-  
+  public Command setProcessor() {
+    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.pivotSetpoint));
+  }
 
-  
-
-
+  public Command intakeAlgae() {
+    return this.run(() -> this.setPID(0));
+  }
   
 
   @Override

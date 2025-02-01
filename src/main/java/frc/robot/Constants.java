@@ -22,7 +22,8 @@ public final class Constants {
       public static double POSITIONCONVERSIONFACTOR = 1000;
       public static double VELOCITYCONVERSIONFACTOR = 1000;
       public static double pivotVoltage = 10;
-      
+
+      public static double pivotSetpoint = 0;
 
       public class PIDConstants {
         public static double kP = 0;
