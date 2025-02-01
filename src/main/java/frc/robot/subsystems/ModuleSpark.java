@@ -98,7 +98,7 @@ public class ModuleSpark {
         state.optimize(state.angle);
         driveMotor.setVoltage(
             driveFFController.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond)
-        );
+        ); 
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
         // SmartDashboard.putString("Swerve " + driveMotor.getDeviceId() + ":", state.toString());
     }

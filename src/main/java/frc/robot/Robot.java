@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj.Joystick;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private DriveSim bobot = new DriveSim();
-  private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kJoystickPort);
+  // private DriveSim bobot = new DriveSim();
+  // private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kJoystickPort);
 
 
   private final RobotContainer m_robotContainer;
@@ -101,15 +101,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    if (m_joystick.getTrigger()) {
-      // Here, we set the constant setpoint of 0.75 meters.
-      bobot.driveForward();
+    // if (m_joystick.getTrigger()) {
+    //   // Here, we set the constant setpoint of 0.75 meters.
+    //   bobot.driveForward();
 
-    } else {
-      // Otherwise, we update the setpoint to 0.
-      bobot.close();
+    // } else {
+    //   // Otherwise, we update the setpoint to 0.
+    //   bobot.close();
 
-    }
+    // }
   }
 
   @Override

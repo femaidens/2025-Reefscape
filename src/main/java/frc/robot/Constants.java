@@ -20,8 +20,4 @@ public final class Constants {
     public static final int kJoystickPort = 0;
 
   }
-  public class ModuleSimConstants{
-    public static final double loopPeriodSecs = 0;
-    public static final double MAX_SPEED = 0;
-  }
 }
