@@ -10,12 +10,15 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Translation.FF;
 import frc.robot.subsystems.DriveConstants.Translation.PID;
 import frc.robot.subsystems.DriveConstants.Turn;
 
@@ -28,36 +31,61 @@ public class ModuleKraken {
     private final CANcoder driveEncoder;
     private final CANcoder turnEncoder; 
     //PID? 
-    private PhoenixPIDController drivePidController; 
-    private PhoenixPIDController turnPidController; 
-
-    private double chassisAngularOffset; 
-
+    private final PhoenixPIDController drivePIDController; 
+    private final PhoenixPIDController turnPIDController;
     
-    // IDK what canbus we use so i just set it to the robot rio for now. 
-    //THIS SHOULD BE SUBJECT TO CHANGE?! 
-    public ModuleKraken(int driveID, int turnID, double chassisAngularOffset){
-        this.chassisAngularOffset = chassisAngularOffset; 
+    private final SimpleMotorFeedforward driveFF;
+    private final SimpleMotorFeedforward turnFF; 
 
-        driveMotor = new TalonFX(driveID, "rio"); 
-        configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
-
-        turnMotor = new TalonFX(turnID, "rio"); 
-        configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
-
-        drivePidController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
-        turnPidController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
-
-        driveEncoder = new CANcoder(0, "rio"); 
-        turnEncoder = new CANcoder(0,  "rio"); 
-         
+    private final double chassisAngularOffset;
+    private SwerveModuleState desiredState = null; 
+        double angleSetpoint = 0; 
+            // IDK what canbus we use so i just set it to the robot rio for now. 
+            //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
+            public ModuleKraken(int driveID, int turnID, double chassisAngularOffset){
+                this.chassisAngularOffset = chassisAngularOffset; 
+        
+                driveMotor = new TalonFX(driveID, "rio"); 
+                configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
+        
+                turnMotor = new TalonFX(turnID, "rio"); 
+                configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
+        
+                drivePIDController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
+                turnPIDController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+    
+                driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
+                turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
+        
+                driveEncoder = new CANcoder(0, "rio"); 
+                turnEncoder = new CANcoder(0,  "rio"); 
+                 
+            }
+        
+        
+            public SwerveModuleState getState(){
+                return new SwerveModuleState(getDriveVelocity(),
+                            new Rotation2d(getTurnAngle()-chassisAngularOffset));
+            }
+        
+            public void setDesiredState(SwerveModuleState state){
+                state.optimize(state.angle);
+                driveMotor.setVoltage(
+                driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond,0.1)
+            );
+            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
+        }
+        public void setDesiredStateNoPID(SwerveModuleState state){
+            // maybe optimize is broken 
+            SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+            angleSetpoint = newState.angle.getRadians();
+            driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
+            // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
+            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
+            SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
+            desiredState = state;
     }
 
-
-    public SwerveModuleState getState(){
-        return new SwerveModuleState(getDriveVelocity(),
-                    new Rotation2d(getTurnAngle()-chassisAngularOffset));
-    }
 
     public SwerveModulePosition getSwerveModulePosition(){
         return new SwerveModulePosition(getDrivePosition(), getState().angle); 
@@ -106,5 +134,27 @@ public class ModuleKraken {
     public void resetEncoders(){
         driveEncoder.setPosition(0); 
     }
+    public static SwerveModuleState optimizeTest(SwerveModuleState desiredState, Rotation2d currentAngle) {
+        Rotation2d delta = desiredState.angle.minus(currentAngle);
+         if(Math.abs(delta.getRadians()) == Math.PI){
+            return new SwerveModuleState(
+                -desiredState.speedMetersPerSecond,
+                currentAngle);
+         }
+         else if (Math.abs(delta.getRadians()) > (3*Math.PI)/2) {
+            return new SwerveModuleState(
+                desiredState.speedMetersPerSecond,
+                desiredState.angle.rotateBy(Rotation2d.fromRadians(-(2*Math.PI - delta.getRadians()))));
+          }
+        else if (Math.abs(delta.getRadians()) > Math.PI/2) {
+          return new SwerveModuleState(
+              -desiredState.speedMetersPerSecond,
+              desiredState.angle.rotateBy(Rotation2d.fromRadians(-(Math.PI - delta.getRadians()))));
+        } 
+
+        else {
+          return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
+        }
+      }
 
 }
