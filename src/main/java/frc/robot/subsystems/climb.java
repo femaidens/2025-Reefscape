@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
 import frc.robot.Ports;
-import frc.robot.Constants.ClimbConstants;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants;
-
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +31,14 @@ public class climb extends SubsystemBase {
         return this.run (() -> climbFORWARD());
   }
 
+    public Command setBrakeModeCmd(){
+      return this.run(() -> setBrakeMode());
+    }
+
+    public Command setCoastModeCmd() {
+      return this.run(()-> setCoastMode());
+    }
+
   public Command climbBkwdCmd (){
         return this.run(() -> climbBACKWARD());
   }
@@ -40,7 +46,7 @@ public class climb extends SubsystemBase {
   public void climbFORWARD(){
     double currentRotation = get();
         if (currentRotation < Constants.ClimbConstants.MAXRotation) {
-            leader.set (ClimbConstants.ClimbSpeed);
+            leader.setNeutralMode(NeutralModeValue.Brake);
             follower.setNeutralMode(NeutralModeValue.Coast);
         } else {
             leader.set (0);
@@ -52,14 +58,21 @@ public class climb extends SubsystemBase {
   public void climbBACKWARD(){
         double currentRotation = get();
         if (currentRotation > Constants.ClimbConstants.MINRotation){
-            leader.set(-ClimbConstants.ClimbSpeed);
-            follower.setNeutralMode(NeutralModeValue.Coast);
+          leader.setNeutralMode(NeutralModeValue.Brake);
+          follower.setNeutralMode(NeutralModeValue.Coast);
         } else {
             leader.set(0);
             follower.set(0);
         }
     }
-  
+
+  public void setBrakeMode(){
+    leader.setNeutralMode(NeutralModeValue.Brake);
+  }
+
+  public void setCoastMode(){
+    follower.setNeutralMode(NeutralModeValue.Coast);
+  }
 
   public void stopMotors(){
     leader.set(0);
