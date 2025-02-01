@@ -21,10 +21,9 @@ import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Translation.FF;
 import frc.robot.subsystems.DriveConstants.Translation.PID;
 import frc.robot.subsystems.DriveConstants.Turn;
-import monologue.Logged;
 
 
-public class ModuleKraken implements Logged {
+public class ModuleKraken {
     private final TalonFX driveMotor; 
     private final TalonFX turnMotor; 
     
