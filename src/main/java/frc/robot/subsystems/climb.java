@@ -30,36 +30,33 @@ public class climb extends SubsystemBase {
   }
   
     public Command climbFwdCmd () {
-        return this.run (() -> climbFORWARD());
-  }
-
-  public Command climbBkwdCmd (){
-        return this.run(() -> climbBACKWARD());
-  }
-
-  public void climbFORWARD(){
-    double currentRotation = get();
-        if (currentRotation < Constants.ClimbConstants.MAXRotation) {
+        return this.run (() -> {
+          double currentRotation = get();
+          if (currentRotation < Constants.ClimbConstants.MAXRotation) {
             leader.set (ClimbConstants.ClimbSpeed);
             follower.setNeutralMode(NeutralModeValue.Coast);
-        } else {
+         } 
+         else {
             leader.set (0);
             follower.set (0);
         }
+        });
+  }
 
-    }
-
-  public void climbBACKWARD(){
-        double currentRotation = get();
-        if (currentRotation > Constants.ClimbConstants.MINRotation){
-            leader.set(-ClimbConstants.ClimbSpeed);
+  public Command climbBkwdCmd (){
+        return this.run(() -> {
+          double currentRotation = get();
+          if (currentRotation < Constants.ClimbConstants.MAXRotation) {
+            leader.set (ClimbConstants.ClimbSpeed);
             follower.setNeutralMode(NeutralModeValue.Coast);
-        } else {
-            leader.set(0);
-            follower.set(0);
-        }
-    }
-  
+          }  
+          else {
+            leader.set (0);
+            follower.set (0);
+          }
+        });
+  }
+
 
   public void stopMotors(){
     leader.set(0);
