@@ -75,10 +75,11 @@ public class Intake extends SubsystemBase {
       return this.run(() -> stopMotorCmd());
   }
 
-  //I feel like I forgot smth with the algae...
+  //Something else
   public Command intakeAlgae(){
     return this.run(() -> intakeMotor.set(IntakeConstants.ALGAESPEED));
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
