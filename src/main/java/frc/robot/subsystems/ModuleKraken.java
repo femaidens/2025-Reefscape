@@ -21,14 +21,15 @@ import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Translation.FF;
 import frc.robot.subsystems.DriveConstants.Translation.PID;
 import frc.robot.subsystems.DriveConstants.Turn;
+import monologue.Logged;
 
 
-public class ModuleKraken {
+public class ModuleKraken implements Logged {
     private final TalonFX driveMotor; 
     private final TalonFX turnMotor; 
     
     // This is both an absolute and relative encoder 
-    private final CANcoder driveEncoder;
+    // private final CANcoder driveEncoder;
     private final CANcoder turnEncoder; 
     //PID? 
     private final PhoenixPIDController drivePIDController; 
@@ -38,73 +39,66 @@ public class ModuleKraken {
     private final SimpleMotorFeedforward turnFF; 
 
     private final double chassisAngularOffset;
-    private SwerveModuleState desiredState = null; 
-        double angleSetpoint = 0; 
-            // IDK what canbus we use so i just set it to the robot rio for now. 
-            //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
-            public ModuleKraken(int driveID, int turnID, double chassisAngularOffset){
-                this.chassisAngularOffset = chassisAngularOffset; 
-                
 
-                // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
-                // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
-                driveMotor = new TalonFX(driveID, Translation.CANBUS); 
-                configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
+
+    private SwerveModuleState desiredState = null; 
+    double angleSetpoint = 0; 
+
+    // IDK what canbus we use so i just set it to the robot rio for now. 
+    //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
+    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset){
+        this.chassisAngularOffset = chassisAngularOffset;
+
+        // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
+        // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
+        driveMotor = new TalonFX(driveID, Translation.CANBUS); 
+        configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
+
+        turnMotor = new TalonFX(turnID, Translation.CANBUS); 
+        configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
+
+        drivePIDController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
+        turnPIDController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+
+        driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
+        turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
+        // DEVICE IDS SHOULD BE CHANGED!! 
+
+        turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
+    }
         
-                turnMotor = new TalonFX(turnID, Translation.CANBUS); 
-                configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
         
-                drivePIDController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
-                turnPIDController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
-    
-                driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
-                turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
-                // DEVICE IDS SHOULD BE CHANGED!! 
-                driveEncoder = new CANcoder(0, Translation.CANBUS); 
-                turnEncoder = new CANcoder(0,  Translation.CANBUS); 
-                 
-            }
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(getDriveVelocity(),
+                    new Rotation2d(getTurnAngle()-chassisAngularOffset));
+    }
         
-        
-            public SwerveModuleState getState(){
-                return new SwerveModuleState(getDriveVelocity(),
-                            new Rotation2d(getTurnAngle()-chassisAngularOffset));
-            }
-        
-            public void setDesiredState(SwerveModuleState state){
-                state.optimize(state.angle);
-                driveMotor.setVoltage(
-                driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond,0.1)
-            );
-            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
-        }
-        public void setDesiredStateNoPID(SwerveModuleState state){
-            // maybe optimize is broken 
-            SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
-            angleSetpoint = newState.angle.getRadians();
-            driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
-            // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
-            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
-            SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
-            desiredState = state;
+    public void setDesiredState(SwerveModuleState state){
+        state.optimize(state.angle);
+        driveMotor.setVoltage(
+        driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond,0.1));
+        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
     }
 
-
-    public SwerveModulePosition getSwerveModulePosition(){
-        return new SwerveModulePosition(getDrivePosition(), getState().angle); 
+    public void setDesiredStateNoPID(SwerveModuleState state){
+        // maybe optimize is broken 
+        SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+        angleSetpoint = newState.angle.getRadians();
+        driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
+        // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
+        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
+        SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
+        desiredState = state;
     }
 
     /**
      * This configures a TalonFX motor's nuetral mode to brake and sets the current limit!!! 
      * @param 
      */
-
-     public static void configureTalon(TalonFX motor, int currentLimit){
+    public static void configureTalon(TalonFX motor, int currentLimit){
         motor.setNeutralMode(NeutralModeValue.Brake); 
         motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit)); 
-     }
-
-    
+    }
 
     public void setDriveVoltage(double volts){
         driveMotor.setVoltage(volts); 
@@ -115,27 +109,37 @@ public class ModuleKraken {
     }
    
     // STILL HAVE TO DO THE CONVERSION FACTORS AND STUFF 
+
+    public SwerveModulePosition getSwerveModulePosition(){
+        return new SwerveModulePosition(getDrivePosition(), getState().angle); 
+    }
+
+    public SwerveModuleState getDesiredState(){
+        return desiredState;
+    }
   
     public double getTurnVelocity(){
-        return turnEncoder.getVelocity().getValueAsDouble(); 
+        return turnEncoder.getVelocity().getValueAsDouble()  * Turn.VEL_CONVERSION_FACTOR; 
     }
 
+    //changed cancoder to motor's relative encoder
     public double getDriveVelocity(){
-        return driveEncoder.getVelocity().getValueAsDouble(); 
+        return driveMotor.getVelocity().getValueAsDouble() * Translation.VEL_CONVERSION_FACTOR; 
     }
 
+    //chaned cancoder to motor's relative encoder
     public double getDrivePosition(){
-        return driveEncoder.getPosition().getValueAsDouble(); 
+        return driveMotor.getPosition().getValueAsDouble() * Translation.POS_CONVERSION_FACTOR; 
     }
 
     
     //HELP IDK HOW TO DO CONVERSIONS BRUH 
-    public double  getTurnAngle(){
-        return turnEncoder.getAbsolutePosition().getValueAsDouble(); 
+    public double getTurnAngle(){
+        return turnEncoder.getAbsolutePosition().getValueAsDouble() * Turn.POS_CONVERSION_FACTOR; 
     }
     
     public void resetEncoders(){
-        driveEncoder.setPosition(0); 
+        driveMotor.setPosition(0); 
     }
 
     public static SwerveModuleState optimizeTest(SwerveModuleState desiredState, Rotation2d currentAngle) {
@@ -159,6 +163,6 @@ public class ModuleKraken {
         else {
           return new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle);
         }
-      }
+    }
 
 }

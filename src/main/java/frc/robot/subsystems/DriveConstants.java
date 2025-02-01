@@ -12,20 +12,21 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
     //**************MODULE CONSTANTS******************//
     public class Translation {
-        public static final double DRIVE_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.FREE_SPEED_RPM / 60;
-        public static final double WHEEL_DIAMETER = 0.0762; // meters
+        public static final double GEAR_RATIO = 6.75;
+        public static final double DRIVE_MOTOR_FREE_SPEED = Units.feetToMeters(15);
+        public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
         public static final int DRIVE_MOTOR_PINION_TEETH = 14;
 
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
         public static final double DRIVE_MOTOR_REDUCTION = (45.0 * 22) / (DRIVE_MOTOR_PINION_TEETH * 15);
-        public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVE_MOTOR_FREE_SPEED_RPS * WHEEL_CIRCUMFERENCE) / DRIVE_MOTOR_REDUCTION;
+        public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVE_MOTOR_FREE_SPEED * WHEEL_CIRCUMFERENCE) / DRIVE_MOTOR_REDUCTION;
 
 
         //modules stuff
         public static final int CURRENT_LIMIT = 35;
-        public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / DRIVE_MOTOR_REDUCTION; // meters;
-        public static final double VEL_CONVERSION_FACTOR = ((WHEEL_DIAMETER * Math.PI) / DRIVE_MOTOR_REDUCTION) / 60.0; // meters per second
+        public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters;
+        public static final double VEL_CONVERSION_FACTOR = ((WHEEL_DIAMETER * Math.PI) / GEAR_RATIO); // meters per second
         // public static final int AVERAGE_DEPTH = 0;
 
         public static final double FRONT_LEFT_ANGOFFSET = -Math.PI / 2;
@@ -48,8 +49,8 @@ public class DriveConstants {
     }
     public class Turn {
         public static final int CURRENT_LIMIT = 35;
-        public static final double POS_CONVERSION_FACTOR = 0;
-        public static final double VEL_CONVERSION_FACTOR = 0;
+        public static final double POS_CONVERSION_FACTOR = (2*Math.PI)/(150/7);
+        public static final double VEL_CONVERSION_FACTOR = (2*Math.PI)/(150/7);
         public static final int AVERAGE_DEPTH = 0;
 
         public class PID {
@@ -66,8 +67,8 @@ public class DriveConstants {
     }
     //**************DRIVETRAIN CONSTANTS******************//
     public class Drivetrain {
-        public static final double TRACK_WIDTH = Units.inchesToMeters(26); // distance between right and left
-        public static final double WHEEL_BASE = Units.inchesToMeters(26); // distance between front and back
+        public static final double TRACK_WIDTH = Units.inchesToMeters(28.9); // distance between right and left
+        public static final double WHEEL_BASE = Units.inchesToMeters(28.9); // distance between front and back
         // VERIFY THIS IS IN THE CORRECT ORDER
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
