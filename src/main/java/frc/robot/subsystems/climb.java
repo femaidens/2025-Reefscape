@@ -10,21 +10,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-public class climb extends SubsystemBase {
+public class Climb extends SubsystemBase {
   private final TalonFX leader;
   private final TalonFX follower;
   private final Encoder encoder;
 
-  public climb(){
+  public Climb(){
     leader = new TalonFX(Ports.LEADER_PORT);
     follower = new TalonFX(Ports.FOLLOWER_PORT);
     encoder = new Encoder(Ports.channelA, Ports.channelB);
   }
 
   public int get(){
-    final double TICKS_PER_REVOLUTION = 1000;
+ 
     int ticks = encoder.get(); 
-    return (int) (ticks / TICKS_PER_REVOLUTION) * 360;
+    return (int) (ticks / Constants.ClimbConstants.TICKS_PER_REVOLUTION) * 360;
   }
   
   public Command climbFwdCmd () {

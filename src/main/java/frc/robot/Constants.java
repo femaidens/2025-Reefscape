@@ -19,7 +19,7 @@ public final class Constants {
 
   public static class ClimbConstants {
     public static final double ClimbSpeed = 0.5;
-
+    public static final double TICKS_PER_REVOLUTION = 1000;
     public static final double MAXRotation = 90.0;
     public static final double MINRotation = -90.0; //subject to change, need to change to rotation??
 
