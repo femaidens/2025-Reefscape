@@ -62,7 +62,7 @@ public class climb extends SubsystemBase {
       double currentRotation = get();
         if(currentRotation < Constants.ClimbConstants.MAXRotation) {
             leader.setNeutralMode(NeutralModeValue.Brake);
-            follower.setNeutralMode(NeutralModeValue.Coast);
+            follower.setNeutralMode(NeutralModeValue.Brake);
             follower.set(ClimbConstants.ClimbSpeed);
       }
         else {
@@ -75,8 +75,6 @@ public class climb extends SubsystemBase {
   }
 
   public void stopMotors(){
-    leader.setNeutralMode(NeutralModeValue.Brake);
-    follower.setNeutralMode(NeutralModeValue.Coast);
     leader.set(0);
     follower.set(0);
   }
