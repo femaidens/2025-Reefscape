@@ -12,7 +12,6 @@ import frc.robot.subsystems.Outtake;
 public class CoralTransition{
   Intake intake; 
   Outtake outtake; 
-  //Elevator elevator;
 
   public CoralTransition(Intake intake, Outtake outtake ){
     this.intake = intake; 
