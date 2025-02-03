@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.io.ObjectInputFilter.Config;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 // import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,7 +37,7 @@ public class Elevator extends SubsystemBase {
   private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static ProfiledPIDController elevatorPID;
-  private static CANcoder elevatorEncoder;
+  private static RelativeEncoder elevatorEncoder;
   private static ElevatorFeedforward ff;
    
   public Elevator() {
@@ -44,7 +46,7 @@ public class Elevator extends SubsystemBase {
 
     botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
 
-    elevatorEncoder = new CANcoder( Ports.ElevatorPorts.ENCODER_PORT );
+    elevatorEncoder = elevatorMotorLeader.getEncoder();
 
     elevatorPID = new ProfiledPIDController(
       Constants.ElevatorConstants.PIDConstants.kP, 
@@ -111,7 +113,7 @@ public class Elevator extends SubsystemBase {
      */
     public static void elevatorPID(double setpoint){
       elevatorMotorLeader.setVoltage(
-        elevatorPID.calculate( elevatorEncoder.getPosition().getValueAsDouble() ) +  ff.calculate(elevatorPID.getSetpoint().velocity, setpoint));
+        elevatorPID.calculate( elevatorEncoder.getPosition() ) +  ff.calculate(elevatorPID.getSetpoint().velocity, setpoint));
         elevatorMotorFollower.resumeFollowerMode();
     }
 
