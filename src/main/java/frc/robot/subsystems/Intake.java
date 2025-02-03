@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
-
+    config.smartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -64,7 +64,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isBeamBroken() {
-    return !beamBreak.get(); // true = broke, false = unbroken
+    return beamBreak.get(); 
   }
 
   public Command intakeCoral() {
@@ -73,6 +73,7 @@ public class Intake extends SubsystemBase {
     else
       return this.run(() -> stopMotorCmd());
   }
+
 
   @Override
   public void periodic() {
