@@ -1,15 +1,20 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -31,11 +36,13 @@ public class ModuleKraken {
     // private final CANcoder driveEncoder;
     private final CANcoder turnEncoder; 
     //PID? 
-    private final PhoenixPIDController drivePIDController; 
-    private final PhoenixPIDController turnPIDController;
+    private final PIDController drivePIDController; 
+    private final PIDController turnPIDController;
     
     private final SimpleMotorFeedforward driveFF;
     private final SimpleMotorFeedforward turnFF; 
+
+    private MagnetSensorConfigs directionConfig;
 
     private final double chassisAngularOffset;
 
@@ -56,14 +63,15 @@ public class ModuleKraken {
         turnMotor = new TalonFX(turnID, Translation.CANBUS); 
         configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
 
-        drivePIDController = new PhoenixPIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
-        turnPIDController = new PhoenixPIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+        drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
+        turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
 
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
+        turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
         
         
@@ -75,8 +83,8 @@ public class ModuleKraken {
     public void setDesiredState(SwerveModuleState state){
         state.optimize(state.angle);
         driveMotor.setVoltage(
-        driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond,0.1));
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
+        driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
+        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
     }
 
     public void setDesiredStateNoPID(SwerveModuleState state){
@@ -85,7 +93,7 @@ public class ModuleKraken {
         angleSetpoint = newState.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians(),0.1));
+        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
         SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
         desiredState = state;
     }
