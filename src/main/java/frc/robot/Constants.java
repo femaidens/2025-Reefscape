@@ -20,9 +20,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static class ElevatorConstants {
-    public static final double motorSpeed = 0;
-    public static final double POSITIONCONVERSIONFACTOR = 1000;
-    public static final double VELOCITYCONVERSIONFACTOR = 1000;
+    public static final double MOTOR_SPEED = 0;
+    public static final double POSITION_CONVERSION_FACTOR = 1000;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1000;
 
 
     public static class PIDConstants {
@@ -31,7 +31,7 @@ public final class Constants {
       public static final double kD = 0;
       public static final double kMaxVelocity = 0;
       public static final double kMaxAcceleration = 0;
-      public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+      public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
     
     }
 
@@ -42,12 +42,12 @@ public final class Constants {
     }
 
     public static class SetpointConstants {
-      public static final double firstLvl = 0;
-      public static final double secondLvl = 0;
-      public static final double algae_secondLvl = 0;
-      public static final double thirdLvl = 0;
-      public static final double algae_thirdLvl = 0;
-      public static final double fourthLvl = 0;
+      public static final double FIRST_LVL = 0;
+      public static final double SECOND_LVL = 0;
+      public static final double ALGAE_SECOND_LVL = 0;
+      public static final double THIRD_LVL = 0;
+      public static final double ALGAE_THIRD_LVL = 0;
+      public static final double FOURTH_LVL = 0;
     }
   }
 }

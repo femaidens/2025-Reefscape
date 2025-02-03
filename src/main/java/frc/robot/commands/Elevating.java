@@ -20,27 +20,27 @@ public class Elevating {
      * @return goes to first level of reef
      */
     public Command firstLevel(){
-        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.firstLvl);
+        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL);
     }
     /**
      * 
      * @return goes to second level of reef
      */
     public Command secondLevel(){
-        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.secondLvl);
+        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL);
     }
     /**
      * 
      * @return goes to third level of reef
      */
     public Command thirdLevel(){
-        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.thirdLvl);
+        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL);
     }
     /**
      * 
      * @return goes to the fourth level of reef
      */
     public Command fourthLevel(){
-        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.fourthLvl);
+        return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL);
     }
 }

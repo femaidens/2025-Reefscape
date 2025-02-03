@@ -52,7 +52,7 @@ public class Elevator extends SubsystemBase {
       Constants.ElevatorConstants.PIDConstants.kP, 
       Constants.ElevatorConstants.PIDConstants.kI, 
       Constants.ElevatorConstants.PIDConstants.kD, 
-      Constants.ElevatorConstants.PIDConstants.constraints
+      Constants.ElevatorConstants.PIDConstants.CONSTRAINTS
       );
 
       ff = new ElevatorFeedforward(
@@ -68,8 +68,8 @@ public class Elevator extends SubsystemBase {
         .idleMode(IdleMode.kBrake);
 
         config.encoder
-        .positionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR)
-        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
         // config.closedLoop
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -85,7 +85,7 @@ public class Elevator extends SubsystemBase {
      * run the motor
      */
     public static void runMotor(){
-      elevatorMotorLeader.set(Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED);
       elevatorMotorFollower.resumeFollowerMode();
       System.out.println(elevatorMotorFollower.isFollower());
     }
@@ -95,7 +95,7 @@ public class Elevator extends SubsystemBase {
      */
     public static void reverseRunMotor(){
       
-      elevatorMotorLeader.set(-Constants.ElevatorConstants.motorSpeed);
+      elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
       elevatorMotorFollower.resumeFollowerMode();
 
     }
