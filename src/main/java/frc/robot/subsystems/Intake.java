@@ -45,7 +45,6 @@ public class Intake extends SubsystemBase {
         .pid(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
 
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
   public Command runMotor() {
