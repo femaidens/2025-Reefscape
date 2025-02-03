@@ -6,9 +6,16 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.Drive;
+
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,16 +25,29 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  
+  Drive drivetrain = new Drive();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
+  private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    configureDefaultCmds();
+
+  }
+
+  private void configureDefaultCmds(){
+    drivetrain.setDefaultCommand(
+      new RunCommand(
+        () -> 
+        drivetrain.drive(
+        () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
+        drivetrain));
   }
 
   /**
@@ -40,7 +60,43 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    driveJoy.a()
+    .whileTrue(
+        drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward)
+    );
+
+    driveJoy.b()
+    .whileTrue(
+        drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse)
+    );
+
+    driveJoy.x()
+    .whileTrue(
+        drivetrain.driveDynamic(SysIdRoutine.Direction.kForward)
+    );
+
+    driveJoy.y()
+    .whileTrue(
+        drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse)
+    );
+
+    driveJoy.leftBumper()
+    .whileTrue(
+      drivetrain.setXCmd()
+    );
+
+    driveJoy.rightBumper()
+    .whileTrue(
+      drivetrain.resetGyro()
+    );
+
+    driveJoy.leftTrigger()
+    .whileTrue(
+      drivetrain.setStraightCmd()
+    );
   }
+
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
