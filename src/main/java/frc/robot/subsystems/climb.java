@@ -1,39 +1,46 @@
 package frc.robot.subsystems;
 
 import frc.robot.Ports;
-import edu.wpi.first.wpilibj.Encoder;
+// import com.revrobotics.spark.SparkAbsoluteEncoder;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class Climb extends SubsystemBase {
-  private final TalonFX leader;
-  private final TalonFX follower;
-  private final Encoder encoder;
+  private final SparkMax leader;
+  private final SparkMax follower;
+  private final SparkAbsoluteEncoder leaderEncoder;
+  private final SparkAbsoluteEncoder followerEncoder;
+  private final SparkMaxConfig leaderConfig;
+  private final SparkMaxConfig followerConfig;
 
   public Climb(){
-    leader = new TalonFX(Ports.LEADER_PORT);
-    follower = new TalonFX(Ports.FOLLOWER_PORT);
-    encoder = new Encoder(Ports.channelA, Ports.channelB);
-  }
-
-  public int get(){
- 
-    int ticks = encoder.get(); 
-    return (int) (ticks / Constants.ClimbConstants.TICKS_PER_REVOLUTION) * 360;
+    leader = new SparkMax(Ports.LEADER_PORT, MotorType.kBrushless);
+    follower = new SparkMax(Ports.FOLLOWER_PORT, MotorType.kBrushless);
+    leaderEncoder = leader.getAbsoluteEncoder();
+    followerEncoder = follower.getAbsoluteEncoder();
+    leaderConfig = new SparkMaxConfig();
+    followerConfig = new SparkMaxConfig();
   }
   
   public Command climbFwdCmd () {
     return this.run (() -> {
-      double currentRotation = get();
+      double currentRotation = leaderEncoder.getPosition();
         if (currentRotation < Constants.ClimbConstants.MAXRotation) {
-            leader.setNeutralMode(NeutralModeValue.Brake);
+            leaderConfig.idleMode(IdleMode.kBrake);
+            leader.configure(leaderConfig, null, null);
             leader.set(ClimbConstants.ClimbSpeed);
-            follower.setNeutralMode(NeutralModeValue.Coast);
+            followerConfig.idleMode(IdleMode.kCoast);
+            follower.configure(followerConfig, null, null);
       } 
         else {
             leader.set (0);
@@ -44,11 +51,13 @@ public class Climb extends SubsystemBase {
 
   public Command climbBkwdCmd (){
     return this.run(() -> {
-      double currentRotation = get();
+      double currentRotation = leaderEncoder.getPosition();
         if (currentRotation > Constants.ClimbConstants.MINRotation) {
-            leader.setNeutralMode(NeutralModeValue.Brake);
-            leader.set(-(ClimbConstants.ClimbSpeed));
-            follower.setNeutralMode(NeutralModeValue.Coast);
+            leaderConfig.idleMode(IdleMode.kBrake);
+            leader.configure(leaderConfig, null, null);
+            leader.set(ClimbConstants.ClimbSpeed);
+            followerConfig.idleMode(IdleMode.kCoast);
+            follower.configure(followerConfig, null, null);
       }  
         else {
             leader.set (0);
@@ -59,11 +68,13 @@ public class Climb extends SubsystemBase {
 
   public Command pulleySystemCmd (){
     return this.run(() -> {
-      double currentRotation = get();
+      double currentRotation = followerEncoder.getPosition();
         if(currentRotation < Constants.ClimbConstants.MAXRotation) {
-            leader.setNeutralMode(NeutralModeValue.Brake);
-            follower.setNeutralMode(NeutralModeValue.Brake);
-            follower.set(ClimbConstants.ClimbSpeed);
+          leaderConfig.idleMode(IdleMode.kBrake);
+          leader.configure(leaderConfig, null, null);
+          followerConfig.idleMode(IdleMode.kBrake);
+          follower.configure(followerConfig, null, null);
+          follower.set(ClimbConstants.ClimbSpeed);
       }
         else {
             leader.set(0);
