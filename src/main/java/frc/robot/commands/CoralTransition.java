@@ -22,8 +22,7 @@ public class CoralTransition{
 
 
   public Command moveCoralToOuttake(){ 
-    return Commands.waitUntil(intake::isBeamBroken) // need to add elevator code 
-          //.andThen(elevator.setLevel()) maybe?
+    return Commands.waitUntil(intake::isBeamBroken) 
           .andThen(intake.runMotor()) 
           .alongWith(outtake.setIntakeCoralSpeed())
           .until(outtake::isCoral)
