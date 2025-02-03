@@ -26,8 +26,8 @@ public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
-  private final DigitalInput frontReciever;
-  private final DigitalInput backReciever;
+  private final DigitalInput frontReceiver;
+  private final DigitalInput backReceiver;
 
   // private final Ultrasonic ultrasonic;
   // private final PIDController ultrasonicPID;
@@ -45,8 +45,8 @@ public class Outtake extends SubsystemBase {
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
   
-    frontReciever = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECIEVER);
-    backReciever = new DigitalInput(Ports.BeamBreakPorts.BACK_RECIEVER);
+    frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
+    backReceiver = new DigitalInput(Ports.BeamBreakPorts.BACK_RECEIVER);
     
    
     
@@ -101,7 +101,7 @@ public class Outtake extends SubsystemBase {
    */
 
   public boolean isCoral() {
-  if (frontReciever.get() == false && backReciever.get()) {
+  if (frontReceiver.get() == false && backReceiver.get()) {
       return true;
     }
       return false;
