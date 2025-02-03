@@ -13,6 +13,7 @@ import org.photonvision.EstimatedRobotPose;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.units.Units;
@@ -139,6 +141,10 @@ public class Drive extends SubsystemBase {
   public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
     poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
+  public void addVisionMeasurement(
+            Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
+    }
 
   // public Command driveTo(Pose2d target){
   //   return run(()-> {
@@ -149,17 +155,17 @@ public class Drive extends SubsystemBase {
   //       transform.getRotation().getRadians());
   //   }
   // }
-//   public Pose2d[] getModulePoses() {
-//     Pose2d[] modulePoses = new Pose2d[modules.size()];
-//     for (int i = 0; i < modules.size(); i++) {
-//         var module = modules.get(i);
-//         modulePoses[i] =
-//                 getPose().transformBy(
-//                     new Transform2d(
-//                         module.().centerOffset, module.getAbsoluteHeading()));
-//     }
-//     return modulePoses;
-// }
+  public Pose2d[] getModulePoses() {
+    Pose2d[] modulePoses = new Pose2d[modules.size()];
+    for (int i = 0; i < modules.size(); i++) {
+        var module = modules.get(i);
+        modulePoses[i] =
+                getPose().transformBy(
+                    new Transform2d(
+                      DriveConstants.Drivetrain.WHEEL_BASE / 2, DriveConstants.Drivetrain.TRACK_WIDTH / 2, module.getAbsoluteHeading())); //might need to adjust after new odometry changes
+    }
+    return modulePoses;
+}
 
 
   /**

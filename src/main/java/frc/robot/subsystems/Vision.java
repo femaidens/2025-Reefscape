@@ -31,7 +31,7 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 
 
-public class Vision extends SubsystemBase {
+public class Vision {
   private final PhotonCamera[] cameras;
   private final PhotonPoseEstimator[] estimators;
   private final PhotonPipelineResult[] lastResults;
@@ -94,7 +94,7 @@ public class Vision extends SubsystemBase {
 
      // Precalculation - see how many tags we found, and calculate an average-distance metric
       for (var tgt : targets) {
-        var tagPose = poseEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+        var tagPose = VisionConstants.kTagLayout.getTagPose(tgt.getFiducialId());
         if (tagPose.isEmpty()) {
           continue;
         }
