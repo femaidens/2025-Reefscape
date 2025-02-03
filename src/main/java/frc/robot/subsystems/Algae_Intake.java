@@ -38,15 +38,10 @@ public class Algae_Intake extends SubsystemBase {
   private static RelativeEncoder pivotEncoder;
 
   public Algae_Intake() {
-    
+    //intake pivot instantiations and setup
     intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
     intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
-
-    intakeRollerLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_LEADER, MotorType.kBrushless);
-    intakeRollerFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_FOLLOWER, MotorType.kBrushless);
-
     pivotConfig = new SparkMaxConfig();
-    rollerConfig = new SparkMaxConfig();
 
     pivotEncoder = intakePivotFollower.getEncoder();
 
@@ -62,18 +57,23 @@ public class Algae_Intake extends SubsystemBase {
     intakePivotLeader.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakePivotFollower.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+
+    //intake roller instantiations and setup
+    intakeRollerLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_LEADER, MotorType.kBrushless);
+    intakeRollerFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_FOLLOWER, MotorType.kBrushless);
+
+    rollerConfig = new SparkMaxConfig();
+
     rollerConfig
       .inverted(true)
       .idleMode(IdleMode.kBrake);
-    // rollerConfig.encoder
-    //   .positionConversionFactor(Constants.AlgaeIntakeConstants.POSITIONCONVERSIONFACTOR)
-    //   .velocityConversionFactor(Constants.AlgaeIntakeConstants.VELOCITYCONVERSIONFACTOR);
     rollerConfig
       .follow(intakeRollerLeader, false);
     
     intakeRollerLeader.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeRollerFollower.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    //PID and FF
     intakePID = new ProfiledPIDController(
       Constants.AlgaeIntakeConstants.PIDConstants.kP, 
       Constants.AlgaeIntakeConstants.PIDConstants.kI, 
@@ -94,6 +94,7 @@ public class Algae_Intake extends SubsystemBase {
       intakePID.calculate(pivotEncoder.getPosition()) +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
     intakePivotFollower.resumeFollowerMode();
   }
+
 /**
  * 
  * @return command to run rollers
@@ -118,7 +119,6 @@ public class Algae_Intake extends SubsystemBase {
     return this.run(() -> this.setPID(0));
   }
   
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
