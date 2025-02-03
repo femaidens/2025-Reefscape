@@ -10,13 +10,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.*;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
+import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
 import frc.robot.Constants.*;
 
@@ -26,14 +27,17 @@ public class Intake extends SubsystemBase {
   private final SparkMax intakeMotor;
   private final SparkMaxConfig config;
   private final DigitalInput beamBreak;
-  
+  private final PIDController intakePID;
+  private final RelativeEncoder encoder;
 
   public Intake() {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
     config = new SparkMaxConfig();
+    intakePID = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
+    encoder = intakeMotor.getEncoder();
 
-    //Configure the motor
+    // Configure the motor
     config
         .inverted(true)
         .idleMode(IdleMode.kBrake);
@@ -41,17 +45,20 @@ public class Intake extends SubsystemBase {
         .positionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR);
     config.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     config.smartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public Command runMotor() {
-    return this.run(() -> intakeMotor.set(IntakeConstants.MOTORSPEED));
+  
+  public Command runMotorCmd(double setpoint) {
+    // return this.run(() -> intakeMotor.set(IntakeConstants.MOTORSPEED));
+    return this.run(() -> {
+      intakeMotor.set(intakePID.calculate(encoder.getVelocity(), setpoint));
+    });
   }
 
-  public Command reverseMotor() {
+  public Command reverseMotorCmd() {
     return this.run(() -> intakeMotor.set(-IntakeConstants.MOTORSPEED));
   }
 
@@ -59,21 +66,21 @@ public class Intake extends SubsystemBase {
     return this.run(() -> intakeMotor.stopMotor());
   }
 
-  public Command setVoltage() {
-    return this.run(() -> intakeMotor.setVoltage(IntakeConstants.VOLTAGE));
+  public Command setVoltage(double voltage) {
+    return this.run(() -> intakeMotor.setVoltage(voltage));
   }
 
   public boolean isBeamBroken() {
-    return beamBreak.get(); 
+    return beamBreak.get();
   }
 
-  public Command intakeCoral() {
-    if (isBeamBroken())
-      return this.run(() -> runMotor());
-    else
+  public Command intakeCoralCmd() {
+    if (isBeamBroken()) {
+      return this.run(() -> runMotorCmd(0));
+    } else {
       return this.run(() -> stopMotorCmd());
+    }
   }
-
 
   @Override
   public void periodic() {
