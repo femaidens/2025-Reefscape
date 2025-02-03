@@ -29,9 +29,7 @@ public class Outtake extends SubsystemBase {
   private final DigitalInput frontReceiver;
   private final DigitalInput backReceiver;
 
-  // private final Ultrasonic ultrasonic;
-  // private final PIDController ultrasonicPID;
-  // private final MedianFilter filter;
+
 
   /** Creates a new Outtake. */
   public Outtake() {
@@ -47,14 +45,7 @@ public class Outtake extends SubsystemBase {
     frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
     backReceiver = new DigitalInput(Ports.BeamBreakPorts.BACK_RECEIVER);
 
-    // ultrasonic = new Ultrasonic(Ports.UltrasonicPorts.UltrasonicPingPort,
-    // Ports.UltrasonicPorts.UltrasonicEchoPort);
-    // ultrasonicPID = new PIDController(
-    // Constants.UltrasonicConstants.PIDConstants.kP,
-    // Constants.UltrasonicConstants.PIDConstants.kI,
-    // Constants.UltrasonicConstants.PIDConstants.kD
-    // );
-    // filter = new MedianFilter(5);
+
 
   }
 
@@ -104,38 +95,8 @@ public class Outtake extends SubsystemBase {
     return false;
   }
 
-  // not using ultrasonic anymore ;(
-  // public double getDistance() {
-  // double measurement = ultrasonic.getRangeInches();
-  // double filteredMeasurement = filter.calculate(measurement);
-  // return ultrasonicPID.calculate(filteredMeasurement);
-  // }
-
-  /**
-   * 
-   * @return true if coral is detected passing through from intake to outtake
-   */
-
-  // public boolean isCoral() {
-  // ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.coralSetpoint);
-  // if (ultrasonicPID.atSetpoint()) {
-  // return true;
-  // }
-  // return false;
-  // }
-
-  // public boolean isAlgae() {
-  // ultrasonicPID.setSetpoint(Constants.UltrasonicConstants.algaeSetpoint);
-  // if (ultrasonicPID.atSetpoint()) {
-  // return true;
-  // }
-
-  // return false;
-  // }
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // SmartDashboard.putNumber("Distance", getDistance());
+
   }
 }
