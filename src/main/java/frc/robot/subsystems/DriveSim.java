@@ -59,7 +59,7 @@ public class DriveSim extends SubsystemBase {
 
   private StructArrayPublisher<SwerveModuleState> publisher;
 
-  private SwerveModuleState[] states;
+  // private SwerveModuleState[] states;
 
   private List<ModuleSim> modules;
   // private Trajectory m_trajectory;
@@ -82,12 +82,12 @@ public class DriveSim extends SubsystemBase {
 
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
-    states = new SwerveModuleState[] {
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState(),
-        new SwerveModuleState()
-    };
+    // states = new SwerveModuleState[] {
+    //     new SwerveModuleState(),
+    //     new SwerveModuleState(),
+    //     new SwerveModuleState(),
+    //     new SwerveModuleState()
+    // };
 
     publisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
@@ -150,11 +150,6 @@ public class DriveSim extends SubsystemBase {
 
     ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(0) );
     SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-
-    
-        // for(int i = 0; i < modules.size(); i++){
-        //   modules.get(i).setDesiredState(moduleStates[i]);
-        // }
       frontLeft.setDesiredState(moduleStates[0]);
       frontRight.setDesiredState(moduleStates[1]);
       rearLeft.setDesiredState(moduleStates[2]);

@@ -77,12 +77,10 @@ public class ModuleSim{
     public void setDesiredState(SwerveModuleState state){
         //possily change this optimize, since its differezxcvewasdwasdwasadwasdwasdawnt.
         //state.optimize(state.angle);
-        double jacquelineWasHere = driveFFController.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
+        double voltage = driveFFController.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
 
-        driveMotorSim.setInputVoltage(
-            jacquelineWasHere            
-        ); 
-        System.out.println(jacquelineWasHere);
+        driveMotorSim.setInputVoltage(voltage); 
+        System.out.println(voltage);
         turnMotorSim.setInputVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
         // SmartDashboard.putString("Swerve " + driveMotorSim.getDeviceId() + ":", state.toString());
         desiredState = state;

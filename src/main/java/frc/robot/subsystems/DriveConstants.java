@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 
 /** Add your docs here. */
 public class DriveConstants {
@@ -28,7 +30,7 @@ public class DriveConstants {
             public static final double D = 0;
         }
         public class FF {
-            public static final double S = 0.2;
+            public static final double S = 2.5;
             public static final double V = 0.5;
         }
     }
@@ -51,8 +53,6 @@ public class DriveConstants {
         }
     }
     public class ModuleSimConstants{
-        public static final double loopPeriodSecs = 0;
-        public static final double MAX_SPEED = 0;
     }
 
       public class DriveSimConstants{
@@ -60,8 +60,8 @@ public class DriveConstants {
       }
     //**************DRIVETRAIN CONSTANTS******************//
     public class Drivetrain {
-        public static final double TRACK_WIDTH = 30; // distance between right and left
-        public static final double WHEEL_BASE = 30; // distance between front and back
+        public static final double TRACK_WIDTH = Units.inchesToMeters(30); // distance between right and left
+        public static final double WHEEL_BASE = Units.inchesToMeters(30); // distance between front and back
         // VERIFY THIS IS IN THE CORRECT ORDER
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
