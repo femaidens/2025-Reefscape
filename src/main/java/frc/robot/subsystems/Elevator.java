@@ -30,12 +30,6 @@ import frc.robot.Ports;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
-/**
- * limit switch
- * motor ( 1 )
- * PID - setpoint cmds
- * 
- */
 
   private static SparkMax elevatorMotorLeader;
   private static SparkMax elevatorMotorFollower;
@@ -44,47 +38,46 @@ public class Elevator extends SubsystemBase {
   private static CANcoder elevatorEncoder;
   private static ElevatorFeedforward ff;
    
-    public Elevator() {
-      elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
-      elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+  public Elevator() {
+    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
 
-  
-      botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
-  
-      elevatorEncoder = new CANcoder( Ports.ElevatorPorts.ENCODER_PORT );
-  
-      elevatorPID = new ProfiledPIDController(
-        Constants.ElevatorConstants.PIDConstants.kP, 
-        Constants.ElevatorConstants.PIDConstants.kI, 
-        Constants.ElevatorConstants.PIDConstants.kD, 
-        Constants.ElevatorConstants.PIDConstants.constraints
-        );
-  
-        ff = new ElevatorFeedforward(
-          Constants.ElevatorConstants.FeedForwardConstants.kS, 
-          Constants.ElevatorConstants.FeedForwardConstants.kG, 
-          Constants.ElevatorConstants.FeedForwardConstants.kV
-        );
+    botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
 
-        SparkMaxConfig config = new SparkMaxConfig();
+    elevatorEncoder = new CANcoder( Ports.ElevatorPorts.ENCODER_PORT );
 
-          config
-          .inverted(true)
-          .idleMode(IdleMode.kBrake);
+    elevatorPID = new ProfiledPIDController(
+      Constants.ElevatorConstants.PIDConstants.kP, 
+      Constants.ElevatorConstants.PIDConstants.kI, 
+      Constants.ElevatorConstants.PIDConstants.kD, 
+      Constants.ElevatorConstants.PIDConstants.constraints
+      );
 
-          config.encoder
-          .positionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR)
-          .velocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+      ff = new ElevatorFeedforward(
+        Constants.ElevatorConstants.FeedForwardConstants.kS, 
+        Constants.ElevatorConstants.FeedForwardConstants.kG, 
+        Constants.ElevatorConstants.FeedForwardConstants.kV
+      );
 
-          // config.closedLoop
-          // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-          // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
-          //probably unneeded 
-          config
-          .follow(elevatorMotorLeader, false);
+      SparkMaxConfig config = new SparkMaxConfig();
 
-          elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-          elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config
+        .inverted(true)
+        .idleMode(IdleMode.kBrake);
+
+        config.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITIONCONVERSIONFACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITYCONVERSIONFACTOR);
+
+        // config.closedLoop
+        // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
+        //probably unneeded 
+        config
+        .follow(elevatorMotorLeader, false);
+
+        elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     /**
      * run the motor

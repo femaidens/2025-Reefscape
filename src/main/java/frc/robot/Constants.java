@@ -44,7 +44,9 @@ public final class Constants {
     public static class SetpointConstants {
       public static final double firstLvl = 0;
       public static final double secondLvl = 0;
+      public static final double algae_secondLvl = 0;
       public static final double thirdLvl = 0;
+      public static final double algae_thirdLvl = 0;
       public static final double fourthLvl = 0;
     }
   }
