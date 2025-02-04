@@ -53,7 +53,7 @@ public class ModuleSim {
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         setDriveVoltage(voltage);
-        double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
+        // double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
         // System.out.println(turnVoltage);
         // setTurnVoltage(turnVoltage);
         desiredState = state;
