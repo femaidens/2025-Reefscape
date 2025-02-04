@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-/** Add your docs here. */
 public class Ports {
     public class ElevatorPorts{
         public static int MOTOR_PORT = 3;
@@ -15,12 +14,6 @@ public class Ports {
         public static int OUTTAKE_MOTOR = 0;
     }
 
-    // public class UltrasonicPorts {
-    //     public static int UltrasonicPingPort = 0;
-    //     public static int UltrasonicEchoPort = 1;
-      
-    // }
-
     public class BeamBreakPorts { // for outtake 
         public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
         public static int BACK_RECEIVER = 0;  // back reciever is the one closest to intake
@@ -30,4 +23,9 @@ public class Ports {
         public static int INTAKE_MOTOR = 0;
         public static int BEAM_BREAK = 1;
     }
-}
+
+    public class ClimbPorts {
+      public static final int LEADER_MOTOR = 0; 
+      public static final int FOLLOWER_MOTOR = 0;
+    }
+  }
