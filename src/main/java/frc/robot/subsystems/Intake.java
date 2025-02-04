@@ -50,13 +50,14 @@ public class Intake extends SubsystemBase {
     intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  
-  public Command runMotorCmd(double setpoint) {
-    // return this.run(() -> intakeMotor.set(IntakeConstants.MOTORSPEED));
-    return this.run(() -> {
-      intakeMotor.set(intakePID.calculate(encoder.getVelocity(), setpoint));
-    });
+  public void setIntakePID(double setpoint){
+    intakeMotor.set(intakePID.calculate(encoder.getVelocity(), setpoint));
   }
+  
+  public Command runMotorCmd() {
+    return this.run(() -> intakeMotor.set(IntakeConstants.MOTORSPEED));
+  }
+
 
   public Command reverseMotorCmd() {
     return this.run(() -> intakeMotor.set(-IntakeConstants.MOTORSPEED));
@@ -76,7 +77,7 @@ public class Intake extends SubsystemBase {
 
   public Command intakeCoralCmd() {
     if (isBeamBroken()) {
-      return this.run(() -> runMotorCmd(0));
+      return this.run(() -> runMotorCmd());
     } else {
       return this.run(() -> stopMotorCmd());
     }

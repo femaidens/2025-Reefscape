@@ -24,10 +24,19 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 30;
   }
 
+  public static class IntakePivotConstants{
+    public static final double PIVOT_SPEED = 0.4;
+  }
   public static class PIDConstants{
    public static final double kP = 0.0;
    public static final double kI = 0.0;
    public static final double kD = 0.0;
+  }
+
+  public static class FeedForwardConstants{
+    public static final double kS  = 0.0;
+    public static final double kG = 0.0;
+    public static final double kV = 0.0; 
   }
 
 }
