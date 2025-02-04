@@ -16,4 +16,37 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-}
+  public static class IntakeConstants{
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    public static final double MOTOR_SPEED = 0.5;
+    public static final double VOLTAGE = 0;
+  }
+
+  // public static class PIDConstants{
+    
+  // }
+
+
+  public static class OuttakeConstants {
+    public static final double MOTOR_SPEED = 0.5;
+    public static final double REMOVE_ALGAE_SPEED = 0.4; //some random value for now
+    public static final double VOLTAGE = 0;
+    public static final int CURRENT_LIMIT = 30;
+  }
+  // no longer using Ultrasonic sensor
+  // public static class UltrasonicConstants {
+  //   public static final double coralSetpoint = 0;
+  //   public static final double algaeSetpoint = 0;
+  //   public static class PIDConstants {
+  //     public static final double kP = 0;
+  //     public static final double kI = 0;
+  //     public static final double kD = 0;
+
+  //   }
+
+  
+  }
+
