@@ -22,9 +22,9 @@ public final class Constants {
   }
 
   public static class SwerveConstants {
-    public static final double TURNING_PID_POSITION_TOL = 0;
-    public static final double TURNING_PID_VELOCITY_TOL = 0;
-    public static final double DRIVE_PID_POSITION_TOL = 0;
-    public static final double DRIVE_PID_VELOCITY_TOL = 0;
+    public static final double TURNING_PID_POSITION_TOL = 3;
+    public static final double TURNING_PID_VELOCITY_TOL = 3;
+    public static final double DRIVE_PID_POSITION_TOL = 3;
+    public static final double DRIVE_PID_VELOCITY_TOL = 3;
   }
 }
