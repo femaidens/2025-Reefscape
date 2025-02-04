@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -17,12 +20,41 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static class ElevatorConstants {
+      public static final double MOTOR_SPEED = 0;
+      public static final double POSITION_CONVERSION_FACTOR = 1000;
+      public static final double VELOCITY_CONVERSION_FACTOR = 1000;
+
+      public static class PIDConstants {
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kMaxVelocity = 0;
+        public static final double kMaxAcceleration = 0;
+        public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+      }
+
+      public static class FeedForwardConstants {
+        public static final double kS = 0;
+        public static final double kG = 0;
+        public static final double kV = 0;
+      }
+
+      public static class SetpointConstants {
+        public static final double FIRST_LVL = 0;
+        public static final double SECOND_LVL = 0;
+        public static final double ALGAE_SECOND_LVL = 0;
+        public static final double THIRD_LVL = 0;
+        public static final double ALGAE_THIRD_LVL = 0;
+        public static final double FOURTH_LVL = 0;
+      }
+  }
+
   public static class ClimbConstants {
     public static final double CLIMB_SPEED = 0.5;
     public static final double TICKS_PER_REVOLUTION = 1000;
     public static final double MAX_ROTATION = 90.0;
     public static final double MIN_ROTATION = -90.0; //subject to change, need to change to rotation??
-
   }
 
   public static class IntakeConstants{
@@ -41,4 +73,3 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 30;
   }
 }
-
