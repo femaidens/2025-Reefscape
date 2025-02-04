@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -13,10 +15,9 @@ import edu.wpi.first.units.Unit;
 public class DriveConstants {
     //**************MODULE CONSTANTS******************//
     public class Translation {
-        //modules stuff                  
-        public static final int CURRENT_LIMIT = Integer.MAX_VALUE;
-        public static final double POS_CONVERSION_FACTOR = 1;
-        public static final double VEL_CONVERSION_FACTOR = 1;
+        public static final int CURRENT_LIMIT = 40;
+        public static final double POS_CONVERSION_FACTOR = 0.0762 * Math.PI / ((45.0 * 22) / (14.0 * 15));
+        public static final double VEL_CONVERSION_FACTOR = POS_CONVERSION_FACTOR;
         public static final int AVERAGE_DEPTH = 1;
 
         public static final double FRONT_LEFT_ANGOFFSET = -Math.PI/2;
@@ -30,18 +31,18 @@ public class DriveConstants {
             public static final double D = 0;
         }
         public class FF {
-            public static final double S = 2.5;
+            public static final double S = 0.2;
             public static final double V = 0.5;
         }
     }
     public class Turn {
-        public static final int CURRENT_LIMIT = Integer.MAX_VALUE;
-        public static final double POS_CONVERSION_FACTOR = 1;
-        public static final double VEL_CONVERSION_FACTOR = 1;
+        public static final int CURRENT_LIMIT = 30;
+        public static final double POS_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VEL_CONVERSION_FACTOR = 2.0 * Math.PI / 60.0;
         public static final int AVERAGE_DEPTH = 1;
 
         public class PID {
-            public static final double P = 0.2;
+            public static final double P = 3;
             public static final double I = 0;
             public static final double D = 0;   
         }
