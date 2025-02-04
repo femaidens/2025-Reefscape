@@ -23,10 +23,10 @@ public class CoralTransition{
   public Command moveCoralToOuttake(){ 
     return Commands.waitUntil(intake::isBeamBroken) 
           .andThen(intake.runMotor()) 
-          .alongWith(outtake.setIntakeCoralSpeed())
+          .alongWith(outtake.setIntakeCoralSpeedCmd())
           .until(outtake::isCoral)
           .andThen(intake.stopMotorCmd())
-          .alongWith(outtake.stopMotor());
+          .alongWith(outtake.stopMotorCmd());
     
   }
 

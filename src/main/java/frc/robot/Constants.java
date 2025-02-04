@@ -21,8 +21,8 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static final double motorSpeed = 0.5;
-    public static final double voltage = 0;
+    public static final double MOTOR_SPEED = 0.5;
+    public static final double VOLTAGE = 0;
   }
 
   // public static class PIDConstants{

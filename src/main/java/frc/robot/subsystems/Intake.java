@@ -28,11 +28,11 @@ public class Intake extends SubsystemBase {
   }
 
   public Command runMotor() {
-    return this.run(() -> intakeMotor.set(IntakeConstants.motorSpeed));
+    return this.run(() -> intakeMotor.set(IntakeConstants.MOTOR_SPEED));
   }
 
   public Command reverseMotor() {
-    return this.run(() -> intakeMotor.set(-IntakeConstants.motorSpeed));
+    return this.run(() -> intakeMotor.set(-IntakeConstants.MOTOR_SPEED));
   }
 
   public Command stopMotorCmd() {
@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command setVoltage() {
-    return this.run(() -> intakeMotor.setVoltage(IntakeConstants.voltage));
+    return this.run(() -> intakeMotor.setVoltage(IntakeConstants.VOLTAGE));
   }
 
   public boolean isBeamBroken() {
