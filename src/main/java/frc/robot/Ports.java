@@ -9,6 +9,5 @@ public class Ports {
     public class ElevatorPorts{
         public static int MOTOR_PORT = 3;
         public static int BOT_SWITCH = 2;
-        public static int ENCODER_PORT = 1;
     }
 }

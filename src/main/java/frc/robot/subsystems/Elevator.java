@@ -41,10 +41,10 @@ public class Elevator extends SubsystemBase {
   private static ElevatorFeedforward ff;
    
   public Elevator() {
-    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
-    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless);
+    elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
+    elevatorMotorFollower = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
 
-    botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH);
+    botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
 

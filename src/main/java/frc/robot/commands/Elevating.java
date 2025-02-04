@@ -19,28 +19,28 @@ public class Elevating {
     /**
      * @return goes to first level of reef
      */
-    public Command firstLevel(){
+    public Command firstLevelCmd(){
         return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL);
     }
     /**
      * 
      * @return goes to second level of reef
      */
-    public Command secondLevel(){
+    public Command secondLevelCmd(){
         return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL);
     }
     /**
      * 
      * @return goes to third level of reef
      */
-    public Command thirdLevel(){
+    public Command thirdLevelCmd(){
         return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL);
     }
     /**
      * 
      * @return goes to the fourth level of reef
      */
-    public Command fourthLevel(){
+    public Command fourthLevelCmd(){
         return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL);
     }
 }
