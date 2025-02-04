@@ -56,7 +56,7 @@ public class Climb extends SubsystemBase {
     });
   }
 
-  public Command climbBkdCmd() {
+  public Command climbBkwdCmd() {
     return this.run(() -> {
       double currentRotation = leaderEncoder.getPosition();
       if (currentRotation > Constants.ClimbConstants.MIN_ROTATION) {
