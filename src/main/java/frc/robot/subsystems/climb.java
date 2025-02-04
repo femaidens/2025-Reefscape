@@ -1,92 +1,88 @@
 package frc.robot.subsystems;
 
-import frc.robot.Ports;
-// import com.revrobotics.spark.SparkAbsoluteEncoder;
-import frc.robot.Constants;
-import frc.robot.Constants.ClimbConstants;
-
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import com.revrobotics.spark.SparkAbsoluteEncoder;
+import frc.robot.Constants;
+import frc.robot.Constants.ClimbConstants;
+import frc.robot.Ports;
 
 public class Climb extends SubsystemBase {
   private final SparkMax leader;
   private final SparkMax follower;
   private final SparkAbsoluteEncoder leaderEncoder;
-  private final SparkAbsoluteEncoder followerEncoder;
+  // private final SparkAbsoluteEncoder followerEncoder;
   private final SparkMaxConfig leaderConfig;
   private final SparkMaxConfig followerConfig;
+  private final AbsoluteEncoderConfig encoderConfig;
 
-  public Climb(){
+  public Climb() {
     leader = new SparkMax(Ports.LEADER_PORT, MotorType.kBrushless);
     follower = new SparkMax(Ports.FOLLOWER_PORT, MotorType.kBrushless);
     leaderEncoder = leader.getAbsoluteEncoder();
-    followerEncoder = follower.getAbsoluteEncoder();
     leaderConfig = new SparkMaxConfig();
     followerConfig = new SparkMaxConfig();
-  }
-  
-  public Command climbFwdCmd () {
-    return this.run (() -> {
-      double currentRotation = leaderEncoder.getPosition();
-        if (currentRotation < Constants.ClimbConstants.MAXRotation) {
-            leaderConfig.idleMode(IdleMode.kBrake);
-            leader.configure(leaderConfig, null, null);
-            leader.set(ClimbConstants.ClimbSpeed);
-            followerConfig.idleMode(IdleMode.kCoast);
-            follower.configure(followerConfig, null, null);
-      } 
-        else {
-            leader.set (0);
-            follower.set (0);
-      }
-        });
+    encoderConfig = new AbsoluteEncoderConfig();
+    leaderConfig.idleMode(IdleMode.kBrake);
+    followerConfig.idleMode(IdleMode.kBrake);
+    followerConfig.follow(leader);
+    followerConfig.inverted(true);
+    leaderConfig.inverted(false);
+    encoderConfig.positionConversionFactor(360);
+    leaderConfig.apply(encoderConfig);
+    leader.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    follower.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  public Command climbBkwdCmd (){
+  public Command climbFwdCmd() {
     return this.run(() -> {
       double currentRotation = leaderEncoder.getPosition();
-        if (currentRotation > Constants.ClimbConstants.MINRotation) {
-            leaderConfig.idleMode(IdleMode.kBrake);
-            leader.configure(leaderConfig, null, null);
-            leader.set(ClimbConstants.ClimbSpeed);
-            followerConfig.idleMode(IdleMode.kCoast);
-            follower.configure(followerConfig, null, null);
-      }  
-        else {
-            leader.set (0);
-            follower.set (0);
-      }
-        });
-  }
+      if (currentRotation < Constants.ClimbConstants.MAX_ROTATION) {
+        leader.set(ClimbConstants.CLIMB_SPEED);
 
-  public Command pulleySystemCmd (){
-    return this.run(() -> {
-      double currentRotation = followerEncoder.getPosition();
-        if(currentRotation < Constants.ClimbConstants.MAXRotation) {
-          leaderConfig.idleMode(IdleMode.kBrake);
-          leader.configure(leaderConfig, null, null);
-          followerConfig.idleMode(IdleMode.kBrake);
-          follower.configure(followerConfig, null, null);
-          follower.set(ClimbConstants.ClimbSpeed);
+      } else {
+        leader.set(0);
+        follower.set(0);
       }
-        else {
-            leader.set(0);
-            follower.set(0);
-        }
     });
-    
+  }
+
+  public Command climbBkwdCmd() {
+    return this.run(() -> {
+      double currentRotation = leaderEncoder.getPosition();
+      if (currentRotation > Constants.ClimbConstants.MIN_ROTATION) {
+
+        leader.set(ClimbConstants.CLIMB_SPEED);
+        
+      } else {
+        stopMotors();
+      }
+    });
+  }
+
+  public Command pulleySystemCmd() {
+    return this.run(() -> {
+      double currentRotation = leaderEncoder.getPosition();
+      if (currentRotation < Constants.ClimbConstants.MAX_ROTATION) {
+        follower.set(ClimbConstants.CLIMB_SPEED);
+      } else {
+        stopMotors();
+      }
+    });
 
   }
 
-  public void stopMotors(){
+  public void stopMotors() {
     leader.set(0);
-    follower.set(0);
+    //follower.set(0);
   }
 }
