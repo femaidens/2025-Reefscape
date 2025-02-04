@@ -20,4 +20,8 @@ public final class Constants {
     public static final int kJoystickPort = 0;
 
   }
+
+  public static class SwerveConstants {
+    public static final double 
+  }
 }
