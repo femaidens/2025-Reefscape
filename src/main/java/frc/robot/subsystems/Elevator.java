@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,14 +30,13 @@ import frc.robot.Ports;
 //import com.ctre.phoenix6.hardware.TalonFX;
 
 
-
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
   private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
-  private static ProfiledPIDController elevatorPID;
+  private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
   private static ElevatorFeedforward ff;
    
@@ -48,18 +48,17 @@ public class Elevator extends SubsystemBase {
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
 
-    elevatorPID = new ProfiledPIDController(
-      Constants.ElevatorConstants.PIDConstants.kP, 
-      Constants.ElevatorConstants.PIDConstants.kI, 
-      Constants.ElevatorConstants.PIDConstants.kD, 
-      Constants.ElevatorConstants.PIDConstants.CONSTRAINTS
-      );
-
-      ff = new ElevatorFeedforward(
-        Constants.ElevatorConstants.FeedForwardConstants.kS, 
-        Constants.ElevatorConstants.FeedForwardConstants.kG, 
-        Constants.ElevatorConstants.FeedForwardConstants.kV
-      );
+    elevatorPID = new PIDController(
+      Constants.ElevatorConstants.PIDConstants.kP,
+      Constants.ElevatorConstants.PIDConstants.kI,
+      Constants.ElevatorConstants.PIDConstants.kD
+    );
+  
+    ff = new ElevatorFeedforward(
+      Constants.ElevatorConstants.FeedForwardConstants.kS, 
+      Constants.ElevatorConstants.FeedForwardConstants.kG, 
+      Constants.ElevatorConstants.FeedForwardConstants.kV
+    );
 
       SparkMaxConfig config = new SparkMaxConfig();
 
@@ -80,41 +79,16 @@ public class Elevator extends SubsystemBase {
 
         elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
-    /**
-     * run the motor
-     */
-    public static void runMotor(){
-      elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED);
-      elevatorMotorFollower.resumeFollowerMode();
-      System.out.println(elevatorMotorFollower.isFollower());
-    }
-
-    /**
-     * reverse motor
-     */
-    public static void reverseRunMotor(){
-      
-      elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
-      elevatorMotorFollower.resumeFollowerMode();
-
-    }
-    /**
-     * stops the motor from running
-     */
-    public static void stopMotor(){
-      elevatorMotorLeader.set(0);
-      elevatorMotorFollower.resumeFollowerMode();
-
-    }
+    }    
   
     /**
      * sets motor voltage using calculations from PID and FF values 
      */
     public static void elevatorPID(double setpoint){
       elevatorMotorLeader.setVoltage(
-        elevatorPID.calculate( elevatorEncoder.getPosition() ) +  ff.calculate(elevatorPID.getSetpoint().velocity, setpoint));
-        elevatorMotorFollower.resumeFollowerMode();
+        elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
+        ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
+        // elevatorMotorFollower.resumeFollowerMode();
     }
 
     /**
@@ -122,7 +96,7 @@ public class Elevator extends SubsystemBase {
      */
     public void hitBotLimit(){
       if(botLimitSwitch.get()){
-        stopMotor();
+        stopMotorCmd();
       }
     }
 
@@ -130,22 +104,26 @@ public class Elevator extends SubsystemBase {
     /**
      * @return run elevator motor command
      */
-    public Command runMotorCmd() {
-      return this.run(() -> runMotor());
+    public Command runMotorCmd(){
+      return this.run( () -> 
+        elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED)
+      );
     }
 
     /**
-     * @return run reverse elevator motor command
+     * reverse motor
      */
-    public Command reverseRunMotorCmd() {
-      return this.run(() -> reverseRunMotor());
+
+     public Command reverseRunMotorCmd(){
+      return this.run( () -> 
+        elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED)
+      );
     }
 
-    /**
-     * @return stop elevator motor command
-     */
-    public Command stopMotorCmd() {
-      return this.run(() -> stopMotor());
+    public Command stopMotorCmd(){
+      return this.run( () -> 
+        elevatorMotorLeader.set(0)
+      );
     }
 
     /**
