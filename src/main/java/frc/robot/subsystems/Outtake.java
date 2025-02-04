@@ -41,8 +41,10 @@ public class Outtake extends SubsystemBase {
     motorConfig.smartCurrentLimit(OuttakeConstants.CURRENT_LIMIT);
     motorConfig.idleMode(IdleMode.kBrake); // prevent coral from slipping out of outtake
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+    
+    // front reciever is the one farthest away from intake
     frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
+    // back reciever is the one closest to intake
     backReceiver = new DigitalInput(Ports.BeamBreakPorts.BACK_RECEIVER);
 
 
