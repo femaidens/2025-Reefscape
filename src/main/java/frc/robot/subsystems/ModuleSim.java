@@ -44,7 +44,8 @@ public class ModuleSim {
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
         driveFFController = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
-
+        turnPIDController.setTolerance(Constants.SwerveConstants.TURNING_PID_POSITION_TOL, Constants.SwerveConstants.TURNING_PID_VELOCITY_TOL);
+        drivePIDController.setTolerance(Constants.SwerveConstants.DRIVE_PID_POSITION_TOL, Constants.SwerveConstants.DRIVE_PID_VELOCITY_TOL);
     }
 
     public void setDesiredState(SwerveModuleState state) {
