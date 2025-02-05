@@ -63,13 +63,17 @@ public class ModuleKraken {
         turnMotor = new TalonFX(turnID, Translation.CANBUS); 
         configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
 
+        
+
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
-
+        driveMotor.setPosition(0);
+        
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
@@ -103,6 +107,8 @@ public class ModuleKraken {
      * @param 
      */
     public static void configureTalon(TalonFX motor, int currentLimit){
+        TalonFXConfiguration configs = new TalonFXConfiguration();
+        // motor.getConfigurator().apply(configs); //in case it needs to be reset to factory defaults beforehand
         motor.setNeutralMode(NeutralModeValue.Brake); 
         motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit)); 
     }
