@@ -26,14 +26,14 @@ public class Climb extends SubsystemBase {
   private final AbsoluteEncoderConfig encoderConfig;
 
   public Climb() {
-    leader = new SparkMax(Ports.LEADER_PORT, MotorType.kBrushless);
-    follower = new SparkMax(Ports.FOLLOWER_PORT, MotorType.kBrushless);
+    leader = new SparkMax(Ports.ClimbPorts.LEADER_PORT, MotorType.kBrushless);
+    follower = new SparkMax(Ports.ClimbPorts.FOLLOWER_PORT, MotorType.kBrushless);
     leaderEncoder = leader.getAbsoluteEncoder();
     leaderConfig = new SparkMaxConfig();
     followerConfig = new SparkMaxConfig();
     encoderConfig = new AbsoluteEncoderConfig();
     leaderConfig.idleMode(IdleMode.kBrake);
-    followerConfig.idleMode(IdleMode.kBrake);
+    followerConfig.idleMode(IdleMode.kBrake); 
     followerConfig.follow(leader);
     followerConfig.inverted(true);
     leaderConfig.inverted(false);

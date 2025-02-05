@@ -63,6 +63,12 @@ public final class Constants {
     public static final double VELOCITY_CONVERSION_FACTOR = 1000.0;
     public static final double POSITION_CONVERSION_FACTOR = 1000.0;
     public static final int CURRENT_LIMIT = 30;
+    
+    public static class IntakePIDConstants {
+      public static final double kP = 0.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+    }
   }
 
   public static class IntakePivotConstants {
@@ -70,16 +76,16 @@ public final class Constants {
     public static final double MOTOR_SPEED = 0.5;
     public static final double VOLTAGE = 0;
     
-    public static class PIDConstants {
-      public static final double kP = 0.0;
-      public static final double kI = 0.0;
-      public static final double kD = 0.0;
-    }
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
     
     public static class FeedForwardConstants {
       public static final double kS  = 0.0;
       public static final double kG = 0.0;
-      public static final double kV = 0.0; 
+      public static final double kV = 0.0;
+      
+      
     }
   }
   

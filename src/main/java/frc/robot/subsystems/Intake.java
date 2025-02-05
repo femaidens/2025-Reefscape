@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
+import frc.robot.Constants;
 import frc.robot.Constants.*;
 
 public class Intake extends SubsystemBase {
@@ -34,7 +35,7 @@ public class Intake extends SubsystemBase {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
     config = new SparkMaxConfig();
-    intakePID = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
+    intakePID = new PIDController(IntakeConstants.IntakePIDConstants.kP, IntakeConstants.IntakePIDConstants.kI, IntakeConstants.IntakePIDConstants.kD);
     encoder = intakeMotor.getEncoder();
 
     // Configure the motor
