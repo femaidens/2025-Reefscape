@@ -8,239 +8,125 @@ import java.util.List;
 import java.util.Vector;
 import java.util.function.DoubleSupplier;
 
-import org.photonvision.EstimatedRobotPose;
-
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.*;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.proto.Kinematics;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Ports.DrivetrainPorts;
-import frc.robot.subsystems.DriveConstants.Drivetrain;
-import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.Constants;
+import frc.robot.Constants.*;
+import frc.robot.Ports;
+import frc.robot.Ports.*;
 
 public class Drive extends SubsystemBase {
 
-  private final ModuleSpark frontLeft;
-  private final ModuleSpark frontRight;
-  private final ModuleSpark rearLeft;
-  private final ModuleSpark rearRight;
+  private final DifferentialDrive drive;
+  private final DifferentialDriveOdometry odometry;
 
-  private final List<ModuleSpark> modules;
+  private final SparkMax leftLeader;
+  private final SparkMax leftFollower;
+  private final SparkMax rightLeader;
+  private final SparkMax rightFollower;
+
+  private final RelativeEncoder leftEncoder;
+  private final RelativeEncoder rightEncoder;
 
   private final AHRS gyro;
 
-  private final SwerveDriveOdometry odometry;
+  private final PIDController leftPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
+  private final PIDController rightPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
 
-  private final SwerveDrivePoseEstimator poseEstimator;
-
-  private final SysIdRoutine driveRoutine;
-
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(FF.kS, FF.kV);
+            
   /** Creates a new Drive. */
   public Drive() {
-    frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
-    frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
-    rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
-    rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
-    modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
+    leftLeader = new SparkMax(Drivetrain.LEFT_LEADER, MotorType.kBrushless);
+    leftFollower = new SparkMax(Drivetrain.LEFT_FOLLOWER, MotorType.kBrushless);
+    rightLeader = new SparkMax(Drivetrain.RIGHT_LEADER, MotorType.kBrushless);
+    rightFollower = new SparkMax(Drivetrain.RIGHT_FOLLOWER, MotorType.kBrushless);
 
-    // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kI2C); 
+    drive = new DifferentialDrive(leftLeader::set, rightLeader::set);
 
-    odometry = new SwerveDriveOdometry(
-      Drivetrain.kDriveKinematics, 
-      gyro.getRotation2d(), 
-      new SwerveModulePosition[] {
-        frontLeft.getSwerveModulePosition(),
-        frontRight.getSwerveModulePosition(),
-        rearLeft.getSwerveModulePosition(),
-        rearRight.getSwerveModulePosition()
-      });
-      zeroHeading();
-      var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
-      var visionStdDevs = VecBuilder.fill(1, 1, 1);
+    odometry = new DifferentialDriveOdometry(
+      new Rotation2d(), 
+      0, 
+      0, 
+      new Pose2d());
 
-      poseEstimator = new SwerveDrivePoseEstimator(
-        Drivetrain.kDriveKinematics,
-        gyro.getRotation2d(),
-        new SwerveModulePosition[]{
-          frontLeft.getSwerveModulePosition(),
-          frontRight.getSwerveModulePosition(),
-          rearLeft.getSwerveModulePosition(),
-          rearRight.getSwerveModulePosition()},
-        new Pose2d(),
-        stateStdDevs,
-        visionStdDevs);
 
-      driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
+    leftEncoder = leftLeader.getEncoder();
+    rightEncoder = rightLeader.getEncoder();
 
-      SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
+    gyro = new AHRS(NavXComType.kMXP_UART); 
+
+    for (SparkMax spark : List.of(leftLeader, leftFollower, rightLeader, rightFollower)) {
+      SparkMaxConfig config = new SparkMaxConfig();
+        config
+        .inverted(true)
+        .idleMode(IdleMode.kBrake);
+
+        config.encoder
+        .positionConversionFactor(DriveConstants.POSITION_FACTOR)
+        .velocityConversionFactor(DriveConstants.VELOCITY_FACTOR);
+
+        config
+        .follow(leftLeader, false);
+
+        leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-
-  //PLEASE CHECK THE SPEED FACTOR
-  //consider changing to profiledpid control
-  /**
-   * drivin
-   * @param xSpeed x direction (front and back)
-   * @param ySpeed y direction (right is positive, left is negative)
-   * @param rotSpeed 
-   * @return
-   */
-  public Command drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
-    double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
-    double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
-    double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
-
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-
-    return this.run(
-      () -> {
-        for(int i = 0; i < modules.size(); i++){
-          modules.get(i).setDesiredState(moduleStates[i]);
-        }
-      }
-    );
   }
+
+  public void drive(double leftSpeed, double rightSpeed) {
+    final double realLeftSpeed = leftSpeed * DriveConstants.MAX_SPEED;
+    final double realRightSpeed = rightSpeed * DriveConstants.MAX_SPEED;
+    
+    final double leftFeedforward = feedforward.calculate(realLeftSpeed);
+    final double rightFeedforward = feedforward.calculate(realRightSpeed);
   
-  /**
-   * Gets the angle of the gyro in radians (ideally)
-   * @return in radians
-   */
-  public double getAngle(){
-    return -1 * gyro.getAngle();
+    final double leftPID = leftPIDController.calculate(leftEncoder.getVelocity(), realLeftSpeed);
+    final double rightPID = rightPIDController.calculate(rightEncoder.getVelocity(), realRightSpeed);
+
+    double leftVoltage = leftPID + leftFeedforward;
+    double rightVoltage = rightPID + rightFeedforward;
+
+    leftLeader.setVoltage(leftVoltage);
+    rightLeader.setVoltage(rightVoltage);
   }
 
-  /**
-   * @return currently-estimated pose of robot
-   */
-  public Pose2d getPose(){
+  private void updateOdometry(Rotation2d rotation) {
+    odometry.update(rotation, leftEncoder.getPosition(), rightEncoder.getPosition());
+  }
+
+  public Pose2d pose() {
     return odometry.getPoseMeters();
   }
 
-  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
-  }
-  public void addVisionMeasurement(
-            Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
-        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
-    }
-
-  // public Command driveTo(Pose2d target){
-  //   return run(()-> {
-  //     Transform2d transform = getPose().minus(target);
-  //     Vector<N3> difference = VecBuilder.fill(
-  //       transform.getX(),
-  //       transform.getY(),
-  //       transform.getRotation().getRadians());
-  //   }
-  // }
-  public Pose2d[] getModulePoses() {
-    Pose2d[] modulePoses = new Pose2d[modules.size()];
-    for (int i = 0; i < modules.size(); i++) {
-        var module = modules.get(i);
-        modulePoses[i] =
-                getPose().transformBy(
-                    new Transform2d(
-                      DriveConstants.Drivetrain.WHEEL_BASE / 2, DriveConstants.Drivetrain.TRACK_WIDTH / 2, module.getAbsoluteHeading())); //might need to adjust after new odometry changes
-    }
-    return modulePoses;
-}
-
-
-  /**
-   * resets the odometry to the specified pose
-   */
-  public void resetOdometry(Pose2d pose){
-    odometry.resetPosition(
-      Rotation2d.fromRadians(gyro.getYaw()),
-      new SwerveModulePosition[]{
-        frontLeft.getSwerveModulePosition(),
-        frontRight.getSwerveModulePosition(),
-        rearLeft.getSwerveModulePosition(),
-        rearRight.getSwerveModulePosition()}, pose);
+  public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight) {
+    return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
   }
 
-  /**
-   * In case we'll ever need it
-   * @return new yaw angle in radians (ideally)
-   */
-  public double setYawOffset() {
-    gyro.setAngleAdjustment(-Math.PI / 2); // need to double check!
-    return gyro.getYaw();
-  }
-
-  /**
-   * x formation with wheels to prevent movement
-   */
-  public void setX(){
-    frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-    frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-    rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-    rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-  }
-
-  /**
-   * sets the swerve ModuleStates
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates){
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-      desiredStates, Drivetrain.MAX_SPEED);
-    frontLeft.setDesiredState(desiredStates[0]);
-    frontRight.setDesiredState(desiredStates[1]);
-    rearLeft.setDesiredState(desiredStates[2]);
-    rearRight.setDesiredState(desiredStates[3]);
-  }
-
-  /**
-   * Zero the gyro heading
-   */
-  public void zeroHeading(){
-    gyro.reset();
-  }
-
-  /* SYSID CMDS */
-  public Command driveQuasistatic(SysIdRoutine.Direction direction){
-    return driveRoutine.quasistatic(direction);
-  }
-  public Command driveDynamic(SysIdRoutine.Direction direction){
-    return driveRoutine.dynamic(direction);
-  }
-  
-
-  @Override
+  @Override 
   public void periodic() {
-    // This method will be called once per scheduler run
-    //if gyro is inverted, getRotation2d() --- getAngle() can be negated
-    odometry.update(
-      gyro.getRotation2d(), 
-      new SwerveModulePosition[] {
-        frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
-    });
-    poseEstimator.update(gyro.getRotation2d(), 
-      new SwerveModulePosition[] {
-        frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()});
-    SmartDashboard.updateValues();
+    updateOdometry(gyro.getRotation2d());
   }
 
   

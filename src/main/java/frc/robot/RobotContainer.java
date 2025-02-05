@@ -27,20 +27,17 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
-  private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-
   }
 
   private void configureDefaultCmds(){
     drivetrain.setDefaultCommand(
       drivetrain.drive(
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
         () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
         () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
       );
