@@ -36,9 +36,9 @@ public class ModuleSim {
 
     public ModuleSim() {
         driveMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 1, .5), DCMotor.getNEO(1), 1, 1);
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
         turnMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 1, .5), DCMotor.getNEO(1), 1, 1);
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 20, 1.0 / Turn.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
@@ -52,15 +52,16 @@ public class ModuleSim {
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         setDriveVoltage(voltage);
+        // System.out.println(voltage);
         double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
-        System.out.println(turnVoltage);
+        // System.out.println(turnVoltage);
         setTurnVoltage(turnVoltage);
         desiredState = state;
     }
 
     public void setDriveVoltage(double volts) {
-        double v = MathUtil.clamp(volts, -12.0, 12.0);
-        driveMotorSim.setInputVoltage(v);
+        // double v = MathUtil.clamp(volts, -12.0, 12.0);
+        driveMotorSim.setInputVoltage(volts);
         driveMotorSim.update(0.02);
     }
 
@@ -79,7 +80,7 @@ public class ModuleSim {
     }
 
     public double getTurnAngle() {
-        return turnMotorSim.getAngularPositionRad();
+        return turnMotorSim.getAngularPositionRotations();//getAngularPositionRad();
     }
 
     public SwerveModuleState getState() {

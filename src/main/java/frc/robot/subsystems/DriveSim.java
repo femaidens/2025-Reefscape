@@ -71,7 +71,6 @@ public class DriveSim extends SubsystemBase {
 
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
-
     publisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("My States", SwerveModuleState.struct).publish();
     dev = SimDeviceDataJNI.getSimDeviceHandle("name");
@@ -117,19 +116,24 @@ public class DriveSim extends SubsystemBase {
 
   }
 
-  public void drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed) {
-    double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
-    double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
-    double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
+  public Command drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed) {
+    return this.run(() -> {
+      double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
+      double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
+      double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle.get()));
-    angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+      // System.out.println("xVel: " + xVel + "  yVel: " + yVel + "  rot: " + rotVel);
 
-    frontLeft.setDesiredState(moduleStates[1]);
-    frontRight.setDesiredState(moduleStates[0]);
-    rearLeft.setDesiredState(moduleStates[3]);
-    rearRight.setDesiredState(moduleStates[2]);
+      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle.get()));
+      angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
+      SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+      System.out.println(moduleStates[0].speedMetersPerSecond);
+      frontLeft.setDesiredState(moduleStates[1]);
+      frontRight.setDesiredState(moduleStates[0]);
+      rearLeft.setDesiredState(moduleStates[3]);
+      rearRight.setDesiredState(moduleStates[2]);
+    });
+
   }
 
   public Command driveForward() {
@@ -165,14 +169,16 @@ public class DriveSim extends SubsystemBase {
     // m_field.setRobotPose(m_odometry.getPoseMeters());
     // m_field.getObject("traj").setTrajectory(m_trajectory);
     publisher.set(getStates());
-    odometry.update(new Rotation2d(angle.get()), 
-      new SwerveModulePosition[] {
-        frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
-    });
+    odometry.update(new Rotation2d(Units.degreesToRadians(angle.get())),
+        new SwerveModulePosition[] {
+            frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
+            rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
+        });
 
-    m_field.setRobotPose(odometry.getPoseMeters());
+    m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle.get())));
     SmartDashboard.putData("Field", m_field);
-    // SmartDashboard.putNumber("Desired States", frontLeft.desiredState.speedMetersPerSecond);
+    // SmartDashboard.putNumber("Desired States",
+    // frontLeft.desiredState.speedMetersPerSecond);
 
   }
 

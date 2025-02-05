@@ -52,7 +52,8 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
     //   );
-    driveSim.setDefaultCommand(new RunCommand(() -> driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()), driveSim));
+    driveSim.setDefaultCommand(
+      driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
     
   }
 
