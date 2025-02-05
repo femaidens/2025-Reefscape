@@ -65,11 +65,14 @@ public class ModuleKraken {
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-        driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
-        turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
+
+        driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V, Translation.FF.A); 
+        turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V, Turn.FF.A);
         // DEVICE IDS SHOULD BE CHANGED!! 
 
+        directionConfig = new MagnetSensorConfigs(); 
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
@@ -89,11 +92,13 @@ public class ModuleKraken {
 
     public void setDesiredStateNoPID(SwerveModuleState state){
         // maybe optimize is broken 
-        SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
-        angleSetpoint = newState.angle.getRadians();
+        //SwerveModuleState newState = optimize(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+        state.optimize(new Rotation2d(getTurnAngle()));
+        //angleSetpoint = newState.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        System.out.println(state.angle.getDegrees()); 
         SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
         desiredState = state;
     }
