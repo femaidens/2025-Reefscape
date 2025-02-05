@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ModuleSpark;
+import frc.robot.subsystems.DriveConstants.DriveSimConstants;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 import edu.wpi.first.math.MathUtil;
@@ -36,26 +37,27 @@ public class ModuleSim {
 
     public ModuleSim() {
         driveMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
         turnMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 20, 1.0 / Turn.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.25, 1.0 / Turn.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
-        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        turnPIDController.enableContinuousInput(0, Math.PI * 2);
         driveFFController = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
-        turnPIDController.setTolerance(Constants.SwerveConstants.TURNING_PID_POSITION_TOL, Constants.SwerveConstants.TURNING_PID_VELOCITY_TOL);
-        drivePIDController.setTolerance(Constants.SwerveConstants.DRIVE_PID_POSITION_TOL, Constants.SwerveConstants.DRIVE_PID_VELOCITY_TOL);
+        turnPIDController.setTolerance(DriveSimConstants.TURNING_PID_POSITION_TOL, DriveSimConstants.TURNING_PID_VELOCITY_TOL);
+        drivePIDController.setTolerance(DriveSimConstants.DRIVE_PID_POSITION_TOL, DriveSimConstants.DRIVE_PID_VELOCITY_TOL);
     }
 
     public void setDesiredState(SwerveModuleState state) {
-        state.optimize(state.angle);
+        // state.optimize(state.angle);
+        // System.out.println(state.angle);
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         setDriveVoltage(voltage);
         // System.out.println(voltage);
         double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
-        // System.out.println(turnVoltage);
+        System.out.println(turnVoltage);
         setTurnVoltage(turnVoltage);
         desiredState = state;
     }

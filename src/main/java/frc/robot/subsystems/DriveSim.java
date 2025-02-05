@@ -127,7 +127,7 @@ public class DriveSim extends SubsystemBase {
       ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle.get()));
       angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
       SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-      System.out.println(moduleStates[0].speedMetersPerSecond);
+      // System.out.println(moduleStates[0].speedMetersPerSecond);
       frontLeft.setDesiredState(moduleStates[1]);
       frontRight.setDesiredState(moduleStates[0]);
       rearLeft.setDesiredState(moduleStates[3]);
