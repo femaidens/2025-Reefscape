@@ -61,6 +61,7 @@ public class Intake extends SubsystemBase {
 
   public Command reverseMotorCmd() {
     return this.run(() -> intakeMotor.set(-IntakeConstants.MOTORSPEED));
+
   }
 
   public Command stopMotorCmd() {
