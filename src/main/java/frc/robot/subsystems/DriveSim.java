@@ -58,6 +58,7 @@ public class DriveSim extends SubsystemBase {
   // private StructArrayPublisher<Pose3d> arrayPublisherSwerve;
 
   private StructArrayPublisher<SwerveModuleState> publisher;
+  private StructArrayPublisher<SwerveModuleState> desiredPublisher;
 
   private List<ModuleSim> modules;
   // private Trajectory m_trajectory;
@@ -73,6 +74,10 @@ public class DriveSim extends SubsystemBase {
 
     publisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("My States", SwerveModuleState.struct).publish();
+
+    desiredPublisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("Desired States", SwerveModuleState.struct).publish();
+    
     dev = SimDeviceDataJNI.getSimDeviceHandle("name");
     gyro = new AHRS(NavXComType.kI2C);
     angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
@@ -161,6 +166,15 @@ public class DriveSim extends SubsystemBase {
     };
   }
 
+  public SwerveModuleState[] getDesiredStates(){
+    return new SwerveModuleState[] {
+      frontLeft.desiredState,
+      frontRight.desiredState,
+      rearLeft.desiredState,
+      rearRight.desiredState
+    };
+  }
+
   @Override
   public void simulationPeriodic() {
     // m_field.setRobotPose(1, 6, Rotation2d.fromDegrees(100));
@@ -168,7 +182,8 @@ public class DriveSim extends SubsystemBase {
     // publisherSwerve.set(poseA3d);
     // m_field.setRobotPose(m_odometry.getPoseMeters());
     // m_field.getObject("traj").setTrajectory(m_trajectory);
-    publisher.set(getStates());
+    publisher.set(this.getStates());
+    desiredPublisher.set(this.getDesiredStates());
     odometry.update(new Rotation2d(Units.degreesToRadians(angle.get())),
         new SwerveModulePosition[] {
             frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),

@@ -39,11 +39,11 @@ public class ModuleSim {
         driveMotorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
         turnMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.25, 1.0 / Turn.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.1, 1.0), DCMotor.getNEO(1),0.5, 0.5);
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
-        turnPIDController.enableContinuousInput(0, Math.PI * 2);
+        // turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
         driveFFController = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
         turnPIDController.setTolerance(DriveSimConstants.TURNING_PID_POSITION_TOL, DriveSimConstants.TURNING_PID_VELOCITY_TOL);
         drivePIDController.setTolerance(DriveSimConstants.DRIVE_PID_POSITION_TOL, DriveSimConstants.DRIVE_PID_VELOCITY_TOL);
@@ -74,16 +74,12 @@ public class ModuleSim {
         turnMotorSim.update(0.02);
     }
 
-    // public double getDriveAppliedVolts() {
-    //     return driveAppliedVolts;
-    // }
-
     public SwerveModulePosition getSwerveModulePosition() {
         return new SwerveModulePosition(getDrivePosition(), getState().angle);
     }
 
     public double getTurnAngle() {
-        return turnMotorSim.getAngularPositionRotations();//getAngularPositionRad();
+        return turnMotorSim.getAngularPositionRotations() * Turn.POS_CONVERSION_FACTOR;//getAngularPositionRad();
     }
 
     public SwerveModuleState getState() {
@@ -101,13 +97,6 @@ public class ModuleSim {
 
     /** Advance the simulation. */
     public void simulationPeriodic() {
-        // // In this method, we update our simulation of what our elevator is doing
-        // // First, we set our "inputs" (voltages)
-        // driveMotorSim.setInput(driveMotorSim.getDriveVelocity()/Constants.ModuleSimConstants.MAX_SPEED
-        // * RobotController.getBatteryVoltage());
-        // //updateInputs(drivePositionRad, driveVelocityRadPerSec, driveAppliedVolts,
-        // drivePositionRad, turnAbsolutePositionRad, turnRelativePositionRad,
-        // turnVelocityRadPerSec, turnAppliedVolts, driveAppliedVolts);
         // // SimBattery estimates loaded battery voltages
         RoboRioSim.setVInVoltage(
                 BatterySim.calculateDefaultBatteryLoadedVoltage(driveMotorSim.getCurrentDrawAmps() + turnMotorSim.getCurrentDrawAmps()));

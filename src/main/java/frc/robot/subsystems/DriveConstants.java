@@ -33,7 +33,7 @@ public class DriveConstants {
 
         public class FF {
             public static final double S = 0.2;
-            public static final double V = 0.5;
+            public static final double V = 2.0;
         }
     }
 
@@ -44,7 +44,7 @@ public class DriveConstants {
         public static final int AVERAGE_DEPTH = 1;
 
         public class PID {
-            public static final double P = 2;
+            public static final double P = 0.2;
             public static final double I = 0;
             public static final double D = 0;
         }
@@ -61,10 +61,10 @@ public class DriveConstants {
 
     public class DriveSimConstants {
         public static final double DRIVE_FORWARD_VOLTAGE = 5;
-        public static final double TURNING_PID_POSITION_TOL = 0.5;
-        public static final double TURNING_PID_VELOCITY_TOL = 0.5;
-        public static final double DRIVE_PID_POSITION_TOL = 0.5;
-        public static final double DRIVE_PID_VELOCITY_TOL = 0.5;
+        public static final double TURNING_PID_POSITION_TOL = 5;
+        public static final double TURNING_PID_VELOCITY_TOL = 5;
+        public static final double DRIVE_PID_POSITION_TOL = 5;
+        public static final double DRIVE_PID_VELOCITY_TOL = 5;
 
     }
 
