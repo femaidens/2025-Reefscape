@@ -36,7 +36,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-
   }
 
   private void configureDefaultCmds(){

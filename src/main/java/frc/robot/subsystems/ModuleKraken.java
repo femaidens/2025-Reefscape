@@ -72,6 +72,7 @@ public class ModuleKraken implements Logged{
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
 
+        directionConfig = new MagnetSensorConfigs();
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
