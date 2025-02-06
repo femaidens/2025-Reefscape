@@ -1,13 +1,9 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.ModuleSpark;
 import frc.robot.subsystems.DriveConstants.DriveSimConstants;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
@@ -19,10 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.Units;
-import frc.robot.Constants;
 
 public class ModuleSim {
     private DCMotorSim turnMotorSim;
@@ -37,9 +30,9 @@ public class ModuleSim {
 
     public ModuleSim() {
         driveMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getNEO(1),0.5, 0.5);
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.25, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getKrakenX60(1));
         turnMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.1, 1.0), DCMotor.getNEO(1),0.5, 0.5);
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.1, 1.0), DCMotor.getKrakenX60(1));
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
         turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
@@ -50,16 +43,22 @@ public class ModuleSim {
     }
 
     public void setDesiredState(SwerveModuleState state) {
-        // state.optimize(state.angle);
+        state.optimize(state.angle);
         // System.out.println(state.angle);
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
         setDriveVoltage(voltage);
         // System.out.println(voltage);
         double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
-        System.out.println(turnVoltage);
-        setTurnVoltage(turnVoltage);
+        // System.out.println(turnVoltage);
+        if(!isAtAngle(state)){
+            setTurnVoltage(turnVoltage);
+        }
         desiredState = state;
+    }
+
+    public boolean isAtAngle(SwerveModuleState state){
+        return Math.abs(state.angle.getDegrees() - getState().angle.getDegrees()) < 10;
     }
 
     public void setDriveVoltage(double volts) {
@@ -69,7 +68,7 @@ public class ModuleSim {
     }
 
     public void setTurnVoltage(double volts) {
-        double v = MathUtil.clamp(volts, -12.0, 12.0);
+        double v = MathUtil.clamp(volts, -14.0, 14.0);
         turnMotorSim.setInputVoltage(v);
         turnMotorSim.update(0.02);
     }
@@ -79,7 +78,7 @@ public class ModuleSim {
     }
 
     public double getTurnAngle() {
-        return turnMotorSim.getAngularPositionRotations() * Turn.POS_CONVERSION_FACTOR;//getAngularPositionRad();
+        return (turnMotorSim.getAngularPositionRotations() * Turn.POS_CONVERSION_FACTOR) % (Math.PI * 2);  //getAngularPositionRad();
     }
 
     public SwerveModuleState getState() {
@@ -88,18 +87,21 @@ public class ModuleSim {
     }
 
     public double getDrivePosition() {
-        return driveMotorSim.getAngularPosition().in(Units.Revolutions) * Translation.POS_CONVERSION_FACTOR;
+        return driveMotorSim.getAngularPositionRotations() * Translation.POS_CONVERSION_FACTOR;
     }
 
     public double getDriveVelocity() {
-        return driveMotorSim.getAngularVelocity().in(Units.RevolutionsPerSecond) * Translation.VEL_CONVERSION_FACTOR;
+        return driveMotorSim.getAngularVelocityRPM() * Translation.VEL_CONVERSION_FACTOR;
     }
+
+    
 
     /** Advance the simulation. */
     public void simulationPeriodic() {
         // // SimBattery estimates loaded battery voltages
         RoboRioSim.setVInVoltage(
                 BatterySim.calculateDefaultBatteryLoadedVoltage(driveMotorSim.getCurrentDrawAmps() + turnMotorSim.getCurrentDrawAmps()));
+                
 
     }
 }

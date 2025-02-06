@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
@@ -9,33 +8,21 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.DriveConstants.DriveSimConstants;
-import frc.robot.Ports.DrivetrainPorts;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
-import frc.robot.subsystems.DriveConstants.Translation;
 
 public class DriveSim extends SubsystemBase {
 
@@ -78,7 +65,7 @@ public class DriveSim extends SubsystemBase {
     desiredPublisher = NetworkTableInstance.getDefault()
         .getStructArrayTopic("Desired States", SwerveModuleState.struct).publish();
     
-    dev = SimDeviceDataJNI.getSimDeviceHandle("name");
+    dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     gyro = new AHRS(NavXComType.kI2C);
     angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
 
@@ -127,16 +114,15 @@ public class DriveSim extends SubsystemBase {
       double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
       double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-      // System.out.println("xVel: " + xVel + "  yVel: " + yVel + "  rot: " + rotVel);
-
       ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle.get()));
       angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
       SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-      // System.out.println(moduleStates[0].speedMetersPerSecond);
-      frontLeft.setDesiredState(moduleStates[1]);
-      frontRight.setDesiredState(moduleStates[0]);
-      rearLeft.setDesiredState(moduleStates[3]);
-      rearRight.setDesiredState(moduleStates[2]);
+      
+      System.out.println(frontLeft.getTurnAngle());
+      frontLeft.setDesiredState(moduleStates[0]);
+      frontRight.setDesiredState(moduleStates[1]);
+      rearLeft.setDesiredState(moduleStates[2]);
+      rearRight.setDesiredState(moduleStates[3]);
     });
 
   }
@@ -184,7 +170,7 @@ public class DriveSim extends SubsystemBase {
     // m_field.getObject("traj").setTrajectory(m_trajectory);
     publisher.set(this.getStates());
     desiredPublisher.set(this.getDesiredStates());
-    odometry.update(new Rotation2d(Units.degreesToRadians(angle.get())),
+    odometry.update(new Rotation2d(Units.degreesToRadians(gyro.getYaw())),
         new SwerveModulePosition[] {
             frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
             rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
@@ -192,8 +178,6 @@ public class DriveSim extends SubsystemBase {
 
     m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle.get())));
     SmartDashboard.putData("Field", m_field);
-    // SmartDashboard.putNumber("Desired States",
-    // frontLeft.desiredState.speedMetersPerSecond);
 
   }
 
