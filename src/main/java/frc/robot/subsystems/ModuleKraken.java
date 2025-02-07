@@ -107,7 +107,7 @@ public class ModuleKraken implements Logged{
      */
     public static void configureTalon(TalonFX motor, int currentLimit){
         motor.setNeutralMode(NeutralModeValue.Brake); 
-        motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit)); 
+        motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));  //add cancoder
     }
 
     public void setDriveVoltage(double volts){
