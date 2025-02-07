@@ -25,8 +25,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.DriveConstants.DriveSimConstants;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
+import monologue.Annotations.Log; 
+import monologue.Logged;
 
-public class DriveSim extends SubsystemBase {
+public class DriveSim extends SubsystemBase  implements Logged{
 
   private int dev;
   //private SimDouble angle;
@@ -120,7 +122,6 @@ public class DriveSim extends SubsystemBase {
     rearLeft.setDriveVoltage(0);
     rearRight.setDriveVoltage(0);
   }
-
   public SwerveModuleState[] getStates() {
     return new SwerveModuleState[] {
         frontLeft.getState(),
