@@ -120,8 +120,8 @@ public class Drive extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
-  public Command drive(DoubleSupplier vLeft, DoubleSupplier vRight) {
-    return run(() -> drive(vLeft.getAsDouble(), vRight.getAsDouble()));
+  public Command driveCmd(double vLeft, double vRight) {
+    return run(() -> drive(vLeft, vRight));
   }
 
   @Override 

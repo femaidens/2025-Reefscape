@@ -36,11 +36,11 @@ public class RobotContainer {
   }
 
   private void configureDefaultCmds(){
-    drivetrain.setDefaultCommand(
-      drivetrain.drive(
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-      );
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.driveCmd(
+    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+    //   );
   }
 
   /**

@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drive;
 
 /**
@@ -17,6 +19,10 @@ import frc.robot.subsystems.Drive;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
+  private final Drive drive = new Drive();
+  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
+
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -26,6 +32,13 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+  }
+
+  public void robotInit() {
+    drive.setDefaultCommand(drive.driveCmd(driveJoy.getLeftY(),driveJoy.getRightY()));
+    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
+    // autonomous chooser on the dashboard.
   }
 
   /**
