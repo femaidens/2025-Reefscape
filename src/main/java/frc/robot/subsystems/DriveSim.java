@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import org.opencv.core.Mat;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -27,7 +29,8 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 public class DriveSim extends SubsystemBase {
 
   private int dev;
-  private SimDouble angle;
+  //private SimDouble angle;
+  private double angle1;
   private Field2d m_field;
   private SwerveDriveOdometry odometry;
   private AHRS gyro;
@@ -67,7 +70,7 @@ public class DriveSim extends SubsystemBase {
     
     dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     gyro = new AHRS(NavXComType.kI2C);
-    angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+    //angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
 
     m_field = new Field2d();
     odometry = new SwerveDriveOdometry(
@@ -79,32 +82,6 @@ public class DriveSim extends SubsystemBase {
             rearLeft.getSwerveModulePosition(),
             rearRight.getSwerveModulePosition()
         });
-    // m_trajectory = TrajectoryGenerator.generateTrajectory(
-    // new Pose2d(20,50,Rotation2d.fromDegrees(0)),
-    // List.of(new Translation2d(1,1), new Translation2d(2,-1)),
-    // new Pose2d(3,0,Rotation2d.fromDegrees(0)),
-    // new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
-    // );
-
-    // poseA = new Pose2d();
-    // poseB = new Pose2d(); //creates a 2d representation of the swerve drive
-    // publisherPose = NetworkTableInstance.getDefault().getStructTopic("MyPose",
-    // Pose2d.struct).publish();
-    // arrayPublisher =
-    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
-    // Pose2d.struct).publish();
-    // poseA3d = new Pose3d();
-    // poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
-    // publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose",
-    // Pose3d.struct).publish();
-    // arrayPublisherSwerve =
-    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
-    // Pose3d.struct).publish();
-    // arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
-    // arrayPublisher.set(new Pose2d[] {poseA, poseB});
-
-    // m_field.setRobotPose(m_odometry.getPoseMeters());
-    // m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
 
   }
 
@@ -114,15 +91,16 @@ public class DriveSim extends SubsystemBase {
       double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
       double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle.get()));
-      angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
+      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle1));
+      //angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
+      angle1 +=  0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond);
       SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-      
-      System.out.println(frontLeft.getTurnAngle());
-      frontLeft.setDesiredState(moduleStates[0]);
-      frontRight.setDesiredState(moduleStates[1]);
-      rearLeft.setDesiredState(moduleStates[2]);
-      rearRight.setDesiredState(moduleStates[3]);
+      // System.out.println(angle1);
+      // System.out.println(frontLeft.getTurnAngle());
+      frontLeft.setDesiredState(moduleStates[1]);
+      frontRight.setDesiredState(moduleStates[0]);
+      rearLeft.setDesiredState(moduleStates[3]);
+      rearRight.setDesiredState(moduleStates[2]);
     });
 
   }
@@ -170,15 +148,41 @@ public class DriveSim extends SubsystemBase {
     // m_field.getObject("traj").setTrajectory(m_trajectory);
     publisher.set(this.getStates());
     desiredPublisher.set(this.getDesiredStates());
-    odometry.update(new Rotation2d(Units.degreesToRadians(gyro.getYaw())),
+    odometry.update(new Rotation2d(angle1 ),
         new SwerveModulePosition[] {
             frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
             rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
         });
+        System.out.println(angle1 );
 
-    m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle.get())));
+    m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle1 )));
     SmartDashboard.putData("Field", m_field);
-
   }
 
+  // m_trajectory = TrajectoryGenerator.generateTrajectory(
+    // new Pose2d(20,50,Rotation2d.fromDegrees(0)),
+    // List.of(new Translation2d(1,1), new Translation2d(2,-1)),
+    // new Pose2d(3,0,Rotation2d.fromDegrees(0)),
+    // new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
+    // );
+
+    // poseA = new Pose2d();
+    // poseB = new Pose2d(); //creates a 2d representation of the swerve drive
+    // publisherPose = NetworkTableInstance.getDefault().getStructTopic("MyPose",
+    // Pose2d.struct).publish();
+    // arrayPublisher =
+    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
+    // Pose2d.struct).publish();
+    // poseA3d = new Pose3d();
+    // poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
+    // publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose",
+    // Pose3d.struct).publish();
+    // arrayPublisherSwerve =
+    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
+    // Pose3d.struct).publish();
+    // arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
+    // arrayPublisher.set(new Pose2d[] {poseA, poseB});
+
+    // m_field.setRobotPose(m_odometry.getPoseMeters());
+    // m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
 }

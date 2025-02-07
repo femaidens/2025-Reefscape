@@ -13,8 +13,9 @@ public class DriveConstants {
     // **************MODULE CONSTANTS******************//
     public class Translation {
         public static final int CURRENT_LIMIT = 40;
-        public static final double POS_CONVERSION_FACTOR = 0.0762 * Math.PI / ((45.0 * 22) / (14.0 * 15));
-        public static final double VEL_CONVERSION_FACTOR = POS_CONVERSION_FACTOR / 60.0;
+        public static final double POS_CONVERSION_FACTOR = 1; //0.0762 * Math.PI / ((45.0 * 22) / (14.0 * 15));
+        public static final double VEL_CONVERSION_FACTOR = 1; 
+        //POS_CONVERSION_FACTOR / 60.0;
         public static final int AVERAGE_DEPTH = 1;
 
         public static final double FRONT_LEFT_ANGOFFSET = -Math.PI / 2;
@@ -30,7 +31,7 @@ public class DriveConstants {
 
         public class FF {
             public static final double S = 0.2;
-            public static final double V = 2.0;
+            public static final double V = 1.0;
         }
     }
 

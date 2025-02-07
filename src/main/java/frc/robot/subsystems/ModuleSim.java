@@ -28,9 +28,10 @@ public class ModuleSim {
     private SimpleMotorFeedforward driveFFController;
     public SwerveModuleState desiredState = new SwerveModuleState();
 
+
     public ModuleSim() {
         driveMotorSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.25, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getKrakenX60(1));
+                LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.1, 1.0 / Translation.POS_CONVERSION_FACTOR), DCMotor.getKrakenX60(1));
         turnMotorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60(1), 0.1, 1.0), DCMotor.getKrakenX60(1));
 
@@ -42,7 +43,26 @@ public class ModuleSim {
         drivePIDController.setTolerance(DriveSimConstants.DRIVE_PID_POSITION_TOL, DriveSimConstants.DRIVE_PID_VELOCITY_TOL);
     }
 
+    // public SwerveModuleState optimize(Rotation2d desiredAngle, SwerveModuleState state){
+    //     Rotation2d angle;
+    //     double vel = state.speedMetersPerSecond;
+    //     double des = desiredAngle.getRadians() - getTurnAngle();
+    //     if(des >= Math.PI/2 && des <= Math.PI){
+    //         des = Math.PI + des;
+    //         vel = -vel;
+    //     }
+    //     else if(des > Math.PI && des <= 3*Math.PI/2){
+    //         des = des - Math.PI;
+    //         vel = -vel;
+    //     }
+
+    //     angle = new Rotation2d(des);
+
+    //     return new SwerveModuleState(vel, angle);
+    // }
+
     public void setDesiredState(SwerveModuleState state) {
+        //SwerveModuleState stacyHatesMe = 
         state.optimize(state.angle);
         // System.out.println(state.angle);
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
@@ -55,6 +75,7 @@ public class ModuleSim {
             setTurnVoltage(turnVoltage);
         }
         desiredState = state;
+        
     }
 
     public boolean isAtAngle(SwerveModuleState state){
