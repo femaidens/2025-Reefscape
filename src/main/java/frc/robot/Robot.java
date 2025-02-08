@@ -13,8 +13,8 @@ import org.littletonrobotics.urcl.URCL;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
-import monologue.Monologue; 
-import monologue.Logged; 
+// import monologue.Monologue; 
+// import monologue.Logged; 
 
 
 /**
@@ -22,7 +22,7 @@ import monologue.Logged;
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot implements Logged{
+public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   // private DriveSim bobot = new DriveSim();
   // private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kJoystickPort);

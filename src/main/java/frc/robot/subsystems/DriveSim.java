@@ -25,10 +25,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.DriveConstants.DriveSimConstants;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
-import monologue.Annotations.Log; 
-import monologue.Logged;
+// import monologue.Annotations.Log; 
+// import monologue.Logged;
 
-public class DriveSim extends SubsystemBase  implements Logged{
+public class DriveSim extends SubsystemBase {
 
   private int dev;
   //private SimDouble angle;

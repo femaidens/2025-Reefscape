@@ -8,11 +8,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-repositories{
-    maven { url 'https://jitpack.io'}
-}
-
-
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
@@ -61,7 +56,6 @@ dependencies {
     annotationProcessor wpi.java.deps.wpilibAnnotations()
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
-    implementation 'com.github.shueja:Monologue:RELEASE_TAG'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
