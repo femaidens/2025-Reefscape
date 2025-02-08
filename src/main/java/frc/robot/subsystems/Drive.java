@@ -76,7 +76,6 @@ public class Drive extends SubsystemBase {
       0, 
       new Pose2d());
 
-
     leftEncoder = leftLeader.getEncoder();
     rightEncoder = rightLeader.getEncoder();
 
