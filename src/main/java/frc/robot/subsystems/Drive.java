@@ -49,7 +49,7 @@ public class Drive extends SubsystemBase {
   private final RelativeEncoder leftEncoder;
   private final RelativeEncoder rightEncoder;
 
-  private final AHRS gyro;
+  // private final AHRS gyro;
 
   private final PIDController leftPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
   private final PIDController rightPIDController = new PIDController(PID.kP, PID.kI, PID.kD);
@@ -65,6 +65,11 @@ public class Drive extends SubsystemBase {
 
     drive = new DifferentialDrive(leftLeader::set, rightLeader::set);
 
+    SparkMaxConfig globalConfig = new SparkMaxConfig();
+
+    SparkMaxConfig leftLeaderConfig = new SparkMaxConfig();
+    SparkMaxConfig leftFollowerConfig = new SparkMaxConfig();
+
     odometry = new DifferentialDriveOdometry(
       new Rotation2d(), 
       0, 
@@ -75,24 +80,28 @@ public class Drive extends SubsystemBase {
     leftEncoder = leftLeader.getEncoder();
     rightEncoder = rightLeader.getEncoder();
 
-    gyro = new AHRS(NavXComType.kMXP_UART); 
+    // gyro = new AHRS(NavXComType.kMXP_UART); 
 
-    for (SparkMax spark : List.of(leftLeader, leftFollower, rightLeader, rightFollower)) {
-      SparkMaxConfig config = new SparkMaxConfig();
-        config
-        .inverted(true)
-        .idleMode(IdleMode.kBrake);
+    globalConfig
+    .idleMode(IdleMode.kBrake);
+    
+      leftLeaderConfig
+      .apply(globalConfig)
+      .inverted(true);
 
-        config.encoder
-        .positionConversionFactor(DriveConstants.POSITION_FACTOR)
-        .velocityConversionFactor(DriveConstants.VELOCITY_FACTOR);
+      leftFollowerConfig
+      .apply(globalConfig)
+      .follow(leftLeader);
 
-        config
-        .follow(leftLeader, false);
+      leftLeaderConfig.encoder
+      .positionConversionFactor(DriveConstants.POSITION_FACTOR)
+      .velocityConversionFactor(DriveConstants.VELOCITY_FACTOR);
 
-        leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        leftFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
+      leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    rightLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void drive(double leftSpeed, double rightSpeed) {
@@ -106,7 +115,7 @@ public class Drive extends SubsystemBase {
     final double rightPID = rightPIDController.calculate(rightEncoder.getVelocity(), realRightSpeed);
 
     double leftVoltage = leftPID + leftFeedforward;
-    double rightVoltage = rightPID + rightFeedforward;
+    double rightVoltage = rightPID +rightFeedforward;
 
     leftLeader.setVoltage(leftVoltage);
     rightLeader.setVoltage(rightVoltage);
@@ -126,7 +135,7 @@ public class Drive extends SubsystemBase {
 
   @Override 
   public void periodic() {
-    updateOdometry(gyro.getRotation2d());
+    // updateOdometry(gyro.getRotation2d());
   }
 
   

@@ -19,8 +19,6 @@ import frc.robot.subsystems.Drive;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
-  private final Drive drive = new Drive();
-  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
 
 
 
@@ -35,11 +33,6 @@ public class Robot extends TimedRobot {
 
   }
 
-  public void robotInit() {
-    drive.setDefaultCommand(drive.driveCmd(driveJoy.getLeftY(),driveJoy.getRightY()));
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-  }
 
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics

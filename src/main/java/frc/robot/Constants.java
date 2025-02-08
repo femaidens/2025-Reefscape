@@ -40,26 +40,26 @@ public final class Constants {
       new Rotation3d(0, 0, 0));
   }
   public static final class PID {
-    public static final double kP = 8.5;
+    public static final double kP = 0.4;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
 
   public static final class FF {
-    public static final double kS = 1;
-    public static final double kV = 3;
+    public static final double kS = 0.01;
+    public static final double kV = 0.01;
   }
 
   public static final class DriveConstants {
-    public static final double MAX_SPEED = 2; // Meters per second
-    public static final double CIRCUMFERENCE = 0;
+    public static final double MAX_SPEED = 0.2; // Meters per second
+    public static final double CIRCUMFERENCE = 0.1;
 
-    public static final double GEAR_RATIO = 6.75;
-    public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
-    public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+    // public static final double GEAR_RATIO = 6.75;
+    // public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+    // public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
-    public static final double POSITION_FACTOR = CIRCUMFERENCE * GEAR_RATIO;
-    public static final double VELOCITY_FACTOR = POSITION_FACTOR / 60.0;
+    public static final double POSITION_FACTOR = 0;
+    public static final double VELOCITY_FACTOR = 0;
   }
 
 }

@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -36,11 +37,11 @@ public class RobotContainer {
   }
 
   private void configureDefaultCmds(){
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.driveCmd(
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-    //   );
+    drivetrain.setDefaultCommand(
+      new RunCommand(
+      () -> drivetrain.drive(
+      MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1), 
+      MathUtil.applyDeadband(driveJoy.getRightY(), 0.1)), drivetrain));
   }
 
   /**
