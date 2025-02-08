@@ -25,11 +25,11 @@ public class ThereIsElevator extends SubsystemBase implements ElevatorIO{
     throw new UnsupportedOperationException("Unimplemented method 'getPosition'");
   }
 
-  @Override
-  public double getVelocityy() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getVelocityy'");
-  }
+  // @Override
+  // public double getVelocityy() {
+  //   // TODO Auto-generated method stub
+  //   throw new UnsupportedOperationException("Unimplemented method 'getVelocityy'");
+  // }
 
   @Override
   public void setVoltage(double voltage) {

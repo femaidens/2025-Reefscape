@@ -25,10 +25,10 @@ public class NoElevator extends SubsystemBase implements ElevatorIO{
     return 0;
   }
 
-  @Override
-  public double getVelocityy() {
-    return 0;
-  }
+  // @Override
+  // public double getVoltage() {
+  //   return 0;
+  // }
 
   @Override
   public void setVoltage(double voltage) {
