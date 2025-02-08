@@ -11,7 +11,7 @@ public interface ElevatorIO extends AutoCloseable  {
 
   public double getPosition();
 
-  public double getVoltage();
+  // public double getVoltage();
 
   public void setVoltage( double voltage );
 
