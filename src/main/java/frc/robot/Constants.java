@@ -51,8 +51,8 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double MAX_SPEED = 0.2; // Meters per second
-    public static final double CIRCUMFERENCE = 0.1;
+    public static final double MAX_SPEED = 0.5; // Meters per second
+    // public static final double CIRCUMFERENCE = 0;
 
     // public static final double GEAR_RATIO = 6.75;
     // public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
