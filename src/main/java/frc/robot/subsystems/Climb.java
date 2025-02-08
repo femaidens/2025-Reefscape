@@ -16,7 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Ports;
 
-public class climb extends SubsystemBase {
+public class Climb extends SubsystemBase {
   private final SparkMax leader;
   private final SparkMax follower;
   private final SparkAbsoluteEncoder leaderEncoder;
@@ -25,7 +25,7 @@ public class climb extends SubsystemBase {
   private final SparkMaxConfig followerConfig;
   private final AbsoluteEncoderConfig encoderConfig;
 
-  public climb() {
+  public Climb() {
     leader = new SparkMax(Ports.ClimbPorts.LEADER_PORT, MotorType.kBrushless);
     follower = new SparkMax(Ports.ClimbPorts.FOLLOWER_PORT, MotorType.kBrushless);
     leaderEncoder = leader.getAbsoluteEncoder();

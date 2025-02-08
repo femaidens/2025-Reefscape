@@ -50,7 +50,8 @@ public class intakeTest extends SubsystemBase implements AutoCloseable {
   }
 
   public void close(){
-    
+    intakeMotor.close();
+    beamBreak.close();
   }
 
   public void setIntakePID(double setpoint){
