@@ -117,6 +117,10 @@ public class ModuleKraken implements Logged{
         if(inverted){
         motor.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)); 
         }
+        else{
+            motor.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)); 
+
+        }
     }
 
     public void setDriveVoltage(double volts){
