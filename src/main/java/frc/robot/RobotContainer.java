@@ -6,16 +6,31 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveConstants;
+import frc.robot.subsystems.DriveConstants.Drivetrain;
+import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Turn;
 //import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.ModuleConfig;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,6 +50,9 @@ public class RobotContainer {
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
+  private SendableChooser<Command> autoChooser;
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -42,7 +60,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-
+    configureAuton();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Choose Auto: ", autoChooser);
   }
 
   private void configureDefaultCmds(){
@@ -57,6 +77,43 @@ public class RobotContainer {
     
   }
 
+   public void configureAuton() {
+    // autonChooser.addOption("taxi", new Taxi(drivetrain, hopper, shooterAngle, shooterWheel, AutoConstants.DRIVE_TIME));
+    // autonChooser.addOption("taxi amp", new TaxiAmp(drivetrain, hopper, shooterAngle, shooterWheel));
+    // autonChooser.addOption("taxi speaker", new TaxiSpeaker(drivetrain, hopper, shooterAngle, shooterWheel));
+    
+    // autonChooser = AutonBuilder.
+    // autonChooser.addOption("flush three notes", new ThreeNoteFlushAuto(drivetrain, intaking, shooter));
+    // autonChooser.addOption("flush one note", new OneNoteLeft(drivetrain, intaking, shooter));
+    ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
+    RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
+    
+    // AutoBuilder autoBuilder = new AutoBuilder();
+        AutoBuilder.configure(
+        driveSim::getPose, 
+        driveSim::resetOdometry, 
+        driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
+        driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
+        driveSim.holonomicDriveController, config, 
+        // new HolonomicPathFollowerConfig(
+        //     new PIDConstants(Translation.PID.P, Translation.PID.I, Translation.PID.D), // Translation PID constants
+        //     new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D), // Rotation PID constants
+        //     DriveConstants.Drivetrain.MAX_SPEED, // Max module speed, in m/s
+        //     1.0/Math.PI, 
+        //     new ReplanningConfig()), 
+
+        () -> {
+        var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+        driveSim);
+
+  }
+
+  
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the

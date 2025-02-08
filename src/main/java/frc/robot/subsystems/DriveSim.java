@@ -10,6 +10,7 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -25,6 +26,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.DriveConstants.DriveSimConstants;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
+import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Turn;
+
+import com.pathplanner.lib.config.PIDConstants;
+
+
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 // import monologue.Annotations.Log; 
 // import monologue.Logged;
 
@@ -36,10 +44,14 @@ public class DriveSim extends SubsystemBase {
   private Field2d m_field;
   private SwerveDriveOdometry odometry;
   private AHRS gyro;
+  private ChassisSpeeds speeds;
   private final ModuleSim frontLeft;
   private final ModuleSim frontRight;
   private final ModuleSim rearLeft;
   private final ModuleSim rearRight;
+  public PPHolonomicDriveController holonomicDriveController;
+  private PIDConstants translationPID;
+  private PIDConstants rotationPID;
   // private Pose2d poseA;
   // private Pose2d poseB;
   // private Pose3d poseA3d;
@@ -72,8 +84,11 @@ public class DriveSim extends SubsystemBase {
     
     dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     gyro = new AHRS(NavXComType.kI2C);
+    translationPID = new PIDConstants(Translation.PID.P,Translation.PID.I, Translation.PID.D );
+    rotationPID = new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D);
+    holonomicDriveController = new PPHolonomicDriveController(translationPID, rotationPID);
     //angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-
+    
     m_field = new Field2d();
     odometry = new SwerveDriveOdometry(
         Drivetrain.kDriveKinematics,
@@ -93,10 +108,14 @@ public class DriveSim extends SubsystemBase {
       double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
       double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-      ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle1));
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, new Rotation2d(angle1));
       //angle.set(angle.get() + 0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond));
       angle1 +=  0.02 * Units.radiansToDegrees(speeds.omegaRadiansPerSecond);
       SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+      moduleStates[0].optimize(moduleStates[0].angle);
+      moduleStates[1].optimize(moduleStates[1].angle);
+      moduleStates[2].optimize(moduleStates[2].angle);
+      moduleStates[3].optimize(moduleStates[3].angle);
       // System.out.println(angle1);
       // System.out.println(frontLeft.getTurnAngle());
       frontLeft.setDesiredState(moduleStates[1]);
@@ -158,6 +177,33 @@ public class DriveSim extends SubsystemBase {
 
     m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle1 )));
     SmartDashboard.putData("Field", m_field);
+  }
+
+  public Pose2d getPose(){
+    return m_field.getRobotPose();
+  }
+  public void resetOdometry(Pose2d pose){
+    odometry.resetPose(pose);
+  }
+
+  public ChassisSpeeds getRobotRelativeChassisSpeeds(){
+    return speeds;
+  }
+  
+  
+  public void setChassisSpeeds(ChassisSpeeds speed){
+    angle1 +=  0.02 * Units.radiansToDegrees(speed.omegaRadiansPerSecond);
+      SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speed);
+      moduleStates[0].optimize(moduleStates[0].angle);
+      moduleStates[1].optimize(moduleStates[1].angle);
+      moduleStates[2].optimize(moduleStates[2].angle);
+      moduleStates[3].optimize(moduleStates[3].angle);
+      // System.out.println(angle1);
+      // System.out.println(frontLeft.getTurnAngle());
+      frontLeft.setDesiredState(moduleStates[1]);
+      frontRight.setDesiredState(moduleStates[0]);
+      rearLeft.setDesiredState(moduleStates[3]);
+      rearRight.setDesiredState(moduleStates[2]);
   }
 
   // m_trajectory = TrajectoryGenerator.generateTrajectory(

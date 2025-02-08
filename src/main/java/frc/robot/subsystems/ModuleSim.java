@@ -41,29 +41,33 @@ public class ModuleSim {
         driveFFController = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
         turnPIDController.setTolerance(DriveSimConstants.TURNING_PID_POSITION_TOL, DriveSimConstants.TURNING_PID_VELOCITY_TOL);
         drivePIDController.setTolerance(DriveSimConstants.DRIVE_PID_POSITION_TOL, DriveSimConstants.DRIVE_PID_VELOCITY_TOL);
+
     }
 
-    // public SwerveModuleState optimize(Rotation2d desiredAngle, SwerveModuleState state){
-    //     Rotation2d angle;
-    //     double vel = state.speedMetersPerSecond;
-    //     double des = desiredAngle.getRadians() - getTurnAngle();
-    //     if(des >= Math.PI/2 && des <= Math.PI){
-    //         des = Math.PI + des;
-    //         vel = -vel;
-    //     }
-    //     else if(des > Math.PI && des <= 3*Math.PI/2){
-    //         des = des - Math.PI;
-    //         vel = -vel;
-    //     }
+    public SwerveModuleState optimize(Rotation2d desiredAngle, SwerveModuleState state){
+        Rotation2d angle;
+        double vel = state.speedMetersPerSecond;
+        double des = desiredAngle.getRadians() - getTurnAngle();
+        if(des >= Math.PI/2 && des <= Math.PI){
+            des = Math.PI + des;
+            des = (des + 2 * Math.PI) % 2 * Math.PI;
+            vel = -vel;
+        }
+        else if(des > Math.PI && des <= 3*Math.PI/2){
+            des = des - Math.PI;
+            des = (des + 2 * Math.PI) % 2 * Math.PI;
 
-    //     angle = new Rotation2d(des);
+            vel = -vel;
+        }
 
-    //     return new SwerveModuleState(vel, angle);
-    // }
+        angle = new Rotation2d(des);
+
+        return new SwerveModuleState(vel, angle);
+    }
 
     public void setDesiredState(SwerveModuleState state) {
         //SwerveModuleState stacyHatesMe = 
-        state.optimize(state.angle);
+        //state.optimize(state.angle);
         // System.out.println(state.angle);
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
@@ -71,9 +75,10 @@ public class ModuleSim {
         // System.out.println(voltage);
         double turnVoltage = turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians());
         // System.out.println(turnVoltage);
-        if(!isAtAngle(state)){
-            setTurnVoltage(turnVoltage);
-        }
+        // if(!isAtAngle(state)){
+        //     setTurnVoltage(turnVoltage);
+        // }
+        setTurnVoltage(turnVoltage);
         desiredState = state;
         
     }
@@ -117,12 +122,14 @@ public class ModuleSim {
 
     
 
-    /** Advance the simulation. */
-    public void simulationPeriodic() {
-        // // SimBattery estimates loaded battery voltages
-        RoboRioSim.setVInVoltage(
-                BatterySim.calculateDefaultBatteryLoadedVoltage(driveMotorSim.getCurrentDrawAmps() + turnMotorSim.getCurrentDrawAmps()));
+//FAKE SIMULATION PERIODIC 
+
+//     /** Advance the simulation. */
+//     public void simulationPeriodic() {
+//         // // SimBattery estimates loaded battery voltages
+//         RoboRioSim.setVInVoltage(
+//                 BatterySim.calculateDefaultBatteryLoadedVoltage(driveMotorSim.getCurrentDrawAmps() + turnMotorSim.getCurrentDrawAmps()));
                 
 
-    }
-}
+//     }
+ }
