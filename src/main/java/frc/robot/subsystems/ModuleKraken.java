@@ -53,16 +53,16 @@ public class ModuleKraken implements Logged{
 
     // IDK what canbus we use so i just set it to the robot rio for now. 
     //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
-    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset){
+    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset, boolean invert){
         this.chassisAngularOffset = chassisAngularOffset;
 
         // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
         // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
         driveMotor = new TalonFX(driveID, Translation.CANBUS); 
-        configureTalon(driveMotor, Translation.CURRENT_LIMIT); 
+        configureTalon(driveMotor, Translation.CURRENT_LIMIT, false); 
 
         turnMotor = new TalonFX(turnID, Translation.CANBUS); 
-        configureTalon(turnMotor,Turn.CURRENT_LIMIT); 
+        configureTalon(turnMotor,Turn.CURRENT_LIMIT, invert); 
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
@@ -105,9 +105,10 @@ public class ModuleKraken implements Logged{
      * This configures a TalonFX motor's nuetral mode to brake and sets the current limit!!! 
      * @param 
      */
-    public static void configureTalon(TalonFX motor, int currentLimit){
+    public static void configureTalon(TalonFX motor, int currentLimit, boolean inverted){
         motor.setNeutralMode(NeutralModeValue.Brake); 
         motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));  //add cancoder
+        motor.setInverted(inverted); 
     }
 
     public void setDriveVoltage(double volts){
