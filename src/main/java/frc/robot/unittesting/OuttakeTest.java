@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+package frc.robot.unittesting;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
@@ -20,7 +20,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Ports;
 
-public class outtakeTest extends SubsystemBase implements AutoCloseable{
+public class OuttakeTest extends SubsystemBase implements AutoCloseable{
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
@@ -30,7 +30,7 @@ public class outtakeTest extends SubsystemBase implements AutoCloseable{
 
 
   /** Creates a new Outtake. */
-  public outtakeTest() {
+  public OuttakeTest() {
 
     outtakeMotor = new SparkMax(Ports.OuttakePorts.OUTTAKE_MOTOR, SparkLowLevel.MotorType.kBrushless);
 

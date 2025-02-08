@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+package frc.robot.unittesting;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
@@ -18,7 +18,7 @@ import frc.robot.Ports.*;
 import frc.robot.Constants;
 import frc.robot.Constants.*;
 
-public class intakePivotTest extends SubsystemBase implements AutoCloseable{
+public class IntakePivotTest extends SubsystemBase implements AutoCloseable{
   /** Creates a new IntakePivot. */
   private final SparkMax intakePivotMotor;
   private final RelativeEncoder pivotEncoder;
@@ -26,7 +26,7 @@ public class intakePivotTest extends SubsystemBase implements AutoCloseable{
   private final PIDController pivotPID;
   private final ArmFeedforward pivotFF;
 
-  public intakePivotTest() {
+  public IntakePivotTest() {
     intakePivotMotor = new SparkMax(IntakePorts.PIVOT_MOTOR, MotorType.kBrushless);
     pivotEncoder = intakePivotMotor.getEncoder();
     pivotConfig = new SparkMaxConfig();

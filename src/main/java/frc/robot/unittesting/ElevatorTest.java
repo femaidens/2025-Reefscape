@@ -1,7 +1,7 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+package frc.robot.unittesting;
 import java.io.ObjectInputFilter.Config;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -28,7 +28,7 @@ import frc.robot.Ports;
 //import com.ctre.phoenix6.hardware.TalonFX;
 
 
-public class elevatorTest extends SubsystemBase implements AutoCloseable{
+public class ElevatorTest extends SubsystemBase implements AutoCloseable{
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
@@ -38,7 +38,7 @@ public class elevatorTest extends SubsystemBase implements AutoCloseable{
   private static RelativeEncoder elevatorEncoder;
   private static ElevatorFeedforward ff;
    
-  public elevatorTest() {
+  public ElevatorTest() {
     elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
     elevatorMotorFollower = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
 
