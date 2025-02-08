@@ -143,17 +143,23 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
   }
   @Override
   public double getPosition() {
-    return elevatorEncoder.getDistance();
+    return elevatorEncoder.getPosition();
   }
 
   @Override
   public double getVoltage() {
-    return elevatorMotorLeader.getVoltage();
+    return elevatorMotorLeader.get();
   }
 
   @Override
   public void setVoltage(double voltage) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
+  }
+
+  @Override
+  public void close() throws Exception {
+    elevatorMotorFollower.close();
+    elevatorMotorLeader.close();
   }
 }

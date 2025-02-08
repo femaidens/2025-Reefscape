@@ -243,14 +243,13 @@ public class Elevator implements ElevatorIO{
     return totalDistance;
   }
 
-  @Override
-  public double getVoltage() {
-    return m_motor.getVoltage();
-  }
+  // @Override
+  // public double getVoltage() {
+  //   return m_motor.getVoltage();
+  // }
 
   @Override
   public void setVoltage(double voltage) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
+    m_motor.setVoltage(voltage);
   }
 }
