@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-public class Elevator implements AutoCloseable {
+public class Elevator implements ElevatorIO{
   // This gearbox represents a gearbox containing 4 NEO motors.
   private final DCMotor m_elevatorGearbox = DCMotor.getNEO(4);
 
@@ -234,5 +234,23 @@ public class Elevator implements AutoCloseable {
     m_encoder.close();
     m_motor.close();
     m_mech2d.close();
+  }
+
+  @Override
+  public double getPosition() {
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
+    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
+    return totalDistance;
+  }
+
+  @Override
+  public double getVoltage() {
+    return m_motor.getVoltage();
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
   }
 }

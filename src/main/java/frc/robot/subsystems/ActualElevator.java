@@ -30,7 +30,7 @@ import frc.robot.Ports;
 //import com.ctre.phoenix6.hardware.TalonFX;
 
 
-public class ActualElevator extends SubsystemBase {
+public class ActualElevator extends SubsystemBase implements ElevatorIO {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
@@ -140,5 +140,20 @@ public class ActualElevator extends SubsystemBase {
     // This method will be called once per scheduler run
     this.hitBotLimit();
     
+  }
+  @Override
+  public double getPosition() {
+    return elevatorEncoder.getDistance();
+  }
+
+  @Override
+  public double getVoltage() {
+    return elevatorMotorLeader.getVoltage();
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
   }
 }
