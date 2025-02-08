@@ -5,11 +5,13 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
@@ -43,7 +45,7 @@ public class ModuleKraken implements Logged{
     private final SimpleMotorFeedforward driveFF;
     private final SimpleMotorFeedforward turnFF; 
 
-    private MagnetSensorConfigs directionConfig;
+    private final MagnetSensorConfigs directionConfig;
 
     private final double chassisAngularOffset;
 
@@ -53,16 +55,16 @@ public class ModuleKraken implements Logged{
 
     // IDK what canbus we use so i just set it to the robot rio for now. 
     //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
-    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset, boolean invert){
+    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset, boolean turnInverted){
         this.chassisAngularOffset = chassisAngularOffset;
 
         // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
         // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
         driveMotor = new TalonFX(driveID, Translation.CANBUS); 
-        configureTalon(driveMotor, Translation.CURRENT_LIMIT, false); 
+        configureDriveTalon(driveMotor, Translation.CURRENT_LIMIT); 
 
         turnMotor = new TalonFX(turnID, Translation.CANBUS); 
-        configureTalon(turnMotor,Turn.CURRENT_LIMIT, invert); 
+        configureTurnTalon(turnMotor,Turn.CURRENT_LIMIT, turnInverted); 
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
@@ -105,10 +107,16 @@ public class ModuleKraken implements Logged{
      * This configures a TalonFX motor's nuetral mode to brake and sets the current limit!!! 
      * @param 
      */
-    public static void configureTalon(TalonFX motor, int currentLimit, boolean inverted){
+    public static void configureDriveTalon(TalonFX motor, int currentLimit){
         motor.setNeutralMode(NeutralModeValue.Brake); 
         motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));  //add cancoder
-        motor.setInverted(inverted); 
+    }
+    public static void configureTurnTalon(TalonFX motor, int currentLimit, boolean inverted){
+        motor.setNeutralMode(NeutralModeValue.Brake); 
+        motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));
+        if(inverted){
+        motor.getConfigurator().apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive)); 
+        }
     }
 
     public void setDriveVoltage(double volts){
