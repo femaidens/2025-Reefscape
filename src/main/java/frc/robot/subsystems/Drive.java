@@ -112,10 +112,10 @@ public class Drive extends SubsystemBase implements Logged {
   public void setModuleStates(SwerveModuleState[] desiredStates){
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates, Drivetrain.MAX_SPEED);
-    frontLeft.setDesiredStateNoPID(desiredStates[0]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
-    frontRight.setDesiredStateNoPID(desiredStates[1]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
+   // frontLeft.setDesiredStateNoPID(desiredStates[0]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
+    //frontRight.setDesiredStateNoPID(desiredStates[1]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
     rearLeft.setDesiredStateNoPID(desiredStates[2]); //rearLeft.setDesiredStateNoPID(desiredStates[3]);
-    rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
+    //rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
 
    /**
@@ -124,10 +124,10 @@ public class Drive extends SubsystemBase implements Logged {
   public Command setXCmd(){
     return this.run(
       () -> {
-        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
+        //frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
+        //frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
-        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
+       // rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
       }
     );
   }
@@ -138,11 +138,11 @@ public class Drive extends SubsystemBase implements Logged {
   public Command setStraightCmd(){
     return this.run(
       () -> {
-        frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
-        frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+        //frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+        //frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
         //only rear right is acting up, consider changing it to 180 degrees
-        rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+        //rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
       }
     );
   }
