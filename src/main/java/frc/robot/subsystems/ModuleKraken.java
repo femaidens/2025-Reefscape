@@ -73,7 +73,7 @@ public class ModuleKraken implements Logged{
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
-        drivePIDController.enableContinuousInput(-Math.PI, Math.PI);
+       drivePIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
@@ -91,7 +91,7 @@ public class ModuleKraken implements Logged{
     }
 
     public void setDesiredState(SwerveModuleState state){
-        state.optimize(state.angle);
+        //state.optimize(state.angle);
         driveMotor.setVoltage(
         driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
@@ -99,8 +99,8 @@ public class ModuleKraken implements Logged{
 
     public void setDesiredStateNoPID(SwerveModuleState state){
         // maybe optimize is broken 
-        SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
-        angleSetpoint = newState.angle.getRadians();
+        //SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+        angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
@@ -115,7 +115,7 @@ public class ModuleKraken implements Logged{
     public static void configureDriveTalon(TalonFX motor, int encoderID, int currentLimit){
         motor.setNeutralMode(NeutralModeValue.Brake); 
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Feedback.FeedbackRemoteSensorID = encoderID;
+       // config.Feedback.FeedbackRemoteSensorID = encoderID;
         config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
 
