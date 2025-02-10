@@ -72,5 +72,14 @@ public class Constants {
           public static final double ALGAE_THIRD_LVL = 0;
           public static final double FOURTH_LVL = 0;
         }
+
+        public static class SimsSetpointConstants{
+          public static final double FIRST_LVL = 0;
+          public static final double SECOND_LVL = 0;
+          public static final double ALGAE_SECOND_LVL = 0;
+          public static final double THIRD_LVL = 0;
+          public static final double ALGAE_THIRD_LVL = 0;
+          public static final double FOURTH_LVL = 0;
+        }
     }
 }

@@ -152,8 +152,8 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
   // }
 
   @Override
-  public void setVoltage(double voltage) {
-    elevatorMotorLeader.setVoltage(voltage);
+  public void setVoltage(double setpoint ) {
+    this.setLevel(setpoint);
   }
 
   @Override

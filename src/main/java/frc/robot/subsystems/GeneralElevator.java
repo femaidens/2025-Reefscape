@@ -5,13 +5,16 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ActualElevator;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.NoElevator;
 
 public class GeneralElevator extends SubsystemBase implements ElevatorIO{
   /** Creates a new GeneralElevator. */
-  private ElevatorIO elevator = (RobotContainer.isRobotReal()) ? (new ActualElevator()) : (new Elevator());
+  private ElevatorIO elevator = (Robot.isReal()) ? (new ActualElevator()) : (new Elevator());
+  // private ElevatorIO elevator = new NoElevator();
   
   @Override
   public void periodic() {
@@ -20,6 +23,7 @@ public class GeneralElevator extends SubsystemBase implements ElevatorIO{
 
   @Override
   public void close() throws Exception {
+    elevator.close();
   }
 
   @Override
@@ -35,10 +39,10 @@ public class GeneralElevator extends SubsystemBase implements ElevatorIO{
   // }
 
   @Override
-  public void setVoltage(double voltage) {
-
-    elevator.setVoltage(elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
-        ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
+  public void setVoltage(double setpoint) {
+    elevator.setVoltage(setpoint);
+    // elevator.setVoltage(elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
+    //     ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
         // elevatorMotorFollower.resumeFollowerMode();
   }
 }

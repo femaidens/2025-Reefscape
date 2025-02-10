@@ -249,7 +249,24 @@ public class Elevator implements ElevatorIO{
   // }
 
   @Override
-  public void setVoltage(double voltage) {
-    m_motor.setVoltage(voltage);
+  public void setVoltage(double setpoint) {
+    if (setpoint == Constants.ElevatorConstants.SetpointConstants.FIRST_LVL){
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
+    }
+    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.SECOND_LVL){
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.SECOND_LVL);
+    }
+    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.THIRD_LVL){
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.THIRD_LVL);
+    }
+    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL) {
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FOURTH_LVL);
+    } else if (setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL) {
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_SECOND_LVL);
+    } else if(setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL) {
+      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_THIRD_LVL);
+    } else {
+      reachGoal(0);
+    }
   }
 }
