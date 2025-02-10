@@ -102,6 +102,8 @@ public class DriveSim extends SubsystemBase {
 
   }
 
+  
+
   public Command drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed) {
     return this.run(() -> {
       double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
@@ -116,8 +118,11 @@ public class DriveSim extends SubsystemBase {
       moduleStates[1].optimize(moduleStates[1].angle);
       moduleStates[2].optimize(moduleStates[2].angle);
       moduleStates[3].optimize(moduleStates[3].angle);
+      
       // System.out.println(angle1);
       // System.out.println(frontLeft.getTurnAngle());
+  
+
       frontLeft.setDesiredState(moduleStates[1]);
       frontRight.setDesiredState(moduleStates[0]);
       rearLeft.setDesiredState(moduleStates[3]);
