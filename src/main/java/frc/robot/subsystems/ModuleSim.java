@@ -67,7 +67,7 @@ public class ModuleSim {
 
     public void setDesiredState(SwerveModuleState state) {
         //SwerveModuleState stacyHatesMe = 
-        //state.optimize(state.angle);
+        state.optimize(state.angle);
         // System.out.println(state.angle);
         double voltage = driveFFController.calculate(state.speedMetersPerSecond)
                 + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond);
