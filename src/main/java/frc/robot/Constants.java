@@ -33,8 +33,8 @@ public final class Constants {
 
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-    public static final AprilTagFieldLayout APRILTAG_FIELD_LAYOUT = AprilTagFieldLayout
-    .loadField(AprilTagFields.k2025Reefscape);
+    
+    public static final AprilTagFieldLayout APRILTAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
     
     public static final Transform3d kRobotToCam = new Transform3d(
       new Translation3d(0.5, 0.0, 0.5),

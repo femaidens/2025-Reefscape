@@ -84,20 +84,20 @@ public class Drive extends SubsystemBase {
     globalConfig
     .idleMode(IdleMode.kBrake);
     
-      leftLeaderConfig
-      .apply(globalConfig)
-      .inverted(true);
+    leftLeaderConfig
+    .apply(globalConfig)
+    .inverted(true);
 
-      leftFollowerConfig
-      .apply(globalConfig)
-      .follow(leftLeader);
+    leftFollowerConfig
+    .apply(globalConfig)
+    .follow(leftLeader);
 
-      leftLeaderConfig.encoder
-      .positionConversionFactor(DriveConstants.POSITION_FACTOR)
-      .velocityConversionFactor(DriveConstants.VELOCITY_FACTOR);
+    leftLeaderConfig.encoder
+    .positionConversionFactor(DriveConstants.POSITION_FACTOR)
+    .velocityConversionFactor(DriveConstants.VELOCITY_FACTOR);
 
-      leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-      leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftLeader.configure(leftLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftFollower.configure(leftFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     rightLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rightFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -114,7 +114,7 @@ public class Drive extends SubsystemBase {
     final double rightPID = rightPIDController.calculate(rightEncoder.getVelocity(), realRightSpeed);
 
     double leftVoltage = leftPID + leftFeedforward;
-    double rightVoltage = rightPID +rightFeedforward;
+    double rightVoltage = rightPID + rightFeedforward;
 
     leftLeader.setVoltage(leftVoltage);
     rightLeader.setVoltage(rightVoltage);
