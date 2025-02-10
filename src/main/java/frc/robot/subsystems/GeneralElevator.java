@@ -5,11 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.ActualElevator;
+import frc.robot.subsystems.Elevator;
 
-public class ThereIsElevator extends SubsystemBase implements ElevatorIO{
-  /** Creates a new ThereIsElevator. */
+public class GeneralElevator extends SubsystemBase implements ElevatorIO{
+  /** Creates a new GeneralElevator. */
+  private ElevatorIO elevator = (RobotContainer.isRobotReal()) ? (new ActualElevator()) : (new Elevator());
   
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -33,7 +36,9 @@ public class ThereIsElevator extends SubsystemBase implements ElevatorIO{
 
   @Override
   public void setVoltage(double voltage) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'setVoltage'");
+
+    elevator.setVoltage(elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
+        ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
+        // elevatorMotorFollower.resumeFollowerMode();
   }
 }
