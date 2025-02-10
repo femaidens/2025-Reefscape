@@ -12,7 +12,22 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.*;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
+
 import frc.robot.Constants.*;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+// import com.revrobotics.spark.SparkAbsoluteEncoder;
+import frc.robot.Constants;
+import frc.robot.Ports;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -20,12 +35,24 @@ public class Intake extends SubsystemBase {
   private final SparkMax intakeMotor;
   private final PIDController pidController;
   private final DigitalInput beamBreak;
+  private final SparkMax climbMotor;
+  private final SparkMaxConfig climbConfig;
+  private final SparkMaxConfig intakeConfig;
 
   public Intake() {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     pidController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
+    climbMotor = new SparkMax(Ports.ClimbPorts.FOLLOWER_MOTOR, MotorType.kBrushless);
+    climbConfig = new SparkMaxConfig();
+    intakeConfig = new SparkMaxConfig();
+    climbConfig.follow(intakeMotor);
+    climbConfig.inverted(true);
+    intakeConfig.inverted(false);
+    intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    climbMotor.configure(climbConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
+  
 
   public Command runMotor() {
     return this.run(() -> intakeMotor.set(IntakeConstants.MOTOR_SPEED));
@@ -52,6 +79,10 @@ public class Intake extends SubsystemBase {
       return this.run(() -> runMotor());
     else
       return this.run(() -> stopMotorCmd());
+  }
+
+  public Command pulleySystemCmd() {
+    return this.run(() -> climbMotor.set(ClimbConstants.CLIMB_SPEED));
   }
 
   @Override

@@ -8,7 +8,6 @@ import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Climb; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,14 +21,12 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController;
-  private final Climb climb;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
     xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    climb = new Climb();
   }
 
   /**
@@ -43,17 +40,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    xboxController.leftBumper()
-      .whileTrue(climb.climbFwdCmd());
-  
-
-    xboxController.rightBumper()
-      .whileTrue(climb.climbBkwdCmd());
-    
-    xboxController.rightTrigger()
-      .whileTrue(climb.pulleySystemCmd());
-
-    
   }
 
   /**
