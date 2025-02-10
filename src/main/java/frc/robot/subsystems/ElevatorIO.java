@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public interface ElevatorIO extends AutoCloseable  {
   /** Creates a new ElevatorIO. */
 
+  public void close() throws Exception;
+
   public double getPosition();
 
   // public double getVoltage();

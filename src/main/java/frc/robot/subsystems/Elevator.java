@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Elevator implements ElevatorIO{
   // This gearbox represents a gearbox containing 4 NEO motors.
-  private final DCMotor m_elevatorGearbox = DCMotor.getNEO(4);
+  private final DCMotor m_elevatorGearbox = DCMotor.getNEO(2);
 
   // Standard classes for controlling our elevator
   private final ProfiledPIDController m_controller =
@@ -250,23 +250,25 @@ public class Elevator implements ElevatorIO{
 
   @Override
   public void setVoltage(double setpoint) {
-    if (setpoint == Constants.ElevatorConstants.SetpointConstants.FIRST_LVL){
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
-    }
-    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.SECOND_LVL){
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.SECOND_LVL);
-    }
-    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.THIRD_LVL){
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.THIRD_LVL);
-    }
-    else if (setpoint == Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL) {
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FOURTH_LVL);
-    } else if (setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL) {
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_SECOND_LVL);
-    } else if(setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL) {
-      reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_THIRD_LVL);
-    } else {
-      reachGoal(0);
-    }
+    // if (setpoint == Constants.ElevatorConstants.SetpointConstants.FIRST_LVL){
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
+    // }
+    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.SECOND_LVL){
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.SECOND_LVL);
+    // }
+    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.THIRD_LVL){
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.THIRD_LVL);
+    // }
+    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL) {
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FOURTH_LVL);
+    // } else if (setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL) {
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_SECOND_LVL);
+    // } else if(setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL) {
+    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_THIRD_LVL);
+    // } else {
+    //   reachGoal(0);
+    // }
+    
+    reachGoal(setpoint);
   }
 }

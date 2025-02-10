@@ -60,13 +60,13 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
       Constants.ElevatorConstants.FeedForwardConstants.kV
     );
 
-      SparkMaxConfig config = new SparkMaxConfig();
+      SparkMaxConfig LeaderConfig = new SparkMaxConfig();
 
-        config
+        LeaderConfig
         .inverted(true)
         .idleMode(IdleMode.kBrake);
 
-        config.encoder
+        LeaderConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
@@ -74,11 +74,30 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
         //probably unneeded 
-        config
-        .follow(elevatorMotorLeader, false);
 
-        elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorLeader.configure(LeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorFollower.configure(LeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+        SparkMaxConfig FollowerConfig = new SparkMaxConfig();
+
+        FollowerConfig
+        .inverted(false)
+        .idleMode(IdleMode.kBrake);
+
+        FollowerConfig.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+
+        // config.closedLoop
+        // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
+        //probably unneeded 
+
+        elevatorMotorLeader.configure(LeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorFollower.configure(FollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+      
     }    
   
     /**
