@@ -73,6 +73,7 @@ public class ModuleKraken implements Logged{
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        drivePIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
