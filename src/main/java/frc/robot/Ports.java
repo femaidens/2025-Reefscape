@@ -19,5 +19,7 @@ public class Ports {
      public static int INTAKE_MOTOR = 0;
      public static int BEAM_BREAK = 1;
   }
+
+  public static int FOLLOWER_PORT;
 }
 

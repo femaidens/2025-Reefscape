@@ -81,9 +81,9 @@ public class Intake extends SubsystemBase {
       return this.run(() -> stopMotorCmd());
   }
 
-  public Command pulleySystemCmd() {
-    return this.run(() -> climbMotor.set(ClimbConstants.CLIMB_SPEED));
-  }
+  // public Command pulleySystemCmd() {
+  //   return this.run(() -> climbMotor.set(ClimbConstants.CLIMB_SPEED));
+  // }
 
   @Override
   public void periodic() {
