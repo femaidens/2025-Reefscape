@@ -4,23 +4,14 @@
 
 package frc.robot.subsystems;
 
-import java.io.ObjectInputFilter.Config;
-
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,9 +27,7 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
   private static SparkMax elevatorMotorLeader;
   private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
-  private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
-  private static ElevatorFeedforward ff;
    
   public ActualElevator() {
     elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
@@ -47,18 +36,6 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
     botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
-
-    elevatorPID = new PIDController(
-      Constants.ElevatorConstants.PIDConstants.kP,
-      Constants.ElevatorConstants.PIDConstants.kI,
-      Constants.ElevatorConstants.PIDConstants.kD
-    );
-  
-    ff = new ElevatorFeedforward(
-      Constants.ElevatorConstants.FeedForwardConstants.kS, 
-      Constants.ElevatorConstants.FeedForwardConstants.kG, 
-      Constants.ElevatorConstants.FeedForwardConstants.kV
-    );
 
       SparkMaxConfig LeaderConfig = new SparkMaxConfig();
 
@@ -99,16 +76,6 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
 
       
     }    
-  
-    /**
-     * sets motor voltage using calculations from PID and FF values 
-     */
-    public static void elevatorPID(double setpoint){
-      elevatorMotorLeader.setVoltage(
-        elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
-        ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
-        // elevatorMotorFollower.resumeFollowerMode();
-    }
 
     /**
      * if the limit switch is activated, the elevator motor stops moving
@@ -145,15 +112,6 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
       );
     }
 
-    /**
-     * 
-     * @param setpoint
-     * @return lifts elevator to specified setpoint
-     */
-    public Command setLevel(double setpoint) {
-      return this.run(() -> elevatorPID(setpoint));
-    }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -171,8 +129,8 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
   // }
 
   @Override
-  public void setVoltage(double setpoint ) {
-    this.setLevel(setpoint);
+  public void setVoltage(double voltage ) {
+    elevatorMotorLeader.setVoltage(voltage);
   }
 
   @Override

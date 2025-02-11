@@ -10,7 +10,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -24,8 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Elevator implements ElevatorIO{
   // This gearbox represents a gearbox containing 4 NEO motors.
@@ -152,38 +149,38 @@ public class Elevator implements ElevatorIO{
     m_motor.setVoltage(voltage);
   }
 
-  /**
-   * Run control loop to reach and maintain goal.
-   *
-   * @param goal the position to maintain
-   */
-  public double reachGoal(double goal) {
-    m_controller.setGoal(goal);
+  // /**
+  //  * Run control loop to reach and maintain goal.
+  //  *
+  //  * @param goal the position to maintain
+  //  */
+  // public double reachGoal(double goal) {
+  //   m_controller.setGoal(goal);
 
-    // With the setpoint value we run PID control like normal
-    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
-    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
-    double difference = goal - totalDistance;
-    System.out.println("Goal difference: " + difference);
-    if(difference < .25 && difference > -.25) {
-      m_motor.setVoltage(0);
-      System.out.println("Voltage when triggered: " + m_motor.getVoltage());
-      System.out.println("at goal");
-      return 0;
-    }
-    else{
-      System.out.println("Not at goal");
-      double pidOutput = m_controller.calculate(m_encoder.getDistance());
-      double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-      m_motor.setVoltage(pidOutput + feedforwardOutput);
-      System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
-      return pidOutput + feedforwardOutput;
-    }
-    
-  }
-  public Command reachGoalCommand(double goal) {
-    return Commands.run(() -> reachGoal(goal*Math.sin(0.61))).asProxy();
-  }
+  //   // With the setpoint value we run PID control like normal
+  //   double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
+  //   double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
+  //   double difference = goal - totalDistance;
+  //   System.out.println("Goal difference: " + difference);
+  //   if(difference < .25 && difference > -.25) {
+  //     m_motor.setVoltage(0);
+  //     System.out.println("Voltage when triggered: " + m_motor.getVoltage());
+  //     System.out.println("at goal");
+  //     return 0;
+  //   }
+  //   else{
+  //     System.out.println("Not at goal");
+  //     double pidOutput = m_controller.calculate(m_encoder.getDistance());
+  //     double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
+  //     m_motor.setVoltage(pidOutput + feedforwardOutput);
+  //     System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
+  //     return pidOutput + feedforwardOutput;
+  //   }  
+  // }
+  
+  // public Command reachGoalCommand(double goal) {
+  //   return Commands.run(() -> reachGoal(goal*Math.sin(0.61))).asProxy();
+  // }
 
   /** Stop the control loop and motor output. */
   public void stop() {
@@ -249,7 +246,11 @@ public class Elevator implements ElevatorIO{
   // }
 
   @Override
-  public void setVoltage(double setpoint) {
+  public void setVoltage(double voltage) {
+
+    // reachGoal(setpoint); // PID already in file
+    m_motor.setVoltage(voltage);
+
     // if (setpoint == Constants.ElevatorConstants.SetpointConstants.FIRST_LVL){
     //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
     // }
@@ -268,7 +269,5 @@ public class Elevator implements ElevatorIO{
     // } else {
     //   reachGoal(0);
     // }
-    
-    reachGoal(setpoint);
   }
 }

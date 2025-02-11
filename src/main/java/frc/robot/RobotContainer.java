@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.ElevatorCommands;
-import frc.robot.subsystems.Elevator;
-
+// import frc.robot.commands.ElevatorCommands;
+// import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GeneralElevator;;
 
 public class RobotContainer {
 
   private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
-  private final Elevator elevator = new Elevator();
+  private final GeneralElevator elevator = new GeneralElevator();
 
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
@@ -35,31 +35,31 @@ public class RobotContainer {
   
   public void configureAuton() {
     SmartDashboard.putData("Choose Auto: ", autonChooser);
-    autonChooser.addOption("Stage 1", new ElevatorCommands(elevator).stage1Command());
-    autonChooser.addOption("Stage 2", new ElevatorCommands(elevator).stage2Command());
-    autonChooser.addOption("Stage 3", new ElevatorCommands(elevator).stage3Command());
-    autonChooser.addOption("Stage 4", new ElevatorCommands(elevator).stage4Command());
+    // autonChooser.addOption("Stage 1", new ElevatorCommands(elevator).stage1Command());
+    // autonChooser.addOption("Stage 2", new ElevatorCommands(elevator).stage2Command());
+    // autonChooser.addOption("Stage 3", new ElevatorCommands(elevator).stage3Command());
+    // autonChooser.addOption("Stage 4", new ElevatorCommands(elevator).stage4Command());
   }
 
   private void configureButtonBindings() {
         // stage 1
         operJoy.a()
-            .onTrue(new ElevatorCommands(elevator).stage1Command()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             );
             
         // stage 2
         operJoy.b()
-            .onTrue(new ElevatorCommands(elevator).stage2Command()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
             );
 
         // stage 3
         operJoy.y()
-            .onTrue(new ElevatorCommands(elevator).stage3Command()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
             );
 
         // stage 4
         operJoy.x()
-            .onTrue(new ElevatorCommands(elevator).stage4Command()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
             );
   }
 
