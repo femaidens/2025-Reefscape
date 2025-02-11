@@ -38,9 +38,9 @@ public class DriveConstants {
         
         
         public class PID {
-            public static final double P = 0.5;
+            public static final double P = 0.0001;
             public static final double I = 0;
-            public static final double D = 0.05;
+            public static final double D = 0.00005;
         }
         public class FF {
             public static final double S = .18484;
@@ -55,9 +55,9 @@ public class DriveConstants {
         public static final int AVERAGE_DEPTH = 0;
 
         public class PID {
-            public static final double P = .05;
+            public static final double P = .0001;
             public static final double I = 0;
-            public static final double D = 0.05;   
+            public static final double D = 0.00005;   
         }
         
         public class FF {
