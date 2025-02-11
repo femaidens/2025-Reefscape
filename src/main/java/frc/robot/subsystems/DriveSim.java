@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,9 +30,9 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
-
-
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 // import monologue.Annotations.Log; 
 // import monologue.Logged;
@@ -100,6 +101,37 @@ public class DriveSim extends SubsystemBase {
             rearRight.getSwerveModulePosition()
         });
 
+        RobotConfig config;
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+          // Handle exception as needed
+          e.printStackTrace();
+        }
+
+          AutoBuilder.configure(
+            this::getPose, // Robot pose supplier
+            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getRobotRelativeChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+            ),
+            config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
   }
 
   
@@ -211,30 +243,5 @@ public class DriveSim extends SubsystemBase {
       rearRight.setDesiredState(moduleStates[2]);
   }
 
-  // m_trajectory = TrajectoryGenerator.generateTrajectory(
-    // new Pose2d(20,50,Rotation2d.fromDegrees(0)),
-    // List.of(new Translation2d(1,1), new Translation2d(2,-1)),
-    // new Pose2d(3,0,Rotation2d.fromDegrees(0)),
-    // new TrajectoryConfig(Units.feetToMeters(3.0), Units.feetToMeters(3.0))
-    // );
-
-    // poseA = new Pose2d();
-    // poseB = new Pose2d(); //creates a 2d representation of the swerve drive
-    // publisherPose = NetworkTableInstance.getDefault().getStructTopic("MyPose",
-    // Pose2d.struct).publish();
-    // arrayPublisher =
-    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
-    // Pose2d.struct).publish();
-    // poseA3d = new Pose3d();
-    // poseB3d = new Pose3d(); //creates a 3d representation of the swerve drive
-    // publisherSwerve = NetworkTableInstance.getDefault().getStructTopic("MyPose",
-    // Pose3d.struct).publish();
-    // arrayPublisherSwerve =
-    // NetworkTableInstance.getDefault().getStructArrayTopic("MyPoseArray",
-    // Pose3d.struct).publish();
-    // arrayPublisherSwerve.set(new Pose3d[] {poseA3d, poseB3d});
-    // arrayPublisher.set(new Pose2d[] {poseA, poseB});
-
-    // m_field.setRobotPose(m_odometry.getPoseMeters());
-    // m_field.setRobotPose(7.488986, 6.662293, Rotation2d.fromDegrees(.392));
+   
 }

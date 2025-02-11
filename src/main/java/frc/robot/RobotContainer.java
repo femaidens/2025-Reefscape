@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -60,8 +61,40 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-    configureAuton();
+    // configureAuton();
+    ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
+    RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
+    
+    // AutoBuilder autoBuilder = new AutoBuilder();
+        AutoBuilder.configure(
+        driveSim::getPose, 
+        driveSim::resetOdometry, 
+        driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
+        driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
+        driveSim.holonomicDriveController, 
+        config,  
+
+        () -> {
+        var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+        driveSim);
     autoChooser = AutoBuilder.buildAutoChooser();
+
+    boolean isCompetition = true;
+
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    // As an example, this will only show autos that start with "comp" while at
+    // competition as defined by the programmer
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isCompetition
+        ? stream.filter(auto -> auto.getName().startsWith("Start"))
+        : stream
+    );
+
     SmartDashboard.putData("Choose Auto: ", autoChooser);
   }
 
@@ -78,13 +111,6 @@ public class RobotContainer {
   }
 
    public void configureAuton() {
-    // autonChooser.addOption("taxi", new Taxi(drivetrain, hopper, shooterAngle, shooterWheel, AutoConstants.DRIVE_TIME));
-    // autonChooser.addOption("taxi amp", new TaxiAmp(drivetrain, hopper, shooterAngle, shooterWheel));
-    // autonChooser.addOption("taxi speaker", new TaxiSpeaker(drivetrain, hopper, shooterAngle, shooterWheel));
-    
-    // autonChooser = AutonBuilder.
-    // autonChooser.addOption("flush three notes", new ThreeNoteFlushAuto(drivetrain, intaking, shooter));
-    // autonChooser.addOption("flush one note", new OneNoteLeft(drivetrain, intaking, shooter));
     ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
     RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
     
@@ -94,13 +120,8 @@ public class RobotContainer {
         driveSim::resetOdometry, 
         driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
         driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
-        driveSim.holonomicDriveController, config, 
-        // new HolonomicPathFollowerConfig(
-        //     new PIDConstants(Translation.PID.P, Translation.PID.I, Translation.PID.D), // Translation PID constants
-        //     new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D), // Rotation PID constants
-        //     DriveConstants.Drivetrain.MAX_SPEED, // Max module speed, in m/s
-        //     1.0/Math.PI, 
-        //     new ReplanningConfig()), 
+        driveSim.holonomicDriveController, 
+        config,  
 
         () -> {
         var alliance = DriverStation.getAlliance();
@@ -110,7 +131,12 @@ public class RobotContainer {
               return false;
             },
         driveSim);
-
+// new HolonomicPathFollowerConfig(
+        //     new PIDConstants(Translation.PID.P, Translation.PID.I, Translation.PID.D), // Translation PID constants
+        //     new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D), // Rotation PID constants
+        //     DriveConstants.Drivetrain.MAX_SPEED, // Max module speed, in m/s
+        //     1.0/Math.PI, 
+        //     new ReplanningConfig()),
   }
 
   
@@ -139,6 +165,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
+
   }
 }
