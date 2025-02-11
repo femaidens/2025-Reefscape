@@ -26,14 +26,11 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
 
   private static SparkMax elevatorMotorLeader;
   private static SparkMax elevatorMotorFollower;
-  private static DigitalInput botLimitSwitch;
   private static RelativeEncoder elevatorEncoder;
    
   public ActualElevator() {
     elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
     elevatorMotorFollower = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
-
-    botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
 
@@ -77,45 +74,13 @@ public class ActualElevator extends SubsystemBase implements ElevatorIO {
       
     }    
 
-    /**
-     * if the limit switch is activated, the elevator motor stops moving
-     */
-    public void hitBotLimit(){
-      if(botLimitSwitch.get()){
-        stopMotorCmd();
-      }
-    }
+    
 
-    //Cmds
-    /**
-     * @return run elevator motor command
-     */
-    public Command runMotorCmd(){
-      return this.run( () -> 
-        elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED)
-      );
-    }
-
-    /**
-     * reverse motor
-     */
-
-     public Command reverseRunMotorCmd(){
-      return this.run( () -> 
-        elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED)
-      );
-    }
-
-    public Command stopMotorCmd(){
-      return this.run( () -> 
-        elevatorMotorLeader.set(0)
-      );
-    }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    this.hitBotLimit();
+    
     
   }
   @Override

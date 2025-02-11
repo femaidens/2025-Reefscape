@@ -11,7 +11,7 @@ import frc.robot.subsystems.Elevator;
 
 /** This is a sample program to demonstrate the use of elevator simulation. */
 public class Robot extends TimedRobot {
-  private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
+  // private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
   private final Elevator m_elevator = new Elevator();
   //  private Command m_autonomousCommand;
   // private RobotContainer robotContainer;
