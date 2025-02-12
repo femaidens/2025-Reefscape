@@ -112,8 +112,8 @@ public class Drive extends SubsystemBase implements Logged {
   public void setModuleStates(SwerveModuleState[] desiredStates){
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates, Drivetrain.MAX_SPEED);
-    frontLeft.setDesiredStateNoPID(desiredStates[0]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
-    frontRight.setDesiredStateNoPID(desiredStates[1]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
+    frontLeft.setDesiredStateNoPID(desiredStates[1]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
+    frontRight.setDesiredStateNoPID(desiredStates[0]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
     rearLeft.setDesiredStateNoPID(desiredStates[2]); //rearLeft.setDesiredStateNoPID(desiredStates[3]);
     rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
