@@ -39,7 +39,7 @@ public class Vision {
     camera = new PhotonCamera(cameraName);
 
     photonEstimator = new PhotonPoseEstimator(
-        APRILTAG_FIELD_LAYOUT,
+        VisionConstants.APRILTAG_FIELD_LAYOUT,
         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         robotToCameraTransform);
     photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
@@ -54,7 +54,6 @@ public class Vision {
     }
     return visionEst;
   }
-
 
   private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
