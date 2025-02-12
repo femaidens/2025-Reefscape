@@ -18,11 +18,12 @@ public class Ports {
     public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
     public static int BACK_RECEIVER = 0;  // back reciever is the one closest to intake
   }
-  
+
   public class IntakePorts{
-     public static int INTAKE_MOTOR = 0;
-     public static int BEAM_BREAK = 1;
-  }
+    public static int INTAKE_MOTOR = 0;
+    public static int BEAM_BREAK = 1;
+    public static int PIVOT_MOTOR = 2;
+}
 
   public static int FOLLOWER_PORT;
 }
