@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
     beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
     config = new SparkMaxConfig();
-    intakePID = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
+    intakePID = new PIDController(IntakeConstants.PIDConstants.kP, IntakeConstants.PIDConstants.kI, IntakeConstants.PIDConstants.kD);
     encoder = intakeMotor.getEncoder();
 
     // Configure the motor

@@ -26,8 +26,8 @@ public class Climb extends SubsystemBase {
   private final AbsoluteEncoderConfig encoderConfig;
 
   public Climb() {
-    leader = new SparkMax(Ports.LEADER_PORT, MotorType.kBrushless);
-    follower = new SparkMax(Ports.FOLLOWER_PORT, MotorType.kBrushless);
+    leader = new SparkMax(Ports.ClimbPorts.LEADER_MOTOR, MotorType.kBrushless);
+    follower = new SparkMax(Ports.ClimbPorts.FOLLOWER_MOTOR, MotorType.kBrushless);
     leaderEncoder = leader.getAbsoluteEncoder();
     leaderConfig = new SparkMaxConfig();
     followerConfig = new SparkMaxConfig();

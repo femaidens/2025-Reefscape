@@ -31,8 +31,8 @@ public class IntakePivot extends SubsystemBase {
     intakePivotMotor = new SparkMax(IntakePorts.PIVOT_MOTOR, MotorType.kBrushless);
     pivotEncoder = intakePivotMotor.getEncoder();
     pivotConfig = new SparkMaxConfig();
-    pivotPID = new PIDController(PIDConstants.kP, PIDConstants.kI, PIDConstants.kD);
-    pivotFF = new ArmFeedforward(FeedForwardConstants.kS, FeedForwardConstants.kG, FeedForwardConstants.kV);
+    pivotPID = new PIDController(IntakePivotConstants.PIDConstants.kP, IntakePivotConstants.PIDConstants.kI, IntakePivotConstants.PIDConstants.kD);
+    pivotFF = new ArmFeedforward(IntakePivotConstants.FeedForwardConstants.kS, IntakePivotConstants.FeedForwardConstants.kG, IntakePivotConstants.FeedForwardConstants.kV);
 
     // Configuring motor
     pivotConfig
