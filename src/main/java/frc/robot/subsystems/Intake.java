@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
-import frc.robot.Constants;
 import frc.robot.Constants.*;
 
 public class Intake extends SubsystemBase {
