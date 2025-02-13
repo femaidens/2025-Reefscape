@@ -73,14 +73,14 @@ public class ModuleKraken implements Logged{
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
-       drivePIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
 
         directionConfig = new MagnetSensorConfigs();
-        turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS); 
+        turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
+        directionConfig.withAbsoluteSensorDiscontinuityPoint(1.0);
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
         
@@ -178,7 +178,7 @@ public class ModuleKraken implements Logged{
     
     //HELP IDK HOW TO DO CONVERSIONS BRUH 
     public double getTurnAngle(){
-        return turnEncoder.getAbsolutePosition().getValueAsDouble() * Turn.POS_CONVERSION_FACTOR; 
+        return turnEncoder.getAbsolutePosition().getValueAsDouble() / Turn.POS_CONVERSION_FACTOR; 
     }
     
     public void resetEncoders(){
