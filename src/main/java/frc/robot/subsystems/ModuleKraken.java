@@ -77,6 +77,8 @@ public class ModuleKraken implements Logged{
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
+        driveMotor.setPosition(0);
+        
 
         directionConfig = new MagnetSensorConfigs();
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
