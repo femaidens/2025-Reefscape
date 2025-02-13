@@ -20,7 +20,7 @@ public class Elevating {
         this.outtake = new Outtake();
     }
     /**
-     * @return goes to first level of reef
+     * @return goes to first level of reef and then outtakes
      */
     public Command firstLevelCmd(){
         return 
@@ -29,7 +29,7 @@ public class Elevating {
     }
     /**
      * 
-     * @return goes to second level of reef
+     * @return goes to second level of reef and then outtakes
      */
     public Command secondLevelCmd(){
         return 
@@ -38,7 +38,7 @@ public class Elevating {
     }
     /**
      * 
-     * @return goes to third level of reef
+     * @return goes to third level of reef and then outtakes
      */
     public Command thirdLevelCmd(){
         return 
@@ -47,7 +47,7 @@ public class Elevating {
     }
     /**
      * 
-     * @return goes to the fourth level of reef
+     * @return goes to the fourth level of reef and then outtakes
      */
     public Command fourthLevelCmd(){
         return 
@@ -56,7 +56,7 @@ public class Elevating {
     }
 
     /**
-     * @return goes to algae removal level 2
+     * @return goes to algae removal level 2 and then removes
      */
     public Command algaeSecondLevelCmd(){
         return 
@@ -65,10 +65,10 @@ public class Elevating {
     }
 
     /**
-     * @return goes to algae removal level 3
+     * @return goes to algae removal level 3 and removes
      * someone else should do this one!!!
      */
     public Command algaeThirdLevelCmd(){
-        
+
     }
 }
