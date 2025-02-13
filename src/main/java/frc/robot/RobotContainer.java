@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drive;
+import monologue.Logged;
 
 import java.util.function.DoubleSupplier;
 
@@ -23,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Logged {
   // The robot's subsystems and commands are defined here...
   Drive drivetrain = new Drive();
 
@@ -36,7 +37,6 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-
   }
 
   private void configureDefaultCmds(){
@@ -96,11 +96,10 @@ public class RobotContainer {
     );
   }
 
-  
 
-  /**
+
+  /*
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {

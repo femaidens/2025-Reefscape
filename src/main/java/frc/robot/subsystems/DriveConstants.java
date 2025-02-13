@@ -38,13 +38,14 @@ public class DriveConstants {
         
         
         public class PID {
-            public static final double P = 0.1;
+            public static final double P = 0.0001;
             public static final double I = 0;
-            public static final double D = 0;
+            public static final double D = 0.00005;
         }
         public class FF {
-            public static final double S = 0;
-            public static final double V = 0;
+            public static final double S = .18484;
+            public static final double V = 2.7542;
+            public static final double A = 0.41189; 
         }
     }
     public class Turn {
@@ -54,14 +55,15 @@ public class DriveConstants {
         public static final int AVERAGE_DEPTH = 0;
 
         public class PID {
-            public static final double P = 0.1;
+            public static final double P = .25;
             public static final double I = 0;
-            public static final double D = 0;   
+            public static final double D = 0.00005;   
         }
         
         public class FF {
             public static final double S = 0;
             public static final double V = 0;
+            public static final double A = 0; 
             // public static final double G = 0;
         }
     }
