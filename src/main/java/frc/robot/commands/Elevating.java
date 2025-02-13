@@ -19,6 +19,7 @@ public class Elevating {
         this.elevator = new Elevator();
         this.outtake = new Outtake();
     }
+
     /**
      * @return goes to first level of reef and then outtakes
      */
@@ -27,6 +28,7 @@ public class Elevating {
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             .andThen(outtake.setOuttakeCoralSpeedCmd());
     }
+
     /**
      * 
      * @return goes to second level of reef and then outtakes
@@ -36,6 +38,7 @@ public class Elevating {
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
             .andThen(outtake.setOuttakeCoralSpeedCmd());
     }
+
     /**
      * 
      * @return goes to third level of reef and then outtakes
@@ -45,6 +48,7 @@ public class Elevating {
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
             .andThen(outtake.setOuttakeCoralSpeedCmd());
     }
+
     /**
      * 
      * @return goes to the fourth level of reef and then outtakes
@@ -70,5 +74,12 @@ public class Elevating {
      */
     public Command algaeThirdLevelCmd(){
 
+    }
+
+    /**
+     * @return resets everything to default
+     */
+    public Command resetDefault(){
+        
     }
 }
