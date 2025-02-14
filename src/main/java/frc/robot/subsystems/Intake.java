@@ -73,9 +73,9 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isBeamBroken() {
-    return beamBreak.get();
+    return !beamBreak.get();
   }
-
+  
   public Command intakeCoralCmd() {
     if (isBeamBroken()) {
       return this.run(() -> runMotorCmd());
