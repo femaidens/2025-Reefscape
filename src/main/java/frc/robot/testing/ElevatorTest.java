@@ -5,17 +5,16 @@
 package frc.robot.testing;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.GeneralElevator;
-import edu.wpi.first.units.measure.Distance;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.ParameterizedTest;
 // import org.junit.jupiter.params.provider.Arguments;
 // import org.junit.jupiter.params.provider.MethodSource;
+// import frc.robot.testing.UnitTestingUtil.*;
+
 import org.junit.jupiter.api.Test;
 public class ElevatorTest{
   private GeneralElevator elevator;
@@ -23,7 +22,7 @@ public class ElevatorTest{
   @BeforeEach
   private void setUpTests() {
     assert HAL.initialize(500,0);
-    elevator = new GeneralElevator();
+    elevator = GeneralElevator.create();
   }
 
   @AfterEach
@@ -35,12 +34,10 @@ public class ElevatorTest{
 
   @Test
   public void test(){
-    Command command = toCommand(elevator., true);
-    command.schedule();
-    fastForward(1);
-    while (command.isScheduled()) {
-      fastForward(1);
+    UnitTestingUtil.run(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL));
+    UnitTestingUtil.fastForward(500);
+    
   }
   
 
-}} 
+}
