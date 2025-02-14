@@ -8,16 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
+import frc.robot.subsystems.Intake;
+
 
 /** Add your docs here. */
 public class Elevating {
 
     private Elevator elevator;
     private Outtake outtake;
+    private Intake intake;
+    
 
     public Elevating(){
         this.elevator = new Elevator();
         this.outtake = new Outtake();
+        this.intake = new Intake();
     }
 
     /**
@@ -73,13 +78,19 @@ public class Elevating {
      * someone else should do this one!!!
      */
     public Command algaeThirdLevelCmd(){
-
+        return 
+        elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL)
+        .andThen(outtake.setOuttakeCoralSpeedCmd());
     }
 
     /**
      * @return resets everything to default
      */
     public Command resetDefault(){
-        
+        return 
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
+            .andThen(elevator.stopMotorCmd())
+            .alongWith(intake.stopMotorCmd())
+            .alongWith(outtake.stopMotorCmd());
     }
 }
