@@ -35,8 +35,8 @@ public class Ports {
     }
 
     public class BeamBreakPorts { // for outtake 
-        public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
-        public static int BACK_RECEIVER = 0;  // back reciever is the one closest to intake
+       // public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
+        public static int RECEIVER = 0;  // back reciever is the one closest to intake
     }
   
     public class IntakePorts{
