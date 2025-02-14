@@ -3,8 +3,11 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-
+import frc.robot.subsystems.AlgaeIntake;
 /** Add your docs here. */
 public class AlgaeCmds {
-    //do we have algae intake/outtake code?
+    private AlgaeIntake algaeIntake;
+    public AlgaeCmds(){
+        algaeIntake = new AlgaeIntake();
+    }
 }

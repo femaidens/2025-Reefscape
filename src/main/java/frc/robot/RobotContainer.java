@@ -28,7 +28,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    xboxController = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
     climb = new Climb();
   }
 

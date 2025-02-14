@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-// import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -17,10 +16,34 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER_PORT = 0;
+    public static final int OPERATOR_PORT = 1;
   }
 
-  public static class ElevatorConstants {
+    public static class AlgaeIntakeConstants {
+      public static double POSITION_CONVERSIONFACTOR = 1000;
+      // circumference divided by gear ratio?
+      public static double VELOCITY_CONVERSIONFACTOR = 1000;
+      public static double PIVOT_VOLTAGE = 10;
+
+      public static double PIVOT_SETPOINT = 0;
+
+      public class PIDConstants {
+        public static double kP = 0;
+        public static double kI = 0;
+        public static double kD = 0;
+
+        public static double MAX_VELOCITY = 5;
+        public static double MAX_ACCELERATION = 10;
+      }
+
+      public class FFConstants {
+        public static double kS = 0;
+        public static double kV = 0;
+        public static double kA = 0;
+      }
+    }
+    public static class ElevatorConstants {
       public static final double MOTOR_SPEED = 0;
       public static final double POSITION_CONVERSION_FACTOR = 1000;
       public static final double VELOCITY_CONVERSION_FACTOR = 1000;
@@ -84,8 +107,6 @@ public final class Constants {
       public static final double kS  = 0.0;
       public static final double kG = 0.0;
       public static final double kV = 0.0;
-      
-      
     }
   }
   

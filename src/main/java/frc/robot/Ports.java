@@ -35,8 +35,8 @@ public class Ports {
     }
 
     public class BeamBreakPorts { // for outtake 
-       // public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
-        public static int RECEIVER = 0;  // back reciever is the one closest to intake
+        public static int RECEIVER = 0; // front reciever is the one farthest away from intake
+        //public static int BACK_RECEIVER = 0;  // back reciever is the one closest to intake
     }
   
     public class IntakePorts{
@@ -48,5 +48,13 @@ public class Ports {
     public class ClimbPorts {
       public static int LEADER_PORT = 0; 
       public static int FOLLOWER_PORT = 0;
+    }
+
+    public class AlgaeIntakePorts {
+        public static final int INTAKE_PIVOT_LEADER = 0;
+        public static final int INTAKE_PIVOT_FOLLOWER = 0;
+
+        public static final int INTAKE_ROLLER_LEADER = 0;
+        public static final int INTAKE_ROLLER_FOLLOWER = 0;
     }
   }
