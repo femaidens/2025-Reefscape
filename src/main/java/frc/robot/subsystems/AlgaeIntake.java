@@ -111,6 +111,10 @@ public class AlgaeIntake extends SubsystemBase {
     return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_SETPOINT));
   }
 
+  public Command setGround(){
+    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_GROUND_SETPOINT));
+  }
+
   public Command intakeAlgae() {
     return this.run(() -> this.setPID(0));
   }

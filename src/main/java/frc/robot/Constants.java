@@ -27,6 +27,7 @@ public final class Constants {
       public static double PIVOT_VOLTAGE = 10;
 
       public static double PIVOT_SETPOINT = 0;
+      public static double PIVOT_GROUND_SETPOINT = 0;
 
       public class PIDConstants {
         public static double kP = 0;
