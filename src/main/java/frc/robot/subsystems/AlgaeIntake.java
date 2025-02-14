@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.opencv.imgproc.GeneralizedHoughBallard;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -20,64 +23,58 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
-public class Algae_Intake extends SubsystemBase {
+public class AlgaeIntake extends SubsystemBase {
   /** Creates a new Algae_Intake. */
   private static SparkMax intakePivotLeader;
   private static SparkMax intakePivotFollower;
 
   private static SparkMax intakeRollerLeader;
   private static SparkMax intakeRollerFollower;
+  private static SparkMaxConfig globalConfig;
 
-  private static SparkMaxConfig pivotConfig;
-  private static SparkMaxConfig rollerConfig;
   private static ProfiledPIDController intakePID;
 
   private static SimpleMotorFeedforward intakeFF;
 
   private static RelativeEncoder pivotEncoder;
 
-  public Algae_Intake() {
+  public AlgaeIntake() {
     //intake pivot instantiations and setup
     intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
     intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
-    pivotConfig = new SparkMaxConfig();
+    globalConfig = new SparkMaxConfig();
 
     pivotEncoder = intakePivotFollower.getEncoder();
 
-    pivotConfig
+    globalConfig
       .inverted(true)
-      .idleMode(IdleMode.kBrake);
-    pivotConfig.encoder
+      .idleMode(IdleMode.kBrake)
+      .follow(intakePivotLeader, false);
+    globalConfig.encoder
       .positionConversionFactor(Constants.AlgaeIntakeConstants.POSITIONCONVERSIONFACTOR)
       .velocityConversionFactor(Constants.AlgaeIntakeConstants.VELOCITYCONVERSIONFACTOR);
-    pivotConfig
-      .follow(intakePivotLeader, false);
     
-    intakePivotLeader.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    intakePivotFollower.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
+    intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
     //intake roller instantiations and setup
     intakeRollerLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_LEADER, MotorType.kBrushless);
     intakeRollerFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_FOLLOWER, MotorType.kBrushless);
 
-    rollerConfig = new SparkMaxConfig();
-
-    rollerConfig
-      .inverted(true)
-      .idleMode(IdleMode.kBrake);
-    rollerConfig
+    globalConfig
       .follow(intakeRollerLeader, false);
     
-    intakeRollerLeader.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    intakeRollerFollower.configure(rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intakeRollerFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //PID and FF
     intakePID = new ProfiledPIDController(
       Constants.AlgaeIntakeConstants.PIDConstants.kP, 
       Constants.AlgaeIntakeConstants.PIDConstants.kI, 
       Constants.AlgaeIntakeConstants.PIDConstants.kD, 
-      new Constraints(Constants.AlgaeIntakeConstants.PIDConstants.maxVelocity, Constants.AlgaeIntakeConstants.PIDConstants.maxAcceleration)
+      new Constraints(Constants.AlgaeIntakeConstants.PIDConstants.MAXVELOCITY, Constants.AlgaeIntakeConstants.PIDConstants.MAXACCELERATION)
       );
 
     intakeFF = new SimpleMotorFeedforward(
@@ -99,7 +96,7 @@ public class Algae_Intake extends SubsystemBase {
  * @return command to run rollers
  */
   public Command runRollers(){
-    return this.run( () -> intakeRollerLeader.setVoltage(Constants.AlgaeIntakeConstants.pivotVoltage));
+    return this.run( () -> intakeRollerLeader.setVoltage(Constants.AlgaeIntakeConstants.PIVOTVOLTAGE));
   }
 
   /**
@@ -111,7 +108,7 @@ public class Algae_Intake extends SubsystemBase {
   }
 
   public Command setProcessor() {
-    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.pivotSetpoint));
+    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOTSETPOINT));
   }
 
   public Command intakeAlgae() {

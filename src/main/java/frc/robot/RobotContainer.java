@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 // import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Algae_Intake;
+import frc.robot.subsystems.AlgaeIntake;
 
 import java.util.function.DoubleSupplier;
 
@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // Drive drivetrain = new Drive();
-  Algae_Intake algae_intake = new Algae_Intake();
+  AlgaeIntake algae_intake = new AlgaeIntake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
