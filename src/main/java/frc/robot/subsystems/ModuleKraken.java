@@ -57,7 +57,7 @@ public class ModuleKraken implements Logged{
     private SwerveModuleState desiredState = null; 
     double angleSetpoint = 0; 
 
-    public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset, boolean turnInverted){
+    public ModuleKraken(int driveID, int turnID, int CANCoderID, double magnetOffset, double chassisAngularOffset, boolean turnInverted){
         this.chassisAngularOffset = chassisAngularOffset;
   
         driveMotor = new TalonFX(driveID, Translation.CANBUS); 
@@ -68,7 +68,7 @@ public class ModuleKraken implements Logged{
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
-        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+        turnPIDController.enableContinuousInput(0, Math.PI * 2);//(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
@@ -79,6 +79,7 @@ public class ModuleKraken implements Logged{
         directionConfig = new MagnetSensorConfigs();
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
         directionConfig.withAbsoluteSensorDiscontinuityPoint(1.0);
+        directionConfig.MagnetOffset = magnetOffset;
         turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
     }
         
@@ -99,6 +100,7 @@ public class ModuleKraken implements Logged{
     public void setDesiredStateNoPID(SwerveModuleState state){
         // maybe optimize is broken 
         //SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
+        state.optimize(getState().angle);
         angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 

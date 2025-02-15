@@ -29,10 +29,16 @@ public class DriveConstants {
         public static final double VEL_CONVERSION_FACTOR = ((WHEEL_DIAMETER * Math.PI) / GEAR_RATIO); // meters per second
         // public static final int AVERAGE_DEPTH = 0;
 
-        public static final double FRONT_LEFT_ANGOFFSET = 0; //-Math.PI / 2;
+        public static final double FRONT_LEFT_ANGOFFSET = Math.PI; //-Math.PI / 2;
         public static final double FRONT_RIGHT_ANGOFFSET = 0;
-        public static final double REAR_LEFT_ANGOFFSET = 0; //Math.PI;
+        public static final double REAR_LEFT_ANGOFFSET = Math.PI; //Math.PI;
         public static final double REAR_RIGHT_ANGOFFSET = 0; //Math.PI / 2; 
+
+        public static final double FRONT_LEFT_MAG_OFFSET = -0.4106;
+        public static final double FRONT_RIGHT_MAG_OFFSET = -0.1301;
+        public static final double REAR_LEFT_MAG_OFFSET = -0.1408;
+        public static final double REAR_RIGHT_MAG_OFFSET = -0.5491;
+
         // CHANGE THIS FOR TALONS! 
         public static final String CANBUS = "rio"; 
         
@@ -55,7 +61,7 @@ public class DriveConstants {
         public static final int AVERAGE_DEPTH = 0;
 
         public class PID {
-            public static final double P = .2;
+            public static final double P = 2.5;
             public static final double I = 0;
             public static final double D = 0.001;   
         }
