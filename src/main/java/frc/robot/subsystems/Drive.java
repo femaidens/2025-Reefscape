@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -72,11 +75,26 @@ public class Drive extends SubsystemBase implements Logged {
       });
       zeroHeading();
 
-      driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
+      driveRoutine =
+      new SysIdRoutine(
+      new SysIdRoutine.Config(
+         null,        // Use default ramp rate (1 V/s)
+         Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+         null,        // Use default timeout (10 s)
+                      // Log state with Phoenix SignalLogger class
+         (state) -> SignalLogger.writeString("state", state.toString())
+      ),
+      new SysIdRoutine.Mechanism(
+         (volts) -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
+         null,
+         this
+      )
+   );
+      // driveRoutine = new SysIdRoutine(
+      //   new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
+      //     volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
 
-      SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
+      // SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
     }
 
   //PLEASE CHECK THE SPEED FACTOR
@@ -238,5 +256,6 @@ public class Drive extends SubsystemBase implements Logged {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
     SmartDashboard.updateValues();
+    SmartDashboard.putNumber("angle", getAngle());
   }
 }

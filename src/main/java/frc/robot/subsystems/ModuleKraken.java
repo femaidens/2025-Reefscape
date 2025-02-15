@@ -114,11 +114,13 @@ public class ModuleKraken implements Logged{
      * @param 
      */
     public static void configureDriveTalon(TalonFX motor, int encoderID, int currentLimit){
-        motor.setNeutralMode(NeutralModeValue.Brake); 
+        // motor.setNeutralMode(NeutralModeValue.Brake); 
+
         TalonFXConfiguration config = new TalonFXConfiguration();
        // config.Feedback.FeedbackRemoteSensorID = encoderID;
         config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         motor.getConfigurator().apply(config);
 
@@ -131,8 +133,8 @@ public class ModuleKraken implements Logged{
         config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be attached outside of gearbox
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
         // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
-
-        motor.setNeutralMode(NeutralModeValue.Brake); 
+        // config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        // motor.setNeutralMode(NeutralModeValue.Brake); 
         // motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));
         // motor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(Translation.POS_CONVERSION_FACTOR));
 
