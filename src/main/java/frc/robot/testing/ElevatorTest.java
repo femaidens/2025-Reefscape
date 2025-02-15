@@ -8,6 +8,9 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants;
 import frc.robot.subsystems.GeneralElevator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.ParameterizedTest;
@@ -36,7 +39,7 @@ public class ElevatorTest{
   public void test(){
     UnitTestingUtil.run(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL));
     UnitTestingUtil.fastForward(500);
-    assertEquals(elevator.getPosition());
+    assertEquals(4, elevator.position());
   }
 
   

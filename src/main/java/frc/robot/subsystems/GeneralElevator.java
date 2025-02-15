@@ -20,10 +20,10 @@ public class GeneralElevator extends SubsystemBase implements AutoCloseable{
   private static DigitalInput botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
 
-  private ElevatorIO hardware;
+  public ElevatorIO elevator;
 
   public GeneralElevator(ElevatorIO hardware) {
-    this.hardware = hardware;
+    elevator = hardware;
   }
 
   public static GeneralElevator create() {
@@ -88,5 +88,9 @@ public class GeneralElevator extends SubsystemBase implements AutoCloseable{
         elevator.setVoltage(pidOutput + ffOutput);
       });
     }
+  }
+
+  public double position() {
+    return elevator.getPosition();
   }
 }

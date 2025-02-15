@@ -16,7 +16,7 @@ public class RobotContainer {
 
   private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
-  private final GeneralElevator elevator = new GeneralElevator();
+  private final GeneralElevator elevator = GeneralElevator.create();
 
   // private final GeneralElevator elevator = GeneralElevator.create();
   private final SendableChooser<Command> autonChooser = new SendableChooser<>();
