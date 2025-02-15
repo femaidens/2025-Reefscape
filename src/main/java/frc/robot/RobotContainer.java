@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -30,6 +31,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.config.ModuleConfig;
 
 
@@ -62,38 +64,38 @@ public class RobotContainer {
     configureBindings();
     configureDefaultCmds();
     // configureAuton();
-    ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
-    RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
+    // ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
+    // RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
     
     // AutoBuilder autoBuilder = new AutoBuilder();
-        AutoBuilder.configure(
-        driveSim::getPose, 
-        driveSim::resetOdometry, 
-        driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
-        driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
-        driveSim.holonomicDriveController, 
-        config,  
+        // AutoBuilder.configure(
+        // driveSim::getPose, 
+        // driveSim::resetOdometry, 
+        // driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
+        // driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
+        // driveSim.holonomicDriveController, 
+        // config,  
 
-        () -> {
-        var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-        driveSim);
+        // () -> {
+        // var alliance = DriverStation.getAlliance();
+        //       if (alliance.isPresent()) {
+        //         return alliance.get() == DriverStation.Alliance.Red;
+        //       }
+        //       return false;
+        //     },
+        // driveSim);
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    boolean isCompetition = true;
+    // boolean isCompetition = true;
 
-    // Build an auto chooser. This will use Commands.none() as the default option.
-    // As an example, this will only show autos that start with "comp" while at
-    // competition as defined by the programmer
-    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-      (stream) -> isCompetition
-        ? stream.filter(auto -> auto.getName().startsWith("Start"))
-        : stream
-    );
+    // // Build an auto chooser. This will use Commands.none() as the default option.
+    // // As an example, this will only show autos that start with "comp" while at
+    // // competition as defined by the programmer
+    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+    //   (stream) -> isCompetition
+    //     ? stream.filter(auto -> auto.getName().startsWith("Start"))
+    //     : stream
+    // );
 
     SmartDashboard.putData("Choose Auto: ", autoChooser);
   }
@@ -165,7 +167,17 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    try{
+        // Load the path you want to follow using its name in the GUI
+        PathPlannerPath path = PathPlannerPath.fromPathFile("Start center");
+        System.out.println("Path set!");
 
+        // Create a path following command using AutoBuilder. This will also trigger event markers.
+        return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
   }
 }

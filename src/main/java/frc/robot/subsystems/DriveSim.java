@@ -21,6 +21,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,6 +67,8 @@ public class DriveSim extends SubsystemBase {
   private StructArrayPublisher<SwerveModuleState> desiredPublisher;
 
   private List<ModuleSim> modules;
+  private RobotConfig config;
+
   // private Trajectory m_trajectory;
 
   public DriveSim() {
@@ -101,7 +104,7 @@ public class DriveSim extends SubsystemBase {
             rearRight.getSwerveModulePosition()
         });
 
-        RobotConfig config;
+        
         try{
           config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
@@ -210,7 +213,7 @@ public class DriveSim extends SubsystemBase {
             frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
             rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
         });
-        System.out.println(angle1 );
+        // System.out.println(angle1 );
 
     m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle1 )));
     SmartDashboard.putData("Field", m_field);
@@ -237,10 +240,10 @@ public class DriveSim extends SubsystemBase {
       moduleStates[3].optimize(moduleStates[3].angle);
       // System.out.println(angle1);
       // System.out.println(frontLeft.getTurnAngle());
-      frontLeft.setDesiredState(moduleStates[1]);
-      frontRight.setDesiredState(moduleStates[0]);
-      rearLeft.setDesiredState(moduleStates[3]);
-      rearRight.setDesiredState(moduleStates[2]);
+      frontLeft.setDesiredState(moduleStates[0]);
+      frontRight.setDesiredState(moduleStates[1]);
+      rearLeft.setDesiredState(moduleStates[2]);
+      rearRight.setDesiredState(moduleStates[3]);
   }
 
    

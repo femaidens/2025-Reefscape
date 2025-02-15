@@ -72,10 +72,10 @@ public class DriveConstants {
         public static final double WHEEL_BASE = Units.inchesToMeters(30); // distance between front and back
         // VERIFY THIS IS IN THE CORRECT ORDER
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
                 new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
-                new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2),
-                new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2));
+                new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2),
+                new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2));
         public static final double MAX_SPEED = 15; // in meters
         public static final double MAX_ROT_SPEED = 8; // in meters
         public static final double SPEED_FACTOR = 1.0;// Math.random() * Integer.MAX_VALUE;
