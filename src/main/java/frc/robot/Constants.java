@@ -15,10 +15,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int DRIVER_PORT = 0;
-    public static final int OPERATOR_PORT = 1;
-  }
+
 
     public static class AlgaeIntakeConstants {
       public static double POSITION_CONVERSIONFACTOR = 1000;

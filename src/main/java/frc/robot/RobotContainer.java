@@ -4,11 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Climb; 
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Outtake;
+import frc.robot.commands.Elevating;
+import frc.robot.commands.AlgaeCmds; 
+import frc.robot.commands.CoralTransition;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,15 +27,25 @@ public class RobotContainer {
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController xboxController;
+  private final CommandXboxController operJoy;
   private final Climb climb;
+  private final AlgaeCmds algaeCmds;
+  private final Elevating elevating;
+  private final CoralTransition coralTransition;
+  private final Intake intake;
+  private final Outtake outtake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    xboxController = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+    operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
     climb = new Climb();
+    algaeCmds = new AlgaeCmds();
+    elevating = new Elevating();
+    outtake = new Outtake();
+    intake = new Intake();
+    coralTransition = new CoralTransition(intake, outtake);
   }
 
   /**
@@ -43,17 +59,58 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    xboxController.leftBumper()
-      .whileTrue(climb.climbFwdCmd());
+    // xboxController.leftBumper()
+    //   .whileTrue(climb.climbFwdCmd());
   
 
-    xboxController.rightBumper()
-      .whileTrue(climb.climbBkwdCmd());
+    // xboxController.rightBumper()
+    //   .whileTrue(climb.climbBkwdCmd());
     
-    xboxController.rightTrigger()
-      .whileTrue(climb.pulleySystemCmd());
+    // xboxController.rightTrigger()
+    //   .whileTrue(climb.pulleySystemCmd());
 
+    //algaeintake
+
+    operJoy.rightBumper()
+      .whileTrue(algaeCmds.intakeAlgae())
+      .whileFalse(algaeCmds.raiseAlgae());
+
+    operJoy.leftBumper()
+      .whileTrue(algaeCmds.outtakeAlgae());
     
+    //coralouttake
+
+    operJoy.a()
+      .whileTrue(elevating.firstLevelCmd());
+    
+    operJoy.b()
+      .whileTrue(elevating.secondLevelCmd());
+
+    operJoy.y()
+      .whileTrue(elevating.thirdLevelCmd());
+
+    operJoy.x()
+      .whileTrue(elevating.fourthLevelCmd());
+    
+    //algaeremoval
+
+    operJoy.back()
+      .whileTrue(elevating.algaeSecondLevelCmd());
+    
+    operJoy.start() 
+      .whileTrue(elevating.algaeThirdLevelCmd());
+
+    //reset default
+    operJoy.leftTrigger()
+      .whileTrue(elevating.resetDefault());
+    
+    //transition intake to outtake
+    operJoy.rightTrigger()
+      .whileTrue(coralTransition.moveCoralToOuttake());
+
+    // run climb spool
+    operJoy.povUp()
+      .whileTrue(climb.pulleySystemCmd());
   }
 
   /**

@@ -15,8 +15,12 @@ public class AlgaeCmds {
     public Command intakeAlgae(){
         return 
             algaeIntake.setGround()
-            .andThen(algaeIntake.intakeAlgae())
-            .andThen(algaeIntake.setProcessor());
+            .andThen(algaeIntake.intakeAlgae());
+    }
+
+    public Command raiseAlgae(){
+        return
+            algaeIntake.setProcessor();
     }
 
     public Command outtakeAlgae(){

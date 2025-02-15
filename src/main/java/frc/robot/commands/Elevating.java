@@ -9,6 +9,9 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.Climb;
+
 
 
 /** Add your docs here. */
@@ -17,12 +20,15 @@ public class Elevating {
     private Elevator elevator;
     private Outtake outtake;
     private Intake intake;
-    
+    private AlgaeIntake algaeIntake;
+    private Climb climb;
 
     public Elevating(){
         this.elevator = new Elevator();
         this.outtake = new Outtake();
         this.intake = new Intake();
+        this.algaeIntake = new AlgaeIntake();
+        climb = new Climb();
     }
 
     /**
@@ -91,6 +97,10 @@ public class Elevating {
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             .andThen(elevator.stopMotorCmd())
             .alongWith(intake.stopMotorCmd())
-            .alongWith(outtake.stopMotorCmd());
+            .alongWith(outtake.stopMotorCmd())
+            .alongWith(algaeIntake.stopRollers())
+            .alongWith(climb.stopMotorsCmd());
+        
+            
     }
 }

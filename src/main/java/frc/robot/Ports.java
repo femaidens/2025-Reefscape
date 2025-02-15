@@ -7,6 +7,10 @@ package frc.robot;
 
 
 public class Ports {
+    public static class JoyPort {
+        public static final int DRIVER_PORT = 0;
+        public static final int OPERATOR_PORT = 1;
+      }
 
     public class DrivetrainPorts {
         public static final int FRONT_LEFT_DRIVE = 3;
@@ -46,7 +50,7 @@ public class Ports {
     }
 
     public class ClimbPorts {
-      public static int LEADER_PORT = 0; 
+      public static int CLIMB_MOTOR_PORT = 0; 
       public static int FOLLOWER_PORT = 0;
     }
 

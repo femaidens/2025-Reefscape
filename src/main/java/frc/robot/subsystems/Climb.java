@@ -11,78 +11,68 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import com.revrobotics.spark.SparkAbsoluteEncoder;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Ports;
 
 public class Climb extends SubsystemBase {
-  private final SparkMax leader;
-  private final SparkMax follower;
-  private final SparkAbsoluteEncoder leaderEncoder;
-  // private final SparkAbsoluteEncoder followerEncoder;
-  private final SparkMaxConfig leaderConfig;
-  private final SparkMaxConfig followerConfig;
+  private final SparkMax climbMotor;
+  private final SparkAbsoluteEncoder motorEncoder;
+  private final SparkMaxConfig motorConfig;
   private final AbsoluteEncoderConfig encoderConfig;
 
   public Climb() {
-    leader = new SparkMax(Ports.ClimbPorts.LEADER_PORT, MotorType.kBrushless);
-    follower = new SparkMax(Ports.ClimbPorts.FOLLOWER_PORT, MotorType.kBrushless);
-    leaderEncoder = leader.getAbsoluteEncoder();
-    leaderConfig = new SparkMaxConfig();
-    followerConfig = new SparkMaxConfig();
+    climbMotor = new SparkMax(Ports.ClimbPorts.CLIMB_MOTOR_PORT, MotorType.kBrushless);
+    motorEncoder = climbMotor.getAbsoluteEncoder();
+    motorConfig = new SparkMaxConfig();
     encoderConfig = new AbsoluteEncoderConfig();
-    leaderConfig.idleMode(IdleMode.kBrake);
-    followerConfig.idleMode(IdleMode.kBrake); 
-    followerConfig.follow(leader);
-    followerConfig.inverted(true);
-    leaderConfig.inverted(false);
+    motorConfig.idleMode(IdleMode.kBrake);
+    motorConfig.inverted(false);
     encoderConfig.positionConversionFactor(360);
-    leaderConfig.apply(encoderConfig);
-    leader.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-    follower.configure(followerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    motorConfig.apply(encoderConfig);
+    climbMotor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  public Command climbFwdCmd() {
-    return this.run(() -> {
-      double currentRotation = leaderEncoder.getPosition();
-      if (currentRotation < Constants.ClimbConstants.MAX_ROTATION) {
-        leader.set(ClimbConstants.CLIMB_SPEED);
+  // public Command climbFwdCmd() {
+  //   return this.run(() -> {
+  //     double currentRotation = leaderEncoder.getPosition();
+  //     if (currentRotation < Constants.ClimbConstants.MAX_ROTATION) {
+  //       leader.set(ClimbConstants.CLIMB_SPEED);
 
-      } else {
-        leader.set(0);
-        follower.set(0);
-      }
-    });
-  }
+  //     } else {
+  //       leader.set(0);
+  //       follower.set(0);
+  //     }
+  //   });
+  // }
 
-  public Command climbBkwdCmd() {
-    return this.run(() -> {
-      double currentRotation = leaderEncoder.getPosition();
-      if (currentRotation > Constants.ClimbConstants.MIN_ROTATION) {
+  // public Command climbBkwdCmd() {
+  //   return this.run(() -> {
+  //     double currentRotation = leaderEncoder.getPosition();
+  //     if (currentRotation > Constants.ClimbConstants.MIN_ROTATION) {
 
-        leader.set(ClimbConstants.CLIMB_SPEED);
+  //       leader.set(ClimbConstants.CLIMB_SPEED);
         
-      } else {
-        stopMotors();
-      }
-    });
-  }
+  //     } else {
+  //       stopMotors();
+  //     }
+  //   });
+  // }
 
   public Command pulleySystemCmd() {
     return this.run(() -> {
-      double currentRotation = leaderEncoder.getPosition();
+      double currentRotation = motorEncoder.getPosition();
       if (currentRotation < Constants.ClimbConstants.MAX_ROTATION) {
-        follower.set(ClimbConstants.CLIMB_SPEED);
+        climbMotor.set(ClimbConstants.CLIMB_SPEED);
       } else {
-        stopMotors();
+        stopMotorsCmd();
       }
     });
 
   }
 
-  public void stopMotors() {
-    leader.set(0);
+  public Command stopMotorsCmd() {
+    return this.run(() -> climbMotor.set(0));
     //follower.set(0);
   }
 }
