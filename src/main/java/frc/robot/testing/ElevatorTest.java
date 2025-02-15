@@ -36,8 +36,10 @@ public class ElevatorTest{
   public void test(){
     UnitTestingUtil.run(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL));
     UnitTestingUtil.fastForward(500);
-    
+    assertEquals(elevator.getPosition());
   }
+
+  
   
 
 }

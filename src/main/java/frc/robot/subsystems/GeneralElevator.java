@@ -15,24 +15,24 @@ import frc.robot.Robot;
 
 public class GeneralElevator extends SubsystemBase implements AutoCloseable{
   /** Creates a new GeneralElevator. */
-  private ElevatorIO elevator = (Robot.isReal()) ? (new ActualElevator()) : (new Elevator());
+  // private ElevatorIO elevator = (Robot.isReal()) ? (new ActualElevator()) : (new Elevator());
   
   private static DigitalInput botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
 
-  // private ElevatorIO hardware;
+  private ElevatorIO hardware;
 
-  // public GeneralElevator(ElevatorIO hardware) {
-  //   this.hardware = hardware;
-  // }
+  public GeneralElevator(ElevatorIO hardware) {
+    this.hardware = hardware;
+  }
 
-  // public static GeneralElevator create() {
-  //   return (Robot.isReal()) ? new GeneralElevator(new ActualElevator()) : new GeneralElevator(new Elevator());
-  // }
+  public static GeneralElevator create() {
+    return (Robot.isReal()) ? new GeneralElevator(new ActualElevator()) : new GeneralElevator(new Elevator());
+  }
 
-  // public static GeneralElevator none() {
-  //   return new GeneralElevator(new NoElevator());
-  // }
+  public static GeneralElevator none() {
+    return new GeneralElevator(new NoElevator());
+  }
 
 
   private ProfiledPIDController elevatorPID = new ProfiledPIDController(
