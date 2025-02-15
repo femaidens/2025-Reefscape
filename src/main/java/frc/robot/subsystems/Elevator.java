@@ -23,103 +23,95 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
-public class Elevator implements ElevatorIO{
+public class Elevator implements ElevatorIO {
   // This gearbox represents a gearbox containing 4 NEO motors.
   private final DCMotor m_elevatorGearbox = DCMotor.getNEO(2);
 
   // Standard classes for controlling our elevator
-  private final ProfiledPIDController m_controller =
-      new ProfiledPIDController(
-          Constants.kElevatorKp,
-          Constants.kElevatorKi,
-          Constants.kElevatorKd,
-          new TrapezoidProfile.Constraints(2.45, 2.45));
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(
+      Constants.kElevatorKp,
+      Constants.kElevatorKi,
+      Constants.kElevatorKd,
+      new TrapezoidProfile.Constraints(2.45, 2.45));
 
-  ElevatorFeedforward m_feedforward =
-      new ElevatorFeedforward(
-          Constants.kElevatorkS,
-          Constants.kElevatorkG,
-          Constants.kElevatorkV,
-          Constants.kElevatorkA);
+  ElevatorFeedforward m_feedforward = new ElevatorFeedforward(
+      Constants.kElevatorkS,
+      Constants.kElevatorkG,
+      Constants.kElevatorkV,
+      Constants.kElevatorkA);
 
-  private final Encoder m_encoder =
-      new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel); // its a relative encoder
+  private final Encoder m_encoder = new Encoder(Constants.kEncoderAChannel, Constants.kEncoderBChannel); // its a
+                                                                                                         // relative
+                                                                                                         // encoder
 
-  private final PWMSparkMax m_motor = new PWMSparkMax(Constants.kMotorPort); 
+  private final PWMSparkMax m_motor = new PWMSparkMax(Constants.kMotorPort);
 
   // Simulation classes help us simulate what's going on, including gravity.
-  private final ElevatorSim m_elevatorSimStage1 = 
-  new ElevatorSim(
-    m_elevatorGearbox,
+  private final ElevatorSim m_elevatorSimStage1 = new ElevatorSim(
+      m_elevatorGearbox,
       Constants.kElevatorGearing,
       Constants.kCarriageMass,
       Constants.kElevatorDrumRadius,
-      1.0, //10
+      1.0, // 10
       Constants.kMaxElevatorHeightMeters,
       true,
-      1, //10
+      1, // 10
       0.01,
       0.0);
-  private final ElevatorSim m_elevatorSimStage2 =
-      new ElevatorSim(
-          m_elevatorGearbox,
-          Constants.kElevatorGearing,
-          Constants.kCarriageMass,
-          Constants.kElevatorDrumRadius,
-          Constants.kMinElevatorHeightMeters,
-          Constants.kMaxElevatorHeightMeters,
-          true,
-          0,
-          0.01,
-          0.0);
-  private final ElevatorSim m_elevatorSimStage3 =
-          new ElevatorSim(
-              m_elevatorGearbox,
-              Constants.kElevatorGearing,
-              Constants.kCarriageMass,
-              Constants.kElevatorDrumRadius,
-              Constants.kMinElevatorHeightMeters,
-              Constants.kMaxElevatorHeightMeters,
-              true,
-              0,
-              0.01,
-              0.0);
-  
-      
+  private final ElevatorSim m_elevatorSimStage2 = new ElevatorSim(
+      m_elevatorGearbox,
+      Constants.kElevatorGearing,
+      Constants.kCarriageMass,
+      Constants.kElevatorDrumRadius,
+      Constants.kMinElevatorHeightMeters,
+      Constants.kMaxElevatorHeightMeters,
+      true,
+      0,
+      0.01,
+      0.0);
+  private final ElevatorSim m_elevatorSimStage3 = new ElevatorSim(
+      m_elevatorGearbox,
+      Constants.kElevatorGearing,
+      Constants.kCarriageMass,
+      Constants.kElevatorDrumRadius,
+      Constants.kMinElevatorHeightMeters,
+      Constants.kMaxElevatorHeightMeters,
+      true,
+      0,
+      0.01,
+      0.0);
+
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
   private final PWMSim m_motorSim = new PWMSim(m_motor);
 
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d m_mech2d = new Mechanism2d(20, 50);
 
-  private final MechanismRoot2d m_mech2dRootStage1 = m_mech2d.getRoot("Elevator Root 1", 9,0);//stage 1
-  private final MechanismRoot2d m_mech2dRootStage2 = m_mech2d.getRoot("Elevator Root 2", 10, 10); //stage 2
+  private final MechanismRoot2d m_mech2dRootStage1 = m_mech2d.getRoot("Elevator Root 1", 9, 0);// stage 1
+  private final MechanismRoot2d m_mech2dRootStage2 = m_mech2d.getRoot("Elevator Root 2", 10, 10); // stage 2
   private final MechanismRoot2d m_mech2dRootStage3 = m_mech2d.getRoot("Elevator Root 3", 11, 1); // stage 3
 
   private final Color8Bit stage1 = new Color8Bit(Color.kRed);
   private final Color8Bit stage2 = new Color8Bit(Color.kGreen);
   private final Color8Bit stage3 = new Color8Bit(Color.kBlue);
 
-
-  private MechanismLigament2d m_elevatorMech2dStage1 =
-      m_mech2dRootStage1.append(
-        new MechanismLigament2d("Elevator1", m_elevatorSimStage1.getPositionMeters(), 35, 5, stage1)
-      );
-  private MechanismLigament2d m_elevatorMech2dStage2 = 
-      m_mech2dRootStage2.append(
-          new MechanismLigament2d("Elevator2", m_elevatorSimStage2.getPositionMeters(), 35, 5, stage2));
-  private MechanismLigament2d m_elevatorMech2dStage3 = 
-      m_mech2dRootStage3.append(
-        new MechanismLigament2d("Elevator3", m_elevatorSimStage3.getPositionMeters(), 35, 5, stage3)
-      );
+  private MechanismLigament2d m_elevatorMech2dStage1 = m_mech2dRootStage1.append(
+      new MechanismLigament2d("Elevator1", m_elevatorSimStage1.getPositionMeters(), 35, 5, stage1));
+  private MechanismLigament2d m_elevatorMech2dStage2 = m_mech2dRootStage2.append(
+      new MechanismLigament2d("Elevator2", m_elevatorSimStage2.getPositionMeters(), 35, 5, stage2));
+  private MechanismLigament2d m_elevatorMech2dStage3 = m_mech2dRootStage3.append(
+      new MechanismLigament2d("Elevator3", m_elevatorSimStage3.getPositionMeters(), 35, 5, stage3));
 
   /** Subsystem constructor. */
   public Elevator() {
     m_encoder.setDistancePerPulse(Constants.kElevatorEncoderDistPerPulse);
 
     // Publish Mechanism2d to SmartDashboard
-    // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
+    // To view the Elevator visualization, select Network Tables -> SmartDashboard
+    // -> Elevator Sim
     SmartDashboard.putData("Elevator Sim", m_mech2d);
   }
 
@@ -127,102 +119,140 @@ public class Elevator implements ElevatorIO{
   public void simulationPeriodic() {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
-    m_elevatorSimStage2.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    m_elevatorSimStage2.setInput(m_motorSim.getSpeed() *
+        RobotController.getBatteryVoltage());
     m_elevatorSimStage1.setInput(0);
-    m_elevatorSimStage3.setInput(m_motorSim.getSpeed() * RobotController.getBatteryVoltage());
+    m_elevatorSimStage3.setInput(m_motorSim.getSpeed() *
+        RobotController.getBatteryVoltage());
 
     // Next, we update it. The standard loop time is 20ms.
     m_elevatorSimStage2.update(0.020);
     m_elevatorSimStage3.update(0.020);
 
-    // Finally, we set our simulated encoder's readings and simulated battery voltage
+    // Finally, we set our simulated encoder's readings and simulated battery
+    // voltage
     m_encoderSim.setDistance(m_elevatorSimStage2.getPositionMeters());
     m_encoderSim.setDistance(m_elevatorSimStage3.getPositionMeters());
     // SimBattery estimates loaded battery voltages
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage2.getCurrentDrawAmps()));
     RoboRioSim.setVInVoltage(
-      BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage3.getCurrentDrawAmps()));
+        BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSimStage3.getCurrentDrawAmps()));
   }
 
-  public void setMotorVoltage(double voltage){
+  public void setMotorVoltage(double voltage) {
     m_motor.setVoltage(voltage);
+    // m_elevatorSimStage1.setInputVoltage(voltage);
+    // m_elevatorSimStage1.update(0.02);
   }
 
   // /**
-  //  * Run control loop to reach and maintain goal.
-  //  *
-  //  * @param goal the position to maintain
-  //  */
+  // * Run control loop to reach and maintain goal.
+  // *
+  // * @param goal the position to maintain
+  // */
   // public double reachGoal(double goal) {
-  //   m_controller.setGoal(goal);
+  // m_controller.setGoal(goal);
 
-  //   // With the setpoint value we run PID control like normal
-  //   double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
-  //   double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
-  //   double difference = goal - totalDistance;
-  //   System.out.println("Goal difference: " + difference);
-  //   if(difference < .25 && difference > -.25) {
-  //     m_motor.setVoltage(0);
-  //     System.out.println("Voltage when triggered: " + m_motor.getVoltage());
-  //     System.out.println("at goal");
-  //     return 0;
-  //   }
-  //   else{
-  //     System.out.println("Not at goal");
-  //     double pidOutput = m_controller.calculate(m_encoder.getDistance());
-  //     double feedforwardOutput = m_feedforward.calculate(m_controller.getSetpoint().velocity);
-  //     m_motor.setVoltage(pidOutput + feedforwardOutput);
-  //     System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
-  //     return pidOutput + feedforwardOutput;
-  //   }  
+  // // With the setpoint value we run PID control like normal
+  // double distanceStage3 = m_elevatorSimStage3.getPositionMeters() *
+  // Constants.kStage3Velocity * Math.sin(0.61)
+  // + (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength()) *
+  // Math.sin(0.61); // distance from
+  // // bottom to stage
+  // // 3 root
+  // double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength() *
+  // Math.sin(0.61); // distance from the
+  // // bottom to the top of
+  // // stage 3
+  // double difference = goal - totalDistance;
+  // System.out.println("Goal difference: " + difference);
+  // if (difference < .25 && difference > -.25) {
+  // m_motor.setVoltage(0);
+  // System.out.println("Voltage when triggered: " + m_motor.getVoltage());
+  // System.out.println("at goal");
+  // return 0;
+  // } else {
+  // System.out.println("Not at goal");
+  // double pidOutput = m_controller.calculate(m_encoder.getDistance());
+  // double feedforwardOutput =
+  // m_feedforward.calculate(m_controller.getSetpoint().velocity);
+  // m_motor.setVoltage(pidOutput + feedforwardOutput);
+  // System.out.println("Voltage when not triggered: " + m_motor.getVoltage());
+  // return pidOutput + feedforwardOutput;
   // }
-  
+  // }
+
   // public Command reachGoalCommand(double goal) {
-  //   return Commands.run(() -> reachGoal(goal*Math.sin(0.61))).asProxy();
+  // return Commands.run(() -> reachGoal(goal * Math.sin(0.61))).asProxy();
   // }
 
-  /** Stop the control loop and motor output. */
-  public void stop() {
-    m_controller.setGoal(0.0);
-    m_motor.set(0.0);
-  }
+  // /** Stop the control loop and motor output. */
+  // public void stop() {
+  // m_controller.setGoal(0.0);
+  // m_motor.set(0.0);
+  // }
 
   /** Update telemetry, including the mechanism visualization. */
   public void updateTelemetry() {
     // Update elevator visualization with position
-     m_elevatorMech2dStage2.setLength(Constants.stage2Height); 
-     m_elevatorMech2dStage3.setLength(Constants.stage3Height); 
-     m_elevatorMech2dStage1.setLength(Constants.stage1Height);
-     m_mech2dRootStage1.setPosition(0, 0);
-     m_mech2dRootStage2.setPosition((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.cos(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.cos(0.61),  
-        (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.sin(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.sin(0.61)); 
-    m_mech2dRootStage3.setPosition((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.cos(0.61) + + m_encoder.getDistance()*Constants.kStage3Velocity*Math.cos(0.61), 
-    (m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61) + m_encoder.getDistance()*Constants.kStage2Velocity*Math.sin(0.61)); //works m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
-    double distanceStage2 = (m_elevatorSimStage2.getPositionMeters()*Constants.kStage2Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage2.getLength())*Math.sin(0.61); //distance from bottom to stage 2 root
-    double distanceStage3 = (m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity+m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
-    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
-    if(distanceStage2 > m_elevatorMech2dStage1.getLength()*Math.sin(0.61)) { //need to change this
-      m_mech2dRootStage2.setPosition(m_elevatorMech2dStage1.getLength()*Math.cos(0.61),  m_elevatorMech2dStage1.getLength()*Math.sin(0.61));
-      m_mech2dRootStage3.setPosition(((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())+ m_encoder.getDistance()*Constants.kStage3Velocity)*Math.cos(0.61), 
-        ((m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())+ m_encoder.getDistance()*Constants.kStage3Velocity)*Math.sin(0.61));
-      if (distanceStage3 > (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength())*Math.sin(0.61)) {
-        m_mech2dRootStage3.setPosition((m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength())*Math.cos(0.61), (m_elevatorMech2dStage1.getLength()+m_elevatorMech2dStage2.getLength())*Math.sin(0.61));
+    m_elevatorMech2dStage2.setLength(Constants.stage2Height);
+    m_elevatorMech2dStage3.setLength(Constants.stage3Height);
+    m_elevatorMech2dStage1.setLength(Constants.stage1Height);
+    m_mech2dRootStage1.setPosition(0, 0);
+    m_mech2dRootStage2.setPosition(
+        (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage2.getLength()) * Math.cos(0.61)
+            + m_encoder.getDistance() * Constants.kStage2Velocity * Math.cos(0.61),
+        (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage2.getLength()) * Math.sin(0.61)
+            + m_encoder.getDistance() * Constants.kStage2Velocity * Math.sin(0.61));
+    m_mech2dRootStage3.setPosition(
+        (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength()) * Math.cos(0.61)
+            + +m_encoder.getDistance() * Constants.kStage3Velocity * Math.cos(0.61),
+        (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength()) * Math.sin(0.61)
+            + m_encoder.getDistance() * Constants.kStage2Velocity * Math.sin(0.61)); // works
+                                                                                     // m_elevatorSimStage2.getPositionMeters()+m_encoder.getDistance()
+    double distanceStage2 = (m_elevatorSimStage2.getPositionMeters() * Constants.kStage2Velocity
+        + m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage2.getLength()) * Math.sin(0.61); // distance from
+                                                                                                     // bottom to stage
+                                                                                                     // 2 root
+    double distanceStage3 = (m_elevatorSimStage3.getPositionMeters() * Constants.kStage3Velocity
+        + m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength()) * Math.sin(0.61); // distance from
+                                                                                                     // bottom to stage
+                                                                                                     // 3 root
+    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength() * Math.sin(0.61); // distance from the
+                                                                                                 // bottom to the top of
+                                                                                                 // stage 3
+    if (distanceStage2 > m_elevatorMech2dStage1.getLength() * Math.sin(0.61)) { // need to change this
+      m_mech2dRootStage2.setPosition(m_elevatorMech2dStage1.getLength() * Math.cos(0.61),
+          m_elevatorMech2dStage1.getLength() * Math.sin(0.61));
+      m_mech2dRootStage3.setPosition(
+          ((m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength())
+              + m_encoder.getDistance() * Constants.kStage3Velocity) * Math.cos(0.61),
+          ((m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength())
+              + m_encoder.getDistance() * Constants.kStage3Velocity) * Math.sin(0.61));
+      if (distanceStage3 > (m_elevatorMech2dStage1.getLength() + m_elevatorMech2dStage2.getLength()) * Math.sin(0.61)) {
+        m_mech2dRootStage3.setPosition(
+            (m_elevatorMech2dStage1.getLength() + m_elevatorMech2dStage2.getLength()) * Math.cos(0.61),
+            (m_elevatorMech2dStage1.getLength() + m_elevatorMech2dStage2.getLength()) * Math.sin(0.61));
       }
     }
 
     SmartDashboard.putNumber("Position Stage 2", distanceStage2);
-    SmartDashboard.putNumber("GetPositionMeters Stage 2", m_elevatorSimStage2.getPositionMeters()); //distance from original position of stage 2
-    SmartDashboard.putNumber("GetPositionMeters Stage 3", m_elevatorSimStage3.getPositionMeters()); //distance from original position of stage 3
+    SmartDashboard.putNumber("GetPositionMeters Stage 2", m_elevatorSimStage2.getPositionMeters()); // distance from
+                                                                                                    // original position
+                                                                                                    // of stage 2
+    SmartDashboard.putNumber("GetPositionMeters Stage 3", m_elevatorSimStage3.getPositionMeters()); // distance from
+                                                                                                    // original position
+                                                                                                    // of stage 3
     SmartDashboard.putNumber("Position Stage 3", distanceStage3);
-    SmartDashboard.putNumber("Position Stage Total", totalDistance); 
-    SmartDashboard.putNumber("kP", Constants.kElevatorKp); 
-    SmartDashboard.putNumber("kI", Constants.kElevatorKi); 
-    SmartDashboard.putNumber("kD", Constants.kElevatorKd); 
-    SmartDashboard.putNumber("kS", Constants.kElevatorkS); 
-    SmartDashboard.putNumber("kG", Constants.kElevatorkG); 
-    SmartDashboard.putNumber("kV", Constants.kElevatorkV); 
-    SmartDashboard.putNumber("kA", Constants.kElevatorkA); 
+    SmartDashboard.putNumber("Position Stage Total", totalDistance);
+    SmartDashboard.putNumber("kP", Constants.kElevatorKp);
+    SmartDashboard.putNumber("kI", Constants.kElevatorKi);
+    SmartDashboard.putNumber("kD", Constants.kElevatorKd);
+    SmartDashboard.putNumber("kS", Constants.kElevatorkS);
+    SmartDashboard.putNumber("kG", Constants.kElevatorkG);
+    SmartDashboard.putNumber("kV", Constants.kElevatorkV);
+    SmartDashboard.putNumber("kA", Constants.kElevatorkA);
     SmartDashboard.putNumber("Velocity meters/s", m_elevatorSimStage2.getVelocityMetersPerSecond());
   }
 
@@ -235,14 +265,19 @@ public class Elevator implements ElevatorIO{
 
   @Override
   public double getPosition() {
-    double distanceStage3 = m_elevatorSimStage3.getPositionMeters()*Constants.kStage3Velocity*Math.sin(0.61)+(m_elevatorMech2dStage1.getLength()-m_elevatorMech2dStage3.getLength())*Math.sin(0.61); //distance from bottom to stage 3 root
-    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength()*Math.sin(0.61); //distance from the bottom to the top of stage 3
+    double distanceStage3 = m_elevatorSimStage3.getPositionMeters() * Constants.kStage3Velocity * Math.sin(0.61)
+        + (m_elevatorMech2dStage1.getLength() - m_elevatorMech2dStage3.getLength()) * Math.sin(0.61); // distance from
+                                                                                                      // bottom to stage
+                                                                                                      // 3 root
+    double totalDistance = distanceStage3 + m_elevatorMech2dStage3.getLength() * Math.sin(0.61); // distance from the
+                                                                                                 // bottom to the top of
+                                                                                                 // stage 3
     return totalDistance;
   }
 
   // @Override
   // public double getVoltage() {
-  //   return m_motor.getVoltage();
+  // return m_motor.getVoltage();
   // }
 
   @Override
@@ -252,22 +287,27 @@ public class Elevator implements ElevatorIO{
     m_motor.setVoltage(voltage);
 
     // if (setpoint == Constants.ElevatorConstants.SetpointConstants.FIRST_LVL){
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FIRST_LVL);
     // }
-    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.SECOND_LVL){
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.SECOND_LVL);
+    // else if (setpoint ==
+    // Constants.ElevatorConstants.SetpointConstants.SECOND_LVL){
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.SECOND_LVL);
     // }
-    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.THIRD_LVL){
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.THIRD_LVL);
+    // else if (setpoint ==
+    // Constants.ElevatorConstants.SetpointConstants.THIRD_LVL){
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.THIRD_LVL);
     // }
-    // else if (setpoint == Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL) {
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FOURTH_LVL);
-    // } else if (setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL) {
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_SECOND_LVL);
-    // } else if(setpoint == Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL) {
-    //   reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_THIRD_LVL);
+    // else if (setpoint ==
+    // Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL) {
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.FOURTH_LVL);
+    // } else if (setpoint ==
+    // Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL) {
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_SECOND_LVL);
+    // } else if(setpoint ==
+    // Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL) {
+    // reachGoal(Constants.ElevatorConstants.SimsSetpointConstants.ALGAE_THIRD_LVL);
     // } else {
-    //   reachGoal(0);
+    // reachGoal(0);
     // }
   }
 }

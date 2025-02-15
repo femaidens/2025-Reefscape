@@ -13,12 +13,12 @@ import frc.robot.Constants;
 import frc.robot.Ports;
 import frc.robot.Robot;
 
-public class GeneralElevator extends SubsystemBase implements AutoCloseable{
+public class GeneralElevator extends SubsystemBase implements AutoCloseable {
   /** Creates a new GeneralElevator. */
-  // private ElevatorIO elevator = (Robot.isReal()) ? (new ActualElevator()) : (new Elevator());
-  
-  private static DigitalInput botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
+  // private ElevatorIO elevator = (Robot.isReal()) ? (new ActualElevator()) :
+  // (new Elevator());
 
+  private static DigitalInput botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH);
 
   public ElevatorIO elevator;
 
@@ -34,57 +34,53 @@ public class GeneralElevator extends SubsystemBase implements AutoCloseable{
     return new GeneralElevator(new NoElevator());
   }
 
-
   private ProfiledPIDController elevatorPID = new ProfiledPIDController(
       Constants.ElevatorConstants.PIDConstants.kP,
       Constants.ElevatorConstants.PIDConstants.kI,
       Constants.ElevatorConstants.PIDConstants.kD,
-      Constants.ElevatorConstants.PIDConstants.CONSTRAINTS
-    );
-  
-    private ElevatorFeedforward ff = new ElevatorFeedforward(
-      Constants.ElevatorConstants.FeedForwardConstants.kS, 
-      Constants.ElevatorConstants.FeedForwardConstants.kG, 
-      Constants.ElevatorConstants.FeedForwardConstants.kV
-    );
+      Constants.ElevatorConstants.PIDConstants.CONSTRAINTS);
+
+  private ElevatorFeedforward ff = new ElevatorFeedforward(
+      Constants.ElevatorConstants.FeedForwardConstants.kS,
+      Constants.ElevatorConstants.FeedForwardConstants.kG,
+      Constants.ElevatorConstants.FeedForwardConstants.kV);
   // private ElevatorIO elevator = new NoElevator();
-  
+
   public void periodic() {
     // This method will be called once per scheduler run
     this.hitBotLimit();
   }
-@Override 
 
-  public void close(){
+  @Override
+
+  public void close() {
     this.close();
   }
 
   /**
-     * if the limit switch is activated, the elevator motor stops moving
-     */
-    public void hitBotLimit(){
-      if(botLimitSwitch.get()){
-        elevator.setVoltage(0);
-      }
+   * if the limit switch is activated, the elevator motor stops moving
+   */
+  public void hitBotLimit() {
+    if (botLimitSwitch.get()) {
+      elevator.setVoltage(0);
     }
-
-  public void setSetpoint(double setpoint){
-    elevatorPID.setGoal(setpoint);//*Math.sin(0.61) */
   }
- 
-  public Command reachGoal(double setpoint){
-    this.setSetpoint(setpoint);
-    if(Robot.isReal()){
-      return this.run( () -> elevator.setVoltage(
-        elevatorPID.calculate( elevator.getPosition() ) + 
-        ff.calculate( elevatorPID.calculate(elevator.getPosition()) ) )); // not sure if this is correct
-      // elevatorMotorFollower.resumeFollowerMode();
-    }
-    else{     
-      return this.run( () -> {
-        double pidOutput = elevatorPID.calculate( elevator.getPosition()); 
-        double ffOutput = ff.calculate( elevatorPID.getSetpoint().velocity);
 
+  public void setSetpoint(double setpoint) {
+    elevatorPID.setGoal(setpoint);// *Math.sin(0.61) */
+  }
+
+  public Command reachGoal(double setpoint) {
+    this.setSetpoint(setpoint);
+    if (Robot.isReal()) {
+      return this.run(() -> elevator.setVoltage(
+          elevatorPID.calculate(elevator.getPosition()) +
+              ff.calculate(elevatorPID.calculate(elevator.getPosition())))); // not sure if this is correct
+      // elevatorMotorFollower.resumeFollowerMode();
+    } else {
+      return this.run(() -> {
+        double pidOutput = elevatorPID.calculate(elevator.getPosition());
+        double ffOutput = ff.calculate(elevatorPID.getSetpoint().velocity);
         elevator.setVoltage(pidOutput + ffOutput);
       });
     }
@@ -93,4 +89,6 @@ public class GeneralElevator extends SubsystemBase implements AutoCloseable{
   public double position() {
     return elevator.getPosition();
   }
+
+  public 
 }
