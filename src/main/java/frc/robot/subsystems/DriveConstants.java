@@ -50,7 +50,7 @@ public class DriveConstants {
     }
     public class Turn {
         public static final int CURRENT_LIMIT = 35;
-        public static final double POS_CONVERSION_FACTOR = (2*Math.PI)/(150/7);
+        public static final double POS_CONVERSION_FACTOR = 1.0 / (Math.PI * 2); //(2*Math.PI)/(150/7);
         public static final double VEL_CONVERSION_FACTOR = (2*Math.PI)/(150/7);
         public static final int AVERAGE_DEPTH = 0;
 

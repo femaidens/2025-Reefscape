@@ -17,6 +17,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -53,17 +54,12 @@ public class ModuleKraken implements Logged{
 
     private final double chassisAngularOffset;
 
-
     private SwerveModuleState desiredState = null; 
     double angleSetpoint = 0; 
 
-    // IDK what canbus we use so i just set it to the robot rio for now. 
-    //THIS SHOULD BE SUBJECT TO CHANGE!!!! 
     public ModuleKraken(int driveID, int turnID, int CANCoderID, double chassisAngularOffset, boolean turnInverted){
         this.chassisAngularOffset = chassisAngularOffset;
-
-        // NOTE: LOWKEY IDK HOW TO DO CONVERSIONS BC TALONS SEEM TO DO MOST OF THE STUFF IN ROTATIONS
-        // SO RN EVERYTHING IS IN ROTATIONS THAT HAS BEEN CONVERTED TO A DOUBLE VALUE   
+  
         driveMotor = new TalonFX(driveID, Translation.CANBUS); 
         configureDriveTalon(driveMotor, CANCoderID, Translation.CURRENT_LIMIT); 
 
@@ -97,6 +93,7 @@ public class ModuleKraken implements Logged{
         driveMotor.setVoltage(
         driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
         turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        desiredState = state;
     }
 
     public void setDesiredStateNoPID(SwerveModuleState state){
@@ -111,7 +108,7 @@ public class ModuleKraken implements Logged{
     }
 
     /**
-     * This configures a TalonFX motor's nuetral mode to brake and sets the current limit!!! 
+     * This configures a TalonFX motor's neutral mode to brake and sets the current limit!!! 
      * @param 
      */
     public static void configureDriveTalon(TalonFX motor, int encoderID, int currentLimit){
@@ -121,13 +118,15 @@ public class ModuleKraken implements Logged{
         config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
 
+        motor.getConfigurator().apply(config);
+
         // motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));  //add cancoder
         // motor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(Translation.POS_CONVERSION_FACTOR));
     }
     public static void configureTurnTalon(TalonFX motor, int encoderID, int currentLimit, boolean inverted){
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.Feedback.FeedbackRemoteSensorID = encoderID;
-        config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
+        config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be attached outside of gearbox
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
         // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
 
@@ -141,6 +140,8 @@ public class ModuleKraken implements Logged{
         else{
             config.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
         }
+
+        motor.getConfigurator().apply(config);
     }
 
     public void setDriveVoltage(double volts){
@@ -180,7 +181,8 @@ public class ModuleKraken implements Logged{
     
     //HELP IDK HOW TO DO CONVERSIONS BRUH 
     public double getTurnAngle(){
-        return turnEncoder.getAbsolutePosition().getValueAsDouble() / Turn.POS_CONVERSION_FACTOR; 
+        return turnEncoder.getAbsolutePosition().getValueAsDouble() / Turn.POS_CONVERSION_FACTOR;
+        // changed conversion factor so that encoder absolute position is multiplied by 2 * pi
     }
     
     public void resetEncoders(){
