@@ -29,10 +29,10 @@ public class DriveConstants {
         public static final double VEL_CONVERSION_FACTOR = ((WHEEL_DIAMETER * Math.PI) / GEAR_RATIO); // meters per second
         // public static final int AVERAGE_DEPTH = 0;
 
-        public static final double FRONT_LEFT_ANGOFFSET = -Math.PI / 2;
+        public static final double FRONT_LEFT_ANGOFFSET = 0; //-Math.PI / 2;
         public static final double FRONT_RIGHT_ANGOFFSET = 0;
-        public static final double REAR_LEFT_ANGOFFSET = Math.PI;
-        public static final double REAR_RIGHT_ANGOFFSET = Math.PI / 2; 
+        public static final double REAR_LEFT_ANGOFFSET = 0; //Math.PI;
+        public static final double REAR_RIGHT_ANGOFFSET = 0; //Math.PI / 2; 
         // CHANGE THIS FOR TALONS! 
         public static final String CANBUS = "rio"; 
         
@@ -73,10 +73,10 @@ public class DriveConstants {
         public static final double WHEEL_BASE = Units.inchesToMeters(28.9); // distance between front and back
         // VERIFY THIS IS IN THE CORRECT ORDER
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-            new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
-            new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
-            new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2),
-            new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2)
+            new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), //fl
+            new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), //fr
+            new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), //rl
+            new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) //rr
         );
         public static final double MAX_SPEED = 4.8; //in meters
         public static final double MAX_ROT_SPEED = Math.PI * 2; //in rad/s
