@@ -118,7 +118,13 @@ public class AlgaeIntake extends SubsystemBase {
   public Command intakeAlgae() {
     return this.run(() -> this.setPID(0));
   }
+
   
+  
+  public void initDefaultCommand() {
+    this.setProcessor();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

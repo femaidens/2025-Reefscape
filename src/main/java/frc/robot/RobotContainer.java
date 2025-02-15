@@ -72,8 +72,8 @@ public class RobotContainer {
     //algaeintake
 
     operJoy.rightBumper()
-      .whileTrue(algaeCmds.intakeAlgae())
-      .whileFalse(algaeCmds.raiseAlgae());
+      .whileTrue(algaeCmds.intakeAlgae());
+      //.whileFalse(algaeCmds.raiseAlgae());
 
     operJoy.leftBumper()
       .whileTrue(algaeCmds.outtakeAlgae());

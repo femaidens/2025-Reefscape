@@ -18,10 +18,10 @@ public class AlgaeCmds {
             .andThen(algaeIntake.intakeAlgae());
     }
 
-    public Command raiseAlgae(){
-        return
-            algaeIntake.setProcessor();
-    }
+    // public Command raiseAlgae(){
+    //     return
+    //         algaeIntake.setProcessor();
+    // }
 
     public Command outtakeAlgae(){
         return
