@@ -62,11 +62,12 @@ public class AlgaeIntake extends SubsystemBase {
     //intake roller instantiations and setup
     intakeRollerLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_LEADER, MotorType.kBrushless);
     intakeRollerFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_ROLLER_FOLLOWER, MotorType.kBrushless);
+    
+    intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     globalConfig
       .follow(intakeRollerLeader, false);
-    
-    intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      
     intakeRollerFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //PID and FF
@@ -96,7 +97,7 @@ public class AlgaeIntake extends SubsystemBase {
  * @return command to run rollers
  */
   public Command runRollers(){
-    return this.run( () -> intakeRollerLeader.set(0.3));
+    return this.run(() -> intakeRollerLeader.set(0.3));
   }
 
   /**
@@ -104,7 +105,7 @@ public class AlgaeIntake extends SubsystemBase {
    * @return command to stop rollers
    */
   public Command stopRollers() {
-    return this.run(() -> intakeRollerLeader.setVoltage(0));
+    return this.run(() -> intakeRollerLeader.set(0));
   }
 
   public Command reverseRollers() {
