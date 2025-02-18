@@ -20,7 +20,7 @@ public class Ports {
     }
   
     public class IntakePorts{
-        public static int INTAKE_MOTOR = 0;
+        public static int INTAKE_MOTOR = 3;
         public static int BEAM_BREAK = 1;
         public static int PIVOT_MOTOR = 2;
     }

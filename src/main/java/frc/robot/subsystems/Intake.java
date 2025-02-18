@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase {
 
     // Configure the motor
     config
-        .inverted(true)
+        .inverted(false)
         .idleMode(IdleMode.kBrake);
     config.encoder
         .positionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR)
