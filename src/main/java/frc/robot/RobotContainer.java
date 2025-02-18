@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.ClimbConstants.OperatorConstants;
+import frc.robot.Constants.*;
 import frc.robot.commands.Autos;
 // import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.AlgaeIntake;
@@ -33,8 +33,6 @@ import frc.robot.commands.CoralTransition;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  // Drive drivetrain = new Drive();
-  AlgaeIntake algaeIntake = new AlgaeIntake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
@@ -92,12 +90,12 @@ public class RobotContainer {
     //algaeintake
 
     operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollers())
-      .onFalse(algaeIntake.stopRollers());
+      .whileTrue(algaeIntake.runRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
 
     operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollers())
-      .onFalse(algaeIntake.stopRollers());
+      .whileTrue(algaeIntake.reverseRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
     
     //coralouttake
 

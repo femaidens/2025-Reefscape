@@ -18,9 +18,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.AlgaeIntakeConstants;
-import frc.robot.Constants.AlgaePivotConstants;
-import frc.robot.Ports;
+import frc.robot.Constants.*;
+import frc.robot.Ports.AlgaePivotPorts;
 
 public class AlgaePivot extends SubsystemBase {
   private static SparkMax intakePivotLeader;
@@ -36,8 +35,8 @@ public class AlgaePivot extends SubsystemBase {
 
   /** Creates a new AlgaePivot. */
   public AlgaePivot() {
-    intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
-    intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
+    intakePivotLeader = new SparkMax(AlgaePivotPorts.PIVOT_LEADER, MotorType.kBrushless);
+    intakePivotFollower = new SparkMax(AlgaePivotPorts.PIVOT_FOLLOWER, MotorType.kBrushless);
 
     pivotEncoder = intakePivotFollower.getEncoder();
 
@@ -83,6 +82,10 @@ public class AlgaePivot extends SubsystemBase {
 
   public Command setProcessorCmd() {
     return this.run(() -> setPID(AlgaePivotConstants.PROCESSOR_SETPOINT));
+  }
+
+  public Command setGroundCmd(){
+    return this.run(() -> this.setPID(AlgaePivotConstants.GROUND_SETPOINT));
   }
 
   public Command intakeAlgaeCmd() {

@@ -19,7 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.AlgaeIntakeConstants;
+import frc.robot.Constants.*;
 import frc.robot.Ports.*;
 
 public class AlgaeIntake extends SubsystemBase {
@@ -50,8 +50,6 @@ public class AlgaeIntake extends SubsystemBase {
 
     
   }
-  
-
   /**
    * Set rollers to run algae in
    * @return 
@@ -83,6 +81,14 @@ public class AlgaeIntake extends SubsystemBase {
   public Command stopRollersCmd() {
     return this.run(() -> intakeRollerLeader.setVoltage(0));
   }
+
+  // /**
+  //  * 
+  //  * @return
+  //  */
+  // public Command intakeAlgae() {
+  //   return this.run(() -> this.setPID(0));
+  // }
   
   @Override
   public void periodic() {
