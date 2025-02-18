@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // Drive drivetrain = new Drive();
-  AlgaeIntake algae_intake = new AlgaeIntake();
+  AlgaeIntake algaeIntake = new AlgaeIntake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -58,6 +58,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    operJoy.rightBumper()
+      .whileTrue(algaeIntake.runRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
+
+    operJoy.leftBumper()
+      .whileTrue(algaeIntake.reverseRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
     
   }
 

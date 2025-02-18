@@ -19,19 +19,20 @@ public final class Constants {
   }
 
     public static class AlgaeIntakeConstants {
-      public static double POSITIONCONVERSIONFACTOR = 1000;
-      public static double VELOCITYCONVERSIONFACTOR = 1000;
-      public static double PIVOTVOLTAGE = 10;
+      public static double POS_CONVERSION_FACTOR = 1000;
+      public static double VEL_CONVERSION_FACTOR = 1000;
+      public static double PIVOT_VOLTAGE = 10;
+      public static double ROLLER_SPEED = 0.5;
 
-      public static double PIVOTSETPOINT = 0;
+      public static double PIVOT_SETPOINT = 0;
 
       public class PIDConstants {
         public static double kP = 0;
         public static double kI = 0;
         public static double kD = 0;
 
-        public static double MAXVELOCITY = 5;
-        public static double MAXACCELERATION = 10;
+        public static double MAX_VELOCITY = 5;
+        public static double MAX_ACCELERATION = 10;
       }
 
       public class FFConstants {
