@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 //import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.ClimbConstants;
 import frc.robot.Ports;
 
 //import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,15 +42,15 @@ public class Elevator extends SubsystemBase {
     elevatorEncoder = elevatorMotorLeader.getEncoder();
 
     elevatorPID = new PIDController(
-      Constants.ElevatorConstants.PIDConstants.kP,
-      Constants.ElevatorConstants.PIDConstants.kI,
-      Constants.ElevatorConstants.PIDConstants.kD
+      ClimbConstants.ElevatorConstants.PIDConstants.kP,
+      ClimbConstants.ElevatorConstants.PIDConstants.kI,
+      ClimbConstants.ElevatorConstants.PIDConstants.kD
     );
   
     ff = new ElevatorFeedforward(
-      Constants.ElevatorConstants.FeedForwardConstants.kS, 
-      Constants.ElevatorConstants.FeedForwardConstants.kG, 
-      Constants.ElevatorConstants.FeedForwardConstants.kV
+      ClimbConstants.ElevatorConstants.FeedForwardConstants.kS, 
+      ClimbConstants.ElevatorConstants.FeedForwardConstants.kG, 
+      ClimbConstants.ElevatorConstants.FeedForwardConstants.kV
     );
 
       SparkMaxConfig config = new SparkMaxConfig();
@@ -60,8 +60,8 @@ public class Elevator extends SubsystemBase {
         .idleMode(IdleMode.kBrake);
 
         config.encoder
-        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
-        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+        .positionConversionFactor(ClimbConstants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(ClimbConstants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
         // config.closedLoop
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -99,7 +99,7 @@ public class Elevator extends SubsystemBase {
      */
     public Command runMotorCmd(){
       return this.run( () -> 
-        elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED)
+        elevatorMotorLeader.set(ClimbConstants.ElevatorConstants.MOTOR_SPEED)
       );
     }
 
@@ -109,7 +109,7 @@ public class Elevator extends SubsystemBase {
 
      public Command reverseRunMotorCmd(){
       return this.run( () -> 
-        elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED)
+        elevatorMotorLeader.set(-ClimbConstants.ElevatorConstants.MOTOR_SPEED)
       );
     }
 

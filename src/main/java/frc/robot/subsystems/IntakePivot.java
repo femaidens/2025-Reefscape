@@ -18,7 +18,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import frc.robot.Ports.*;
 // import frc.robot.Constants;
-import frc.robot.Constants.*;
+import frc.robot.ClimbConstants.*;
 
 public class IntakePivot extends SubsystemBase {
   /** Creates a new IntakePivot. */
