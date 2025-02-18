@@ -25,8 +25,8 @@ import frc.robot.Ports;
 
 public class AlgaeIntake extends SubsystemBase {
   /** Creates a new Algae_Intake. */
-  private static SparkMax intakePivotLeader;
-  private static SparkMax intakePivotFollower;
+  // private static SparkMax intakePivotLeader;
+  // private static SparkMax intakePivotFollower;
 
   private static SparkMax intakeRollerLeader;
   private static SparkMax intakeRollerFollower;
@@ -40,23 +40,23 @@ public class AlgaeIntake extends SubsystemBase {
 
   public AlgaeIntake() {
     //intake pivot instantiations and setup
-    intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
-    intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
+    // intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
+    // intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
     globalConfig = new SparkMaxConfig();
 
-    pivotEncoder = intakePivotFollower.getEncoder();
+    // pivotEncoder = intakePivotFollower.getEncoder();
 
-    globalConfig
-      .inverted(true)
-      .idleMode(IdleMode.kBrake)
-      .follow(intakePivotLeader, false);
+    // globalConfig
+    //   .inverted(true)
+    //   .idleMode(IdleMode.kBrake)
+    //   .follow(intakePivotLeader, false);
     globalConfig.encoder
       .positionConversionFactor(Constants.AlgaeIntakeConstants.POSITION_CONVERSIONFACTOR)
       .velocityConversionFactor(Constants.AlgaeIntakeConstants.VELOCITY_CONVERSIONFACTOR);
     
     
-    intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
     //intake roller instantiations and setup
@@ -85,18 +85,18 @@ public class AlgaeIntake extends SubsystemBase {
   /**
    * use PID in order to set angle of algae intake to score processor
    */
-  public static void setPID(double setpoint){
-    intakePivotLeader.setVoltage(
-      intakePID.calculate(pivotEncoder.getPosition()) +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
-    intakePivotFollower.resumeFollowerMode();
-  }
+  // public static void setPID(double setpoint){
+  //   intakePivotLeader.setVoltage(
+  //     intakePID.calculate(pivotEncoder.getPosition()) +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
+  //   intakePivotFollower.resumeFollowerMode();
+  // }
 
 /**
  * 
  * @return command to run rollers
  */
   public Command runRollers(){
-    return this.run( () -> intakeRollerLeader.setVoltage(Constants.AlgaeIntakeConstants.PIVOT_VOLTAGE));
+    return this.run( () -> intakeRollerLeader.set(0.3));
   }
 
   /**
@@ -107,22 +107,26 @@ public class AlgaeIntake extends SubsystemBase {
     return this.run(() -> intakeRollerLeader.setVoltage(0));
   }
 
-  public Command setProcessor() {
-    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_SETPOINT));
+  public Command reverseRollers() {
+    return this.run(() -> intakeRollerLeader.set(-0.3));
   }
 
-  public Command setGround(){
-    return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_GROUND_SETPOINT));
-  }
+  // public Command setProcessor() {
+  //   return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_SETPOINT));
+  // }
 
-  public Command intakeAlgae() {
-    return this.run(() -> this.setPID(0));
-  }
+  // public Command setGround(){
+  //   return this.run(() -> this.setPID(Constants.AlgaeIntakeConstants.PIVOT_GROUND_SETPOINT));
+  // }
+
+  // public Command intakeAlgae() {
+  //   return this.run(() -> this.setPID(0));
+  // }
 
   
   
   public void initDefaultCommand() {
-    this.setProcessor();
+    // this.setProcessor();
   }
 
   @Override

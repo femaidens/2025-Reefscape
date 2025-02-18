@@ -21,7 +21,7 @@ public final class Constants {
       public static double POSITION_CONVERSIONFACTOR = 1000;
       // circumference divided by gear ratio?
       public static double VELOCITY_CONVERSIONFACTOR = 1000;
-      public static double PIVOT_VOLTAGE = 10;
+      public static double PIVOT_VOLTAGE = 3;
 
       public static double PIVOT_SETPOINT = 0;
       public static double PIVOT_GROUND_SETPOINT = 0;

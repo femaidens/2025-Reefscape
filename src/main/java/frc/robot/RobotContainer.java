@@ -8,11 +8,12 @@ import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.commands.Elevating;
-import frc.robot.commands.AlgaeCmds; 
+// import frc.robot.commands.AlgaeCmds; 
 import frc.robot.commands.CoralTransition;
 
 
@@ -27,25 +28,24 @@ public class RobotContainer {
   
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController operJoy;
-  private final Climb climb;
-  private final AlgaeCmds algaeCmds;
-  private final Elevating elevating;
-  private final CoralTransition coralTransition;
-  private final Intake intake;
-  private final Outtake outtake;
+  private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
+  // private final Climb climb;
+  // private final AlgaeCmds algaeCmds = new AlgaeCmds();
+  private final AlgaeIntake algaeIntake = new AlgaeIntake();
+  // private final Elevating elevating;
+  // private final CoralTransition coralTransition;
+  // private final Intake intake; 
+  // private final Outtake outtake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
-    climb = new Climb();
-    algaeCmds = new AlgaeCmds();
-    elevating = new Elevating();
-    outtake = new Outtake();
-    intake = new Intake();
-    coralTransition = new CoralTransition(intake, outtake);
+    // climb = new Climb();
+    // elevating = new Elevating();
+    // outtake = new Outtake();
+    // intake = new Intake();
+    // coralTransition = new CoralTransition(intake, outtake);
   }
 
   /**
@@ -72,45 +72,46 @@ public class RobotContainer {
     //algaeintake
 
     operJoy.rightBumper()
-      .whileTrue(algaeCmds.intakeAlgae());
-      //.whileFalse(algaeCmds.raiseAlgae());
+      .whileTrue(algaeIntake.runRollers())
+      .onFalse(algaeIntake.stopRollers());
 
     operJoy.leftBumper()
-      .whileTrue(algaeCmds.outtakeAlgae());
+      .whileTrue(algaeIntake.reverseRollers())
+      .onFalse(algaeIntake.stopRollers());
     
     //coralouttake
 
-    operJoy.a()
-      .whileTrue(elevating.firstLevelCmd());
+  //   operJoy.a()
+  //     .whileTrue(elevating.firstLevelCmd());
     
-    operJoy.b()
-      .whileTrue(elevating.secondLevelCmd());
+  //   operJoy.b()
+  //     .whileTrue(elevating.secondLevelCmd());
 
-    operJoy.y()
-      .whileTrue(elevating.thirdLevelCmd());
+  //   operJoy.y()
+  //     .whileTrue(elevating.thirdLevelCmd());
 
-    operJoy.x()
-      .whileTrue(elevating.fourthLevelCmd());
+  //   operJoy.x()
+  //     .whileTrue(elevating.fourthLevelCmd());
     
-    //algaeremoval
+  //   //algaeremoval
 
-    operJoy.back()
-      .whileTrue(elevating.algaeSecondLevelCmd());
+  //   operJoy.back()
+  //     .whileTrue(elevating.algaeSecondLevelCmd());
     
-    operJoy.start() 
-      .whileTrue(elevating.algaeThirdLevelCmd());
+  //   operJoy.start() 
+  //     .whileTrue(elevating.algaeThirdLevelCmd());
 
-    //reset default
-    operJoy.leftTrigger()
-      .whileTrue(elevating.resetDefault());
+  //   //reset default
+  //   operJoy.leftTrigger()
+  //     .whileTrue(elevating.resetDefault());
     
-    //transition intake to outtake
-    operJoy.rightTrigger()
-      .whileTrue(coralTransition.moveCoralToOuttake());
+  //   //transition intake to outtake
+  //   operJoy.rightTrigger()
+  //     .whileTrue(coralTransition.moveCoralToOuttake());
 
-    // run climb spool
-    operJoy.povUp()
-      .whileTrue(climb.pulleySystemCmd());
+  //   // run climb spool
+  //   operJoy.povUp()
+  //     .whileTrue(climb.pulleySystemCmd());
   }
 
   /**

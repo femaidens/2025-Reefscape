@@ -30,16 +30,16 @@ public class Ports {
     }
 
     public class ElevatorPorts{
-        public static int MOTOR_PORT = 3;
-        public static int BOT_SWITCH = 2;
+        public static int MOTOR_PORT = 23;
+        public static int BOT_SWITCH = 22;
     }
 
     public class OuttakePorts {
-        public static int OUTTAKE_MOTOR = 0;
+        public static int OUTTAKE_MOTOR = 16;
     }
 
     public class BeamBreakPorts { // for outtake 
-        public static int RECEIVER = 0; // front reciever is the one farthest away from intake
+        public static int RECEIVER = 21; // front reciever is the one farthest away from intake
         //public static int BACK_RECEIVER = 0;  // back reciever is the one closest to intake
     }
   
@@ -50,15 +50,15 @@ public class Ports {
     }
 
     public class ClimbPorts {
-      public static int CLIMB_MOTOR_PORT = 0; 
-      public static int FOLLOWER_PORT = 0;
+      public static int CLIMB_MOTOR_PORT = 20; 
+      public static int FOLLOWER_PORT = 19;
     }
 
     public class AlgaeIntakePorts {
-        public static final int INTAKE_PIVOT_LEADER = 0;
-        public static final int INTAKE_PIVOT_FOLLOWER = 0;
+        // public static final int INTAKE_PIVOT_LEADER = 18;
+        // public static final int INTAKE_PIVOT_FOLLOWER = 17;
 
-        public static final int INTAKE_ROLLER_LEADER = 0;
-        public static final int INTAKE_ROLLER_FOLLOWER = 0;
+        public static final int INTAKE_ROLLER_LEADER = 2;
+        public static final int INTAKE_ROLLER_FOLLOWER = 15;
     }
   }
