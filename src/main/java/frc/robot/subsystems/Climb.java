@@ -70,8 +70,18 @@ public class Climb extends SubsystemBase {
 
   }
 
+  /**
+   * Stops climb motors
+   * @return
+   */
   public Command stopMotorsCmd() {
     return this.run(() -> climbMotor.set(0));
     //follower.set(0);
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    
   }
 }
