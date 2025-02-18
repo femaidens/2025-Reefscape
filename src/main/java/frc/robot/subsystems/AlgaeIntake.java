@@ -20,8 +20,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ClimbConstants;
-import frc.robot.ClimbConstants.AlgaeIntakeConstants;
+import frc.robot.Constants;
+import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Ports;
 
 public class AlgaeIntake extends SubsystemBase {
@@ -41,7 +41,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   public AlgaeIntake() {
     //intake pivot instantiations and setup
-    intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
+    intakePivotLeader = new SparkMax(AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
     intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
     globalConfig = new SparkMaxConfig();
 
@@ -52,8 +52,8 @@ public class AlgaeIntake extends SubsystemBase {
       .idleMode(IdleMode.kBrake)
       .follow(intakePivotLeader, false);
     globalConfig.encoder
-      .positionConversionFactor(ClimbConstants.AlgaeIntakeConstants.POS_CONVERSION_FACTOR)
-      .velocityConversionFactor(ClimbConstants.AlgaeIntakeConstants.VEL_CONVERSION_FACTOR);
+      .positionConversionFactor(AlgaeIntakeConstants.POS_CONVERSION_FACTOR)
+      .velocityConversionFactor(AlgaeIntakeConstants.VEL_CONVERSION_FACTOR);
     
     
     intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

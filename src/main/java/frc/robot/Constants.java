@@ -14,33 +14,30 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class ClimbConstants {
+public final class Constants {
+  public static class AlgaeIntakeConstants {
+    public static double POS_CONVERSION_FACTOR = 1000;
+    public static double VEL_CONVERSION_FACTOR = 1000;
+    public static double PIVOT_VOLTAGE = 10;
+    public static double ROLLER_SPEED = 0.5;
 
+    public static double PIVOT_SETPOINT = 0;
 
-    public static class AlgaeIntakeConstants {
-      public static double POSITION_CONVERSIONFACTOR = 1000;
-      // circumference divided by gear ratio?
-      public static double VELOCITY_CONVERSIONFACTOR = 1000;
-      public static double PIVOT_VOLTAGE = 3;
+    public class PIDConstants {
+      public static double kP = 0;
+      public static double kI = 0;
+      public static double kD = 0;
 
-      public static double PIVOT_SETPOINT = 0;
-      public static double PIVOT_GROUND_SETPOINT = 0;
-
-      public class PIDConstants {
-        public static double kP = 0;
-        public static double kI = 0;
-        public static double kD = 0;
-
-        public static double MAX_VELOCITY = 5;
-        public static double MAX_ACCELERATION = 10;
-      }
-
-      public class FFConstants {
-        public static double kS = 0;
-        public static double kV = 0;
-        public static double kA = 0;
-      }
+      public static double MAX_VELOCITY = 5;
+      public static double MAX_ACCELERATION = 10;
     }
+
+    public class FFConstants {
+      public static double kS = 0;
+      public static double kV = 0;
+      public static double kA = 0;
+    }
+  }
     public static class ElevatorConstants {
       public static final double MOTOR_SPEED = 0;
       public static final double POSITION_CONVERSION_FACTOR = 1000;
@@ -118,28 +115,4 @@ public final class ClimbConstants {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
   }
-
-    public static class AlgaeIntakeConstants {
-      public static double POS_CONVERSION_FACTOR = 1000;
-      public static double VEL_CONVERSION_FACTOR = 1000;
-      public static double PIVOT_VOLTAGE = 10;
-      public static double ROLLER_SPEED = 0.5;
-
-      public static double PIVOT_SETPOINT = 0;
-
-      public class PIDConstants {
-        public static double kP = 0;
-        public static double kI = 0;
-        public static double kD = 0;
-
-        public static double MAX_VELOCITY = 5;
-        public static double MAX_ACCELERATION = 10;
-      }
-
-      public class FFConstants {
-        public static double kS = 0;
-        public static double kV = 0;
-        public static double kA = 0;
-      }
-    }
 }

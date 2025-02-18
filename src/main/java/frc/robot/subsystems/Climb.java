@@ -11,8 +11,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.ClimbConstants;
-import frc.robot.ClimbConstants.ClimbConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Ports;
 
 public class Climb extends SubsystemBase {
@@ -62,7 +61,7 @@ public class Climb extends SubsystemBase {
   public Command pulleySystemCmd() {
     return this.run(() -> {
       double currentRotation = motorEncoder.getPosition();
-      if (currentRotation < ClimbConstants.ClimbConstants.MAX_ROTATION) {
+      if (currentRotation < ClimbConstants.MAX_ROTATION) {
         climbMotor.set(ClimbConstants.CLIMB_SPEED);
       } else {
         stopMotorsCmd();
