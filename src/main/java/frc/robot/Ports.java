@@ -21,11 +21,11 @@ public class Ports {
         public static final int FRONT_LEFT_TURN = 7;
         public static final int REAR_LEFT_TURN = 14;
         public static final int FRONT_RIGHT_TURN = 8;
-        public static final int REAR_RIGHT_TURN = 2;
+        public static final int REAR_RIGHT_TURN = 30;
 
         public static final int FRONT_LEFT_CANCODER = 0;
         public static final int FRONT_RIGHT_CANCODER = 3;
-        public static final int REAR_LEFT_CANCODER = 2;
+        public static final int REAR_LEFT_CANCODER = 31;
         public static final int REAR_RIGHT_CANCODER = 1;
     }
 
@@ -46,7 +46,7 @@ public class Ports {
     public class IntakePorts{
         public static int INTAKE_MOTOR = 0;
         public static int BEAM_BREAK = 1;
-        public static int PIVOT_MOTOR = 2;
+        public static int PIVOT_MOTOR = 29;
     }
 
     public class ClimbPorts {
@@ -58,7 +58,7 @@ public class Ports {
         // public static final int INTAKE_PIVOT_LEADER = 18;
         // public static final int INTAKE_PIVOT_FOLLOWER = 17;
 
-        public static final int INTAKE_ROLLER_LEADER = 2;
-        public static final int INTAKE_ROLLER_FOLLOWER = 15;
+        public static final int INTAKE_ROLLER_LEADER = 15;
+        public static final int INTAKE_ROLLER_FOLLOWER = 2;
     }
   }

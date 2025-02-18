@@ -66,7 +66,7 @@ public class AlgaeIntake extends SubsystemBase {
     intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     globalConfig
-      .follow(intakeRollerLeader, false);
+      .follow(intakeRollerLeader, true);
       
     intakeRollerFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
