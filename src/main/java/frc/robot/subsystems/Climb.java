@@ -42,8 +42,8 @@ public class Climb extends SubsystemBase {
 
   }
 
-  public void stopMotors() {
-    follower.set(0);
+  public Command stopMotorsCmd() {
+    return this.run(() -> follower.set(0));
     //follower.set(0);
   }
 }
