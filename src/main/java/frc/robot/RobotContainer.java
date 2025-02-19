@@ -94,6 +94,11 @@ public class RobotContainer implements Logged {
     .whileTrue(
       drivetrain.setStraightCmd()
     );
+
+    driveJoy.rightTrigger()
+    .whileTrue(
+      drivetrain.driveStraightCmd()
+    );
   }
 
 

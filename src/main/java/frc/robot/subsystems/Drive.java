@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -51,10 +54,10 @@ public class Drive extends SubsystemBase implements Logged {
     // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
     // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
     // rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
-    frontLeft = new ModuleKraken(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, DrivetrainPorts.FRONT_LEFT_CANCODER, Translation.FRONT_LEFT_ANGOFFSET, false);
-    frontRight = new ModuleKraken(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, DrivetrainPorts.FRONT_RIGHT_CANCODER, Translation.FRONT_RIGHT_ANGOFFSET, false);
-    rearLeft = new ModuleKraken(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, DrivetrainPorts.REAR_LEFT_CANCODER, Translation.REAR_LEFT_ANGOFFSET, false);
-    rearRight = new ModuleKraken(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, DrivetrainPorts.REAR_RIGHT_CANCODER, Translation.REAR_RIGHT_ANGOFFSET, false);
+    frontLeft = new ModuleKraken(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, DrivetrainPorts.FRONT_LEFT_CANCODER, Translation.FRONT_LEFT_MAG_OFFSET, Translation.FRONT_LEFT_ANGOFFSET, true);
+    frontRight = new ModuleKraken(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, DrivetrainPorts.FRONT_RIGHT_CANCODER, Translation.FRONT_RIGHT_MAG_OFFSET, Translation.FRONT_RIGHT_ANGOFFSET, true);
+    rearLeft = new ModuleKraken(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, DrivetrainPorts.REAR_LEFT_CANCODER, Translation.REAR_LEFT_MAG_OFFSET, Translation.REAR_LEFT_ANGOFFSET, true);
+    rearRight = new ModuleKraken(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, DrivetrainPorts.REAR_RIGHT_CANCODER, Translation.REAR_RIGHT_MAG_OFFSET, Translation.REAR_RIGHT_ANGOFFSET, true);
 
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
@@ -72,11 +75,26 @@ public class Drive extends SubsystemBase implements Logged {
       });
       zeroHeading();
 
-      driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
+      driveRoutine =
+      new SysIdRoutine(
+      new SysIdRoutine.Config(
+         null,        // Use default ramp rate (1 V/s)
+         Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+         null,        // Use default timeout (10 s)
+                      // Log state with Phoenix SignalLogger class
+         (state) -> SignalLogger.writeString("state", state.toString())
+      ),
+      new SysIdRoutine.Mechanism(
+         (volts) -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
+         null,
+         this
+      )
+   );
+      // driveRoutine = new SysIdRoutine(
+      //   new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
+      //     volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
 
-      SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
+      // SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
     }
 
   //PLEASE CHECK THE SPEED FACTOR
@@ -114,8 +132,8 @@ public class Drive extends SubsystemBase implements Logged {
       desiredStates, Drivetrain.MAX_SPEED);
     frontLeft.setDesiredStateNoPID(desiredStates[1]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
     frontRight.setDesiredStateNoPID(desiredStates[0]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
-    rearLeft.setDesiredStateNoPID(desiredStates[2]); //rearLeft.setDesiredStateNoPID(desiredStates[3]);
-    rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
+    rearLeft.setDesiredStateNoPID(desiredStates[3]); //rearLeft.setDesiredStateNoPID(desiredStates[3]);
+    rearRight.setDesiredStateNoPID(desiredStates[2]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
 
    /**
@@ -143,6 +161,17 @@ public class Drive extends SubsystemBase implements Logged {
         rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
         //only rear right is acting up, consider changing it to 180 degrees
         rearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
+      }
+    );
+  }
+
+  public Command driveStraightCmd(){
+    return this.run(
+      () -> {
+        frontLeft.setDesiredState(new SwerveModuleState(.2, Rotation2d.fromRadians(0)));
+        frontRight.setDesiredState(new SwerveModuleState(.2, Rotation2d.fromRadians(0)));
+        rearLeft.setDesiredState(new SwerveModuleState(.2, Rotation2d.fromRadians(0)));
+        rearRight.setDesiredState(new SwerveModuleState(.2, Rotation2d.fromRadians(0)));
       }
     );
   }
@@ -227,5 +256,6 @@ public class Drive extends SubsystemBase implements Logged {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
     SmartDashboard.updateValues();
+    SmartDashboard.putNumber("angle", getAngle());
   }
 }
