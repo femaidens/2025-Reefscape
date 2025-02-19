@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds; 
+import static edu.wpi.first.units.Units.Volts;
+
 import java.io.ObjectInputFilter.Config;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SysIdSwerveTranslation;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -24,6 +28,7 @@ import edu.wpi.first.wpilibj.Encoder;
 //import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Ports;
 
@@ -38,7 +43,23 @@ public class Elevator extends SubsystemBase {
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
-  private static ElevatorFeedforward ff;
+    
+  
+  private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(0.4).per(Seconds),  // we don't know what seconds does but it works (if there's errors then it may be because of this)
+  Volts.of(2),
+  Seconds.of(5),
+   null);
+   private static ElevatorFeedforward ff;
+
+  private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
+    sysIDConfig, 
+    new SysIdRoutine.Mechanism(
+      volts -> setVoltage(volts.in(Volts)), null, this)); 
+
+
+
+
+
    
   public Elevator() {
     elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
@@ -59,6 +80,9 @@ public class Elevator extends SubsystemBase {
       Constants.ElevatorConstants.FeedForwardConstants.kG, 
       Constants.ElevatorConstants.FeedForwardConstants.kV
     );
+
+
+
 
       SparkMaxConfig config = new SparkMaxConfig();
 
@@ -134,6 +158,21 @@ public class Elevator extends SubsystemBase {
     public Command setLevel(double setpoint) {
       return this.run(() -> elevatorPID(setpoint));
     }
+
+    // Sys ID! 
+
+    public void setVoltage(double volts){
+      elevatorMotorLeader.setVoltage(volts);
+    }
+
+    public Command quasiCmd(SysIdRoutine.Direction direction) {
+      return elevatorRoutine.quasistatic(direction);
+    }
+
+    public Command dynaCmd(SysIdRoutine.Direction direction) {
+      return elevatorRoutine.dynamic(direction);
+    }
+
 
   @Override
   public void periodic() {
