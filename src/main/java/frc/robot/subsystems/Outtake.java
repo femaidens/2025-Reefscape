@@ -11,14 +11,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Ports;
 
@@ -26,8 +21,8 @@ public class Outtake extends SubsystemBase {
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
-  private final DigitalInput frontReceiver;
-  private final DigitalInput backReceiver;
+  //private final DigitalInput frontReceiver;
+  private final DigitalInput receiver;
 
 
 
@@ -43,9 +38,9 @@ public class Outtake extends SubsystemBase {
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     // front reciever is the one farthest away from intake
-    frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
-    // back reciever is the one closest to intake
-    backReceiver = new DigitalInput(Ports.BeamBreakPorts.BACK_RECEIVER);
+    //frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
+    // back reciever is the one located in outtake
+    receiver = new DigitalInput(Ports.BeamBreakPorts.RECEIVER);
 
 
 
@@ -90,11 +85,8 @@ public class Outtake extends SubsystemBase {
    * @return true if coral is at the right position in outtake
    */
 
-  public boolean isCoral() {
-    if (frontReceiver.get() == false && backReceiver.get()) {
-      return true;
-    }
-    return false;
+  public boolean isBeamBroken() {
+    return !receiver.get();
   }
 
   @Override

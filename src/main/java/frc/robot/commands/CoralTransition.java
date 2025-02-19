@@ -9,26 +9,32 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 
-public class CoralTransition{
-  Intake intake; 
-  Outtake outtake; 
+public class CoralTransition {
+  Intake intake;
+  Outtake outtake;
 
-  public CoralTransition(Intake intake, Outtake outtake ){
-    this.intake = intake; 
-    this.outtake = outtake; 
+  public CoralTransition(Intake intake, Outtake outtake) {
+    this.intake = intake;
+    this.outtake = outtake;
 
   }
 
-
-  public Command moveCoralToOuttake(){ 
-    return Commands.waitUntil(intake::isBeamBroken) 
-          .andThen(intake.runMotor()) 
-          .alongWith(outtake.setIntakeCoralSpeedCmd())
-          .until(outtake::isCoral)
-          .andThen(intake.stopMotorCmd())
-          .alongWith(outtake.stopMotorCmd());
-    
+  /*
+   * @ngozi, emily, yujing
+   * i think this needs editing, need to look at both intake beam break and
+   * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
+   */
+  public boolean isCoral() {
+    return !intake.isBeamBroken() && outtake.isBeamBroken();
   }
 
+  public Command moveCoralToOuttake() {
+    return intake.runMotorCmd()
+        .alongWith(outtake.setIntakeCoralSpeedCmd())
+        .until(this::isCoral)
+        .andThen(intake.stopMotorCmd())
+        .alongWith(outtake.stopMotorCmd());
+
+  }
 
 }

@@ -16,15 +16,6 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-  public static class IntakeConstants{
-    public static final double kP = 0.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-
-    public static final double MOTOR_SPEED = 0.5;
-    public static final double VOLTAGE = 0;
-  }
-
   // public static class PIDConstants{
     
   // }
@@ -46,7 +37,19 @@ public final class Constants {
   //     public static final double kD = 0;
 
   //   }
+  public static class IntakeConstants {
+    public static final double MOTORSPEED = 0.5;
+    public static final double VOLTAGE = 0.0;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1000.0;
+    public static final double POSITION_CONVERSION_FACTOR = 1000.0;
+    public static final int CURRENT_LIMIT = 30;
 
+    public static class IntakePIDConstants {
+      public static final double kP = 0.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+    }
+  }
   
   }
 
