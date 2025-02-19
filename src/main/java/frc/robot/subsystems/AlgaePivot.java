@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaePivotConstants;
-import frc.robot.Ports;
+import frc.robot.Ports.AlgaePivotPorts;
 
 public class AlgaePivot extends SubsystemBase {
   private static SparkMax intakePivotLeader;
@@ -36,8 +36,8 @@ public class AlgaePivot extends SubsystemBase {
 
   /** Creates a new AlgaePivot. */
   public AlgaePivot() {
-    intakePivotLeader = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
-    intakePivotFollower = new SparkMax(Ports.AlgaeIntakePorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
+    intakePivotLeader = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
+    intakePivotFollower = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
 
     pivotEncoder = intakePivotFollower.getEncoder();
 

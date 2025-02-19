@@ -30,10 +30,12 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+  private final AlgaeIntake algaeIntake = new AlgaeIntake();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
     configureBindings();
     configureDefaultCmds();
 
@@ -58,13 +60,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-//     operJoy.rightBumper()
-//       .whileTrue(algaeIntake.runRollersCmd())
-//       .onFalse(algaeIntake.stopRollersCmd());
+    operJoy.rightBumper()
+      .whileTrue(algaeIntake.runRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
 
-//     operJoy.leftBumper()
-//       .whileTrue(algaeIntake.reverseRollersCmd())
-//       .onFalse(algaeIntake.stopRollersCmd());
+    operJoy.leftBumper()
+      .whileTrue(algaeIntake.reverseRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
 
 //     operJoy.leftBumper()
 //       .whileTrue(climb.climbFwdCmd());

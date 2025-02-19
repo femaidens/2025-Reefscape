@@ -39,7 +39,9 @@ public class AlgaeIntake extends SubsystemBase {
     intakeRollerFollower = new SparkMax(AlgaeIntakePorts.INTAKE_ROLLER_FOLLOWER, MotorType.kBrushless);
     
     globalConfig
-      .inverted(true);
+      .inverted(true)
+      .idleMode(IdleMode.kBrake);
+
 
     intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
