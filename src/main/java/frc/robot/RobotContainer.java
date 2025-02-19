@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.Climb; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   // Drive drivetrain = new Drive();
-  AlgaeIntake algaeIntake = new AlgaeIntake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -58,18 +58,25 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+//     operJoy.rightBumper()
+//       .whileTrue(algaeIntake.runRollersCmd())
+//       .onFalse(algaeIntake.stopRollersCmd());
 
-    operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+//     operJoy.leftBumper()
+//       .whileTrue(algaeIntake.reverseRollersCmd())
+//       .onFalse(algaeIntake.stopRollersCmd());
+
+//     operJoy.leftBumper()
+//       .whileTrue(climb.climbFwdCmd());
+  
+//     operJoy.rightBumper()
+//       .whileTrue(climb.climbBkwdCmd());
     
+//     operJoy.rightTrigger()
+//       .whileTrue(climb.pulleySystemCmd());   
   }
 
-  
-
+ 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -78,5 +85,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
-  }
-}
+  }}
+
