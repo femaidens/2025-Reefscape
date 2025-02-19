@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 // import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.AlgaePivot;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
   private final AlgaeIntake algaeIntake = new AlgaeIntake();
+  private final AlgaePivot algaePivot = new AlgaePivot();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -48,6 +50,9 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
     //   );
+
+      algaePivot.setDefaultCommand(
+        algaePivot.setProcessorCmd());
   }
 
   /**
@@ -67,15 +72,9 @@ public class RobotContainer {
     operJoy.leftBumper()
       .whileTrue(algaeIntake.reverseRollersCmd())
       .onFalse(algaeIntake.stopRollersCmd());
-
-//     operJoy.leftBumper()
-//       .whileTrue(climb.climbFwdCmd());
-  
-//     operJoy.rightBumper()
-//       .whileTrue(climb.climbBkwdCmd());
     
-//     operJoy.rightTrigger()
-//       .whileTrue(climb.pulleySystemCmd());   
+    operJoy.rightTrigger()
+      .whileTrue(algaePivot.setProcessorCmd());    
   }
 
  
