@@ -55,22 +55,26 @@ public class RobotContainer {
   private void configureBindings() {
 
     operJoy.a()
-     .whileTrue(outtake.setIntakeCoralSpeedCmd());
+     .whileTrue(outtake.setIntakeCoralSpeedCmd())
+     .onFalse(outtake.stopMotorCmd()); 
 
      operJoy.b()
-     .whileTrue(outtake.setOuttakeCoralSpeedCmd());
+     .whileTrue(outtake.setOuttakeCoralSpeedCmd())
+     .onFalse(outtake.stopMotorCmd());
 
      operJoy.x()
-     .whileTrue(outtake.removeAlgaeCmd());
+     .whileTrue(outtake.removeAlgaeCmd())
+     .onFalse(outtake.stopMotorCmd());
 
      operJoy.y()
-     .whileTrue(outtake.setVoltageCmd());
-
-     operJoy.rightBumper()
-     .whileTrue(outtake.stopMotorCmd());
+     .whileTrue(outtake.setVoltageCmd())
+     .onFalse(outtake.stopMotorCmd());
 
      operJoy.leftBumper()
-     .whileTrue(coralTransition.moveCoralToOuttake());
+     .whileTrue(coralTransition.moveCoralToOuttake())
+     .onFalse(outtake.stopMotorCmd());
+
+  
 
 
 
