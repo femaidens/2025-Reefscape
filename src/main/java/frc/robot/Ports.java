@@ -47,8 +47,8 @@ public class Ports {
     }
   
     public class AlgaeIntakePorts {
-      public static final int INTAKE_ROLLER_LEADER = 0;
-      public static final int INTAKE_ROLLER_FOLLOWER = 0;
+      public static final int INTAKE_ROLLER_LEADER = 3;
+      public static final int INTAKE_ROLLER_FOLLOWER = 2;
     }
     
     public class AlgaePivotPorts {

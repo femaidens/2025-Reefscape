@@ -46,7 +46,7 @@ public class AlgaeIntake extends SubsystemBase {
     intakeRollerLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     globalConfig
-      .follow(intakeRollerLeader, false);
+      .follow(intakeRollerLeader, true);
 
     intakeRollerFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -59,7 +59,7 @@ public class AlgaeIntake extends SubsystemBase {
    * @return 
    */
     public Command runRollersCmd(){
-      return this.run( () -> intakeRollerLeader.set(AlgaeIntakeConstants.ROLLER_SPEED));
+      return this.run( () -> intakeRollerLeader.set(-AlgaeIntakeConstants.ROLLER_SPEED));
     }
 
   /**
@@ -67,7 +67,7 @@ public class AlgaeIntake extends SubsystemBase {
    * @return 
    */
   public Command reverseRollersCmd(){
-    return this.run( () -> intakeRollerLeader.set(-AlgaeIntakeConstants.ROLLER_SPEED));
+    return this.run( () -> intakeRollerLeader.set(AlgaeIntakeConstants.ROLLER_SPEED));
   }
 
   /**
