@@ -72,7 +72,7 @@ public class RobotContainer {
 
      operJoy.leftBumper()
      .whileTrue(coralTransition.moveCoralToOuttake())
-     .onFalse(outtake.stopMotorCmd());
+     .onFalse(outtake.stopMotorCmd().alongWith(intake.stopMotorCmd()));
 
   
 
