@@ -8,7 +8,9 @@ import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Climb; 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Elevator; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +25,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController;
   private final Climb climb;
+  private final Elevator elevator;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -30,6 +33,7 @@ public class RobotContainer {
     configureBindings();
     xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     climb = new Climb();
+    elevator = new Elevator();
   }
 
   /**
@@ -52,6 +56,23 @@ public class RobotContainer {
     
     xboxController.rightTrigger()
       .whileTrue(climb.pulleySystemCmd());
+
+
+      // Sys Id testing
+
+    xboxController.a()
+    .whileTrue(elevator.quasiCmd(SysIdRoutine.Direction.kForward).until(elevator::hitTopLimit));
+
+    xboxController.b()
+    .whileTrue(elevator.quasiCmd(SysIdRoutine.Direction.kReverse).until(elevator::hitLimit));
+
+    xboxController.x()
+    .whileTrue(elevator.dynaCmd(SysIdRoutine.Direction.kForward).until(elevator::hitTopLimit));
+
+    xboxController.y()
+    .whileTrue(elevator.dynaCmd(SysIdRoutine.Direction.kReverse).until(elevator::hitLimit));
+
+
 
     
   }

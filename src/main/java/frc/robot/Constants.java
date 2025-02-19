@@ -24,6 +24,7 @@ public final class Constants {
       public static final double MOTOR_SPEED = 0;
       public static final double POSITION_CONVERSION_FACTOR = 1000;
       public static final double VELOCITY_CONVERSION_FACTOR = 1000;
+      
 
       public static class PIDConstants {
         public static final double kP = 0;
@@ -47,6 +48,7 @@ public final class Constants {
         public static final double THIRD_LVL = 0;
         public static final double ALGAE_THIRD_LVL = 0;
         public static final double FOURTH_LVL = 0;
+        public static final double MAX_HEIGHT = 0;
       }
   }
 

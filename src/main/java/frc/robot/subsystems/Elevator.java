@@ -11,6 +11,7 @@ import java.io.ObjectInputFilter.Config;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SysIdSwerveTranslation;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Constants.ElevatorConstants;
 
 //import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -42,7 +44,7 @@ public class Elevator extends SubsystemBase {
   private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
-  private static RelativeEncoder elevatorEncoder;
+  private static AbsoluteEncoder elevatorEncoder;
     
   
   private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(0.4).per(Seconds),  // we don't know what seconds does but it works (if there's errors then it may be because of this)
@@ -67,7 +69,7 @@ public class Elevator extends SubsystemBase {
 
     botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
 
-    elevatorEncoder = elevatorMotorLeader.getEncoder();
+    elevatorEncoder = elevatorMotorLeader.getAbsoluteEncoder();
 
     elevatorPID = new PIDController(
       Constants.ElevatorConstants.PIDConstants.kP,
@@ -122,6 +124,14 @@ public class Elevator extends SubsystemBase {
       if(botLimitSwitch.get()){
         stopMotorCmd();
       }
+    }
+
+    public boolean hitLimit() {
+      return botLimitSwitch.get();
+    }
+
+    public boolean hitTopLimit() {
+      return elevatorEncoder.getPosition() > ElevatorConstants.SetpointConstants.MAX_HEIGHT;
     }
 
     //Cmds
