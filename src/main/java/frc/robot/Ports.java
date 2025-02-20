@@ -46,4 +46,8 @@ public class Ports {
       public static int LEADER_PORT = 0; 
       public static int FOLLOWER_PORT = 0;
     }
+
+    public class LEDPorts {
+        public static final int LED_PORT = 0;
+    }
   }

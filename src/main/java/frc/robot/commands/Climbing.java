@@ -22,9 +22,7 @@ public class Climbing {
 
 
   public Command toclimb(){
-    return Commands.beforeStarting(intakePivot.pulleySystemCmd()) 
-        .andThen(climb.pulleySystemCmd())
-        .andThen(climb.stopMotors());
+    return climb.pulleySystemCmd().beforeStarting(intakePivot.pulleySystemCmd()) 
+        .andThen(climb.stopMotorsCmd());
       }
-    
 }
