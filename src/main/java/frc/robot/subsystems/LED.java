@@ -32,7 +32,7 @@ public class LED extends SubsystemBase {
     led.setData(ledBuffer);
   }
 
-  public Command setDefaultCmd() {
+  public Command setDefaultCmd(Command command) {
     return this.run(() -> setDefault());
   }
   public Command setLEDBufferCmd() {

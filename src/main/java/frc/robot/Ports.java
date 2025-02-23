@@ -4,6 +4,11 @@ package frc.robot;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 public class Ports {
+    
+    public static class JoyPort {
+        public static final int DRIVER_PORT = 0;
+        public static final int OPERATOR_PORT = 1;
+      }
 
     public class DrivetrainPorts {
         public static final int FRONT_LEFT_DRIVE = 3;
@@ -50,4 +55,15 @@ public class Ports {
     public class LEDPorts {
         public static final int LED_PORT = 0;
     }
+
+    public class AlgaeIntakePorts {
+        public static final int INTAKE_ROLLER_LEADER = 3;
+        public static final int INTAKE_ROLLER_FOLLOWER = 2;
+      }
+
+    public class AlgaePivotPorts {
+        public static final int INTAKE_PIVOT_LEADER = 0;
+        public static final int INTAKE_PIVOT_FOLLOWER = 0;
+      }
+
   }

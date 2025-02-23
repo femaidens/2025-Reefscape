@@ -6,9 +6,14 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Climb; 
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.AlgaeIntake;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,11 +23,13 @@ import frc.robot.subsystems.Climb;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController;
+  private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
   private final Climb climb;
+  private final LED leds;
+  private final AlgaeIntake algaeIntake = new AlgaeIntake();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -30,6 +37,8 @@ public class RobotContainer {
     configureBindings();
     xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     climb = new Climb();
+    leds = new LED();
+    configureDefaultCmds();
   }
 
   /**
@@ -41,8 +50,34 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+   private void configureDefaultCmds(){
+    leds.setDefaultCmd(leds.setPurpleCmd());
+  }
+
   private void configureBindings() {
 
+
+  operJoy.rightBumper()
+    .whileTrue(
+      algaeIntake.runRollersCmd()
+      .andThen(leds.setGreenCmd().withTimeout(3))
+    );
+    
+    operJoy.rightBumper()
+    .onFalse(algaeIntake.stopRollersCmd());
+    
+
+  operJoy.leftBumper()
+    .whileTrue(
+      algaeIntake.reverseRollersCmd()
+      .andThen(leds.setGreenCmd().withTimeout(2))
+    );
+
+    operJoy.rightBumper()
+    .onFalse(algaeIntake.stopRollersCmd());
+
+  // climb commands
     xboxController.leftBumper()
       .whileTrue(climb.climbFwdCmd());
   
@@ -52,8 +87,6 @@ public class RobotContainer {
     
     xboxController.rightTrigger()
       .whileTrue(climb.pulleySystemCmd());
-
-    
   }
 
   /**
