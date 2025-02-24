@@ -4,98 +4,95 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import frc.robot.commands.ElevatorCommands;
+import frc.robot.subsystems.Elevator;
+import monologue.Logged;
+import monologue.Monologue;
 
-/**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
- */
-public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+/** This is a sample program to demonstrate the use of elevator simulation. */
+public class Robot extends TimedRobot implements Logged{
+  // private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
+  private final Elevator m_elevator = new Elevator();
+  //  private Command m_autonomousCommand;
+  // private RobotContainer robotContainer;
+  // private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
-  private final RobotContainer m_robotContainer;
-
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   public Robot() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    //robotContainer = new RobotContainer();
   }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
+  @Override
+  public void robotInit() {
+      boolean fileOnly = false;
+      boolean lazyLogging = false;
+      Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
+  }
+
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    // Update the telemetry, including mechanism visualization, regardless of mode.
+    m_elevator.updateTelemetry();
+    //CommandScheduler.getInstance().run();
+    
+     // setFileOnly is used to shut off NetworkTables broadcasting for most logging calls.
+     // Basing this condition on the connected state of the FMS is a suggestion only.
+     Monologue.setFileOnly(DriverStation.isFMSAttached());
+     // This method needs to be called periodically, or no logging annotations will process properly.
+     Monologue.updateAll();
   }
 
-  /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+  public void simulationPeriodic() {
+    // Update the simulation model.
+    m_elevator.simulationPeriodic();
   }
 
-  /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void teleopInit() {
-    // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
-    // continue until interrupted by another command, remove
-    // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+  public void teleopPeriodic() {
+    // operJoy.a().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersFirst));
+    // operJoy.b().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersSecond));
+    // operJoy.x().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersThird));
+    // operJoy.y().onTrue(m_elevator.reachGoalCommand(Constants.kSetpointMetersFourth));
+  //  if (m_joystick.getTrigger()) { //used to be m_joystick.getTrigger()
+  //    System.out.println("Goal: " + Constants.kSetpointMetersFirst);
+  //     m_elevator.setMotorVoltage(m_elevator.reachGoal(Constants.kSetpointMetersFirst));
+  //   } 
+  //   else {
+  //     //Otherwise, we update the setpoint to 0.
+  //     System.out.println("released trigger");
+  //     m_elevator.setMotorVoltage(0);
+  //     if(m_elevator.reachGoal(0.0) > 0 ){
+  //       m_elevator.setMotorVoltage(0);
+  //     }
+  //     else{
+  //       m_elevator.setMotorVoltage(m_elevator.reachGoal(0.0));
+  //     }
+  //   }
   }
 
-  /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
+  public void disabledInit() {
+    // This just makes sure that our simulation code knows that the motor's off.
+    // m_elevator.stop();
   }
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+  // @Override
+  // public void autonomousInit() {
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
+  //   m_autonomousCommand = robotContainer.getAutonomousCommand();
+    
+  //   // schedule the autonomous command (example)
+  //   if (m_autonomousCommand != null) {
+  //     m_autonomousCommand.schedule();
+  //   }
+  // }
 
-  /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void close() {
+    m_elevator.close();
+    super.close();
+  }
 }

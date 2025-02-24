@@ -4,81 +4,67 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.CoralTransition;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Outtake;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import frc.robot.commands.ElevatorCommands;
+// import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GeneralElevator;
+import monologue.Annotations.Log;
+import monologue.Logged;;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
-public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  
+public class RobotContainer implements Logged{
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController operJoy =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
-  private final Outtake outtake;
-  private final Intake intake;
+  @Log.NT
+  private final GeneralElevator elevator = GeneralElevator.create();
 
-  private final CoralTransition coralTransition;
+  // private final GeneralElevator elevator = GeneralElevator.create();
+  private final SendableChooser<Command> autonChooser = new SendableChooser<>();
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
-    outtake = new Outtake();
-    intake = new Intake();
-    coralTransition = new CoralTransition(intake, outtake);
-    // Configure the trigger bindings
-
-    configureBindings();
+    // configurations
+    configureButtonBindings();
+    configureAuton();
+    configureDefaultCommands();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
+  public void configureSubsystemDefaults() {
+  }
 
-    operJoy.a()
-     .whileTrue(outtake.setIntakeCoralSpeedCmd())
-     .onFalse(outtake.stopMotorCmd()); 
-
-     operJoy.b()
-     .whileTrue(outtake.setOuttakeCoralSpeedCmd())
-     .onFalse(outtake.stopMotorCmd());
-
-     operJoy.x()
-     .whileTrue(outtake.removeAlgaeCmd())
-     .onFalse(outtake.stopMotorCmd());
-
-     operJoy.y()
-     .whileTrue(outtake.setVoltageCmd())
-     .onFalse(outtake.stopMotorCmd());
-
-     operJoy.leftBumper()
-     .whileTrue(coralTransition.moveCoralToOuttake())
-     .onFalse(outtake.stopMotorCmd().alongWith(intake.stopMotorCmd()));
-
+  public void configureDefaultCommands() {
+  }
   
+  public void configureAuton() {
+    SmartDashboard.putData("Choose Auto: ", autonChooser);
+    // autonChooser.addOption("Stage 1", new ElevatorCommands(elevator).stage1Command());
+    // autonChooser.addOption("Stage 2", new ElevatorCommands(elevator).stage2Command());
+    // autonChooser.addOption("Stage 3", new ElevatorCommands(elevator).stage3Command());
+    // autonChooser.addOption("Stage 4", new ElevatorCommands(elevator).stage4Command());
+  }
 
+  private void configureButtonBindings() {
+        // stage 1
+        operJoy.a()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
+            );
+            
+        // stage 2
+        operJoy.b()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
+            );
 
+        // stage 3
+        operJoy.y()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
+            );
 
-
+        // stage 4
+        operJoy.x()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
+            );
   }
 
   /**
@@ -87,7 +73,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return autonChooser.getSelected();
   }
 }
