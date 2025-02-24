@@ -11,17 +11,30 @@ import monologue.Logged;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveConstants;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import frc.robot.subsystems.Climb; 
+
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,14 +52,18 @@ public class RobotContainer implements Logged {
   private final AlgaeIntake algaeIntake = new AlgaeIntake();
   private final AlgaePivot algaePivot = new AlgaePivot();
   private final Drive drive = new Drive();
+  
+  private SendableChooser<Command> autonChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-
-    configureBindings();
+  autonChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Choose Auto: ", autonChooser);
     configureDefaultCmds();
+    configureBindings();
   }
+
 
   private void configureDefaultCmds(){
     drive.setDefaultCommand(
@@ -118,29 +135,36 @@ public class RobotContainer implements Logged {
       drive.driveStraightCmd()
     );
   }
-
-
-
-  /*
-    operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
-
-    operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
-    
-    operJoy.rightTrigger()
-      .whileTrue(algaePivot.setProcessorCmd());    
-  }
-
- 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    * @return the command to run in autonomous
    */
+
+  public void configureAuton(){
+  AutoBuilder.configureHolonomic(
+          drive::getPose, 
+          drive::resetOdometry, 
+          drive::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
+          drive::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
+          new HolonomicPathFollowerConfig(
+              new com.pathplanner.lib.config.PIDConstants(Drive.kP, Drive.kI, Drive.kD), // Translation PID constants
+              new com.pathplanner.lib.config.PIDConstants(Turning.kP, Turning.kI, Turning.kD), // Rotation PID constants
+              DriveConstants.MAX_SPEED, // Max module speed, in m/s
+              ModuleConstants.WHEEL_DIAMETER/2, 
+              new ReplanningConfig()), 
+          () -> {
+          var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                  return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+              },
+          drive);
+
+  }
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
-  }}
+  }
+}
 
