@@ -6,10 +6,10 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Ports.JoyPort;
+// import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Climb;
+// import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.AlgaeIntake;
@@ -26,18 +26,18 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxController;
-  private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
-  private final Climb climb;
+  // private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
+  // private final Climb climb;
   private final LED leds;
   private final AlgaeIntake algaeIntake = new AlgaeIntake();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
     xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    climb = new Climb();
     leds = new LED();
+    configureBindings();
+    // climb = new Climb();
     configureDefaultCmds();
   }
 
@@ -58,35 +58,35 @@ public class RobotContainer {
   private void configureBindings() {
 
 
-  operJoy.rightBumper()
-    .whileTrue(
-      algaeIntake.runRollersCmd()
-      .andThen(leds.setGreenCmd().withTimeout(3))
-    );
+  xboxController.rightBumper()
+    .onTrue(leds.setGreenCmd().withTimeout(3));
+      //algaeIntake.runRollersCmd()
+      //.andThen(leds.setGreenCmd().withTimeout(3))
     
-    operJoy.rightBumper()
-    .onFalse(algaeIntake.stopRollersCmd());
+    
+  // xboxController.rightBumper()
+  //   .onFalse(algaeIntake.stopRollersCmd());
     
 
-  operJoy.leftBumper()
-    .whileTrue(
-      algaeIntake.reverseRollersCmd()
-      .andThen(leds.setGreenCmd().withTimeout(2))
-    );
+  xboxController.leftBumper()
+    .onTrue(leds.setPurpleCmd().withTimeout(3));
+      //algaeIntake.reverseRollersCmd()
+      //.andThen(leds.setGreenCmd().withTimeout(2))
+    
 
-    operJoy.rightBumper()
-    .onFalse(algaeIntake.stopRollersCmd());
+  // xboxController.rightBumper()
+  //   .onFalse(algaeIntake.stopRollersCmd());
 
   // climb commands
-    xboxController.leftBumper()
-      .whileTrue(climb.climbFwdCmd());
+    // xboxController.leftBumper()
+    //   .whileTrue(climb.climbFwdCmd());
   
 
-    xboxController.rightBumper()
-      .whileTrue(climb.climbBkwdCmd());
+    // xboxController.rightBumper()
+    //   .whileTrue(climb.climbBkwdCmd());
     
-    xboxController.rightTrigger()
-      .whileTrue(climb.pulleySystemCmd());
+    // xboxController.rightTrigger()
+    //   .whileTrue(climb.pulleySystemCmd());
   }
 
   /**
