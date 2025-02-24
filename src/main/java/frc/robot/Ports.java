@@ -38,10 +38,10 @@ public class Ports {
         public static int PIVOT_MOTOR = 2;
     }
 
-    public class ClimbPorts {
-      public static int LEADER_PORT = 0; 
-      public static int FOLLOWER_PORT = 0;
-    }
+    // public class ClimbPorts {
+    //   public static int LEADER_PORT = 0; 
+    //   public static int FOLLOWER_PORT = 0;
+    // }
   
     public class AlgaeIntakePorts {
       public static final int INTAKE_ROLLER_LEADER = 3;
