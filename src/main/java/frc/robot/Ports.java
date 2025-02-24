@@ -1,19 +1,16 @@
 package frc.robot;
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-public class Ports {
 
+public class Ports {
     public class DrivetrainPorts {
-        public static final int FRONT_LEFT_DRIVE = 3;
-        public static final int REAR_LEFT_DRIVE = 5;
-        public static final int FRONT_RIGHT_DRIVE = 4;
-        public static final int REAR_RIGHT_DRIVE = 6;
+        public static final int FRONT_LEFT_DRIVE = 13;
+        public static final int REAR_LEFT_DRIVE = 12;
+        public static final int FRONT_RIGHT_DRIVE = 11;
+        public static final int REAR_RIGHT_DRIVE = 10;
     
-        public static final int FRONT_LEFT_TURN = 7;
-        public static final int REAR_LEFT_TURN = 14;
-        public static final int FRONT_RIGHT_TURN = 8;
-        public static final int REAR_RIGHT_TURN = 2;
+        public static final int FRONT_LEFT_TURN = 9;
+        public static final int REAR_LEFT_TURN = 4;
+        public static final int FRONT_RIGHT_TURN = 15;
+        public static final int REAR_RIGHT_TURN = 20;
 
         public static final int FRONT_LEFT_CANCODER = 0;
         public static final int FRONT_RIGHT_CANCODER = 3;
@@ -41,10 +38,10 @@ public class Ports {
         public static int PIVOT_MOTOR = 2;
     }
 
-    public class ClimbPorts {
-      public static int LEADER_PORT = 0; 
-      public static int FOLLOWER_PORT = 0;
-    }
+    // public class ClimbPorts {
+    //   public static int LEADER_PORT = 0; 
+    //   public static int FOLLOWER_PORT = 0;
+    // }
   
     public class AlgaeIntakePorts {
       public static final int INTAKE_ROLLER_LEADER = 3;
@@ -55,4 +52,4 @@ public class Ports {
       public static final int INTAKE_PIVOT_LEADER = 0;
       public static final int INTAKE_PIVOT_FOLLOWER = 0;
     }
-  }
+}
