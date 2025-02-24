@@ -17,8 +17,37 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER_PORT = 0;
+    public static final int OPERATOR_PORT = 1;
   }
+  public static class AlgaeIntakeConstants {
+    public static double ROLLER_SPEED = 0.5;
+    public static double ROLLER_VOLTAGE = 3;
+  }
+
+  public static class AlgaePivotConstants {
+    public static final double POS_CONVERSION_FACTOR = 1000;
+    public static final double VEL_CONVERSION_FACTOR = 1000;
+    public static double PIVOT_VOLTAGE = 3;
+
+    public static double PROCESSOR_SETPOINT = 0;
+
+    public class PIDConstants {
+      public static double kP = 0;
+      public static double kI = 0;
+      public static double kD = 0;
+
+      public static double MAX_VELOCITY = 5;
+      public static double MAX_ACCELERATION = 10;
+    }
+
+    public class FFConstants {
+      public static double kS = 0;
+      public static double kV = 0;
+      public static double kA = 0;
+    }
+  }
+  
   public static class ElevatorConstants {
       public static final double MOTOR_SPEED = 0;
       public static final double POSITION_CONVERSION_FACTOR = 1000;

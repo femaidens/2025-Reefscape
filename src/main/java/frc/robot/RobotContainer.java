@@ -5,6 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Autos;
+// import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.AlgaePivot;
+
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -18,18 +26,33 @@ import frc.robot.subsystems.Climb;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  
+  // Drive drivetrain = new Drive();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController xboxController;
-  private final Climb climb;
+  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
+  private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+  private final AlgaeIntake algaeIntake = new AlgaeIntake();
+  private final AlgaePivot algaePivot = new AlgaePivot();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
     configureBindings();
-    xboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    climb = new Climb();
+    configureDefaultCmds();
+
+  }
+
+  private void configureDefaultCmds(){
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.drive(
+    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+    //   );
+
+      algaePivot.setDefaultCommand(
+        algaePivot.setProcessorCmd());
   }
 
   /**
@@ -42,20 +65,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    operJoy.rightBumper()
+      .whileTrue(algaeIntake.runRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
 
-    xboxController.leftBumper()
-      .whileTrue(climb.climbFwdCmd());
-  
-
-    xboxController.rightBumper()
-      .whileTrue(climb.climbBkwdCmd());
+    operJoy.leftBumper()
+      .whileTrue(algaeIntake.reverseRollersCmd())
+      .onFalse(algaeIntake.stopRollersCmd());
     
-    xboxController.rightTrigger()
-      .whileTrue(climb.pulleySystemCmd());
-
-    
+    operJoy.rightTrigger()
+      .whileTrue(algaePivot.setProcessorCmd());    
   }
 
+ 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

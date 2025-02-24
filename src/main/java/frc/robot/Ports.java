@@ -1,5 +1,4 @@
 package frc.robot;
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -45,5 +44,15 @@ public class Ports {
     public class ClimbPorts {
       public static int LEADER_PORT = 0; 
       public static int FOLLOWER_PORT = 0;
+    }
+  
+    public class AlgaeIntakePorts {
+      public static final int INTAKE_ROLLER_LEADER = 3;
+      public static final int INTAKE_ROLLER_FOLLOWER = 2;
+    }
+    
+    public class AlgaePivotPorts {
+      public static final int INTAKE_PIVOT_LEADER = 0;
+      public static final int INTAKE_PIVOT_FOLLOWER = 0;
     }
   }
