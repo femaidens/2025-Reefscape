@@ -8,6 +8,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.Autos;
 // import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.AlgaePivot;
 
 import java.util.function.DoubleSupplier;
 
@@ -38,7 +39,8 @@ public class RobotContainer {
   private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
   // private final Climb climb;
   // private final AlgaeCmds algaeCmds = new AlgaeCmds();
-  private final AlgaeIntake algaeIntake = new AlgaeIntake();
+  private final AlgaeIntake algaeIntake;
+  private final AlgaePivot algaePivot;
   // private final Elevating elevating;
   // private final CoralTransition coralTransition;
   // private final Intake intake; 
@@ -46,6 +48,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    algaePivot = new AlgaePivot();
+    algaeIntake  = new AlgaeIntake();
     // Configure the trigger bindings
     configureBindings();
     // climb = new Climb();
@@ -97,6 +101,12 @@ public class RobotContainer {
       .whileTrue(algaeIntake.reverseRollersCmd())
       .onFalse(algaeIntake.stopRollersCmd());
     
+    operJoy.leftTrigger()
+      .whileTrue(algaePivot.setGroundCmd());
+    
+    operJoy.rightTrigger()
+      .whileTrue(algaePivot.setProcessorCmd());
+    
     //coralouttake
 
   //   operJoy.a()
@@ -130,13 +140,15 @@ public class RobotContainer {
   //   // run climb spool
   //   operJoy.povUp()
   //     .whileTrue(climb.pulleySystemCmd());
-    operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+    // operJoy.rightBumper()
+    //   .whileTrue(algaeIntake.runRollersCmd())
+    //   .onFalse(algaeIntake.stopRollersCmd());
 
-    operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+    // operJoy.leftBumper()
+    //   .whileTrue(algaeIntake.reverseRollersCmd())
+    //   .onFalse(algaeIntake.stopRollersCmd());
+
+    
     
   }
 

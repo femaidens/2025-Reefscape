@@ -58,11 +58,11 @@ public class Ports {
         // public static final int INTAKE_PIVOT_LEADER = 18;
         // public static final int INTAKE_PIVOT_FOLLOWER = 17;
 
-        public static final int INTAKE_ROLLER_LEADER = 15;
-        public static final int INTAKE_ROLLER_FOLLOWER = 2;
+        public static final int INTAKE_ROLLER_LEADER = 3;
+        public static final int INTAKE_ROLLER_FOLLOWER = 15;
     }
     public class AlgaePivotPorts {
-        public static final int PIVOT_LEADER = 0;
-        public static final int PIVOT_FOLLOWER = 0; 
+        public static final int PIVOT_LEADER = 2;
+        // public static final int PIVOT_FOLLOWER = 0; 
     }
   }

@@ -23,7 +23,7 @@ import frc.robot.Ports.AlgaePivotPorts;
 
 public class AlgaePivot extends SubsystemBase {
   private static SparkMax intakePivotLeader;
-  private static SparkMax intakePivotFollower;
+  // private static SparkMax intakePivotFollower;
 
   private static RelativeEncoder pivotEncoder;
 
@@ -36,9 +36,9 @@ public class AlgaePivot extends SubsystemBase {
   /** Creates a new AlgaePivot. */
   public AlgaePivot() {
     intakePivotLeader = new SparkMax(AlgaePivotPorts.PIVOT_LEADER, MotorType.kBrushless);
-    intakePivotFollower = new SparkMax(AlgaePivotPorts.PIVOT_FOLLOWER, MotorType.kBrushless);
+    // intakePivotFollower = new SparkMax(AlgaePivotPorts.PIVOT_FOLLOWER, MotorType.kBrushless);
 
-    pivotEncoder = intakePivotFollower.getEncoder();
+    pivotEncoder = intakePivotLeader.getEncoder();
 
     globalConfig = new SparkMaxConfig();
 
@@ -52,10 +52,10 @@ public class AlgaePivot extends SubsystemBase {
     
     intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    globalConfig
-      .follow(intakePivotLeader, false);
+    // globalConfig
+    //   .follow(intakePivotLeader, false);
 
-    intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //PID and FF
     intakePID = new ProfiledPIDController(
@@ -77,7 +77,7 @@ public class AlgaePivot extends SubsystemBase {
   public void setPID(double setpoint){
     intakePivotLeader.setVoltage(
       intakePID.calculate(pivotEncoder.getPosition())); // +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
-    intakePivotFollower.resumeFollowerMode();
+    // intakePivotFollower.resumeFollowerMode();
   }
 
   public Command setProcessorCmd() {
@@ -95,5 +95,6 @@ public class AlgaePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println(pivotEncoder.getPosition());
   }
 }
