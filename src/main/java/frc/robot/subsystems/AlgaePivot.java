@@ -12,9 +12,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -29,14 +31,13 @@ public class AlgaePivot extends SubsystemBase {
 
   private static SparkMaxConfig globalConfig;
 
-  private static ProfiledPIDController intakePID;
+  private static PIDController intakePID;
 
   // private static SimpleMotorFeedforward intakeFF;
 
   /** Creates a new AlgaePivot. */
   public AlgaePivot() {
     intakePivotLeader = new SparkMax(AlgaePivotPorts.PIVOT_LEADER, MotorType.kBrushless);
-    // intakePivotFollower = new SparkMax(AlgaePivotPorts.PIVOT_FOLLOWER, MotorType.kBrushless);
 
     pivotEncoder = intakePivotLeader.getEncoder();
 
@@ -52,17 +53,12 @@ public class AlgaePivot extends SubsystemBase {
     
     intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // globalConfig
-    //   .follow(intakePivotLeader, false);
-
-    // intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
     //PID and FF
-    intakePID = new ProfiledPIDController(
+    intakePID = new PIDController(
       AlgaePivotConstants.PIDConstants.kP, 
       AlgaePivotConstants.PIDConstants.kI, 
-      AlgaePivotConstants.PIDConstants.kD, 
-      new Constraints(AlgaePivotConstants.PIDConstants.MAX_VELOCITY, AlgaePivotConstants.PIDConstants.MAX_ACCELERATION)
+      AlgaePivotConstants.PIDConstants.kD
+      // new Constraints(AlgaePivotConstants.PIDConstants.MAX_VELOCITY, AlgaePivotConstants.PIDConstants.MAX_ACCELERATION)
       );
 
     // intakeFF = new SimpleMotorFeedforward(
@@ -76,8 +72,9 @@ public class AlgaePivot extends SubsystemBase {
    */
   public void setPID(double setpoint){
     intakePivotLeader.setVoltage(
-      intakePID.calculate(pivotEncoder.getPosition())); // +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
+      intakePID.calculate(pivotEncoder.getPosition(), setpoint)); // +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
     // intakePivotFollower.resumeFollowerMode();
+    System.out.println(intakePID.calculate(pivotEncoder.getPosition(), setpoint));
   }
 
   public Command setProcessorCmd() {
@@ -95,6 +92,8 @@ public class AlgaePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println(pivotEncoder.getPosition());
+    // System.out.println(pivotEncoder.getPosition());
+    SmartDashboard.putNumber("encoder", pivotEncoder.getPosition());
+    
   }
 }

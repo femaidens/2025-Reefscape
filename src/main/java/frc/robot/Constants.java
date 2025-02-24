@@ -30,20 +30,20 @@ public final class Constants {
   }
 
   public static class AlgaePivotConstants {
-    public static final double POS_CONVERSION_FACTOR = 360.0;
+    public static final double POS_CONVERSION_FACTOR = 45.0 / (60 * 16.0) * 360.0;
     public static final double VEL_CONVERSION_FACTOR = 360.0;
     public static double PIVOT_VOLTAGE = 3;
 
-    public static double PROCESSOR_SETPOINT = -1300;
-    public static double GROUND_SETPOINT = -1800;
+    public static double PROCESSOR_SETPOINT = -60;
+    public static double GROUND_SETPOINT = -80;
 
     public class PIDConstants {
-      public static double kP = 0.0001;
+      public static double kP = 0.16;
       public static double kI = 0;
       public static double kD = 0;
 
-      public static double MAX_VELOCITY = 5;
-      public static double MAX_ACCELERATION = 10;
+      // public static double MAX_VELOCITY = 5;
+      // public static double MAX_ACCELERATION = 20;
     }
 
     public class FFConstants {
