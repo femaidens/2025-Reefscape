@@ -37,6 +37,7 @@ public class Outtake extends SubsystemBase {
     motorConfig = new SparkMaxConfig();
     motorConfig.smartCurrentLimit(OuttakeConstants.CURRENT_LIMIT);
     motorConfig.idleMode(IdleMode.kBrake); // prevent coral from slipping out of outtake
+    motorConfig.inverted(true);
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     // front reciever is the one farthest away from intake
@@ -58,7 +59,7 @@ public class Outtake extends SubsystemBase {
    */
 
   public Command setIntakeCoralSpeedCmd() { // sets velocity
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_SPEED));
   }
 
   /**
@@ -68,7 +69,7 @@ public class Outtake extends SubsystemBase {
    */
 
   public Command setOuttakeCoralSpeedCmd() {
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.OUTTAKE_SPEED));
   }
 
   public Command removeAlgaeCmd() {

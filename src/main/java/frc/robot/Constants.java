@@ -22,7 +22,7 @@ public final class Constants {
 
 
   public static class OuttakeConstants {
-    public static final double MOTOR_SPEED = 0.2;
+    public static final double OUTTAKE_SPEED = 0.2;
     public static final double REMOVE_ALGAE_SPEED = 0.2; //some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
