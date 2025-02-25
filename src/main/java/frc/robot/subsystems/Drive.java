@@ -46,6 +46,8 @@ public class Drive extends SubsystemBase implements Logged {
 
   private final SysIdRoutine driveRoutine;
 
+  private ChassisSpeeds speeds = new ChassisSpeeds();
+
   /** Creates a new Drive. */
   public Drive() {
     // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE,
@@ -116,10 +118,20 @@ public class Drive extends SubsystemBase implements Logged {
     double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
     SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
 
     setModuleStates(moduleStates);
+  }
+
+  public void autoDrive(ChassisSpeeds speeds) {
+    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+
+    setModuleStates(moduleStates);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return speeds;
   }
 
   /**
