@@ -23,8 +23,8 @@ import frc.robot.Constants.AlgaePivotConstants;
 import frc.robot.Ports.AlgaePivotPorts;
 
 public class AlgaePivot extends SubsystemBase {
-  private static SparkMax intakePivotLeader;
-  private static SparkMax intakePivotFollower;
+  private static SparkMax intakePivotMotor;
+  // private static SparkMax intakePivotFollower;
 
   private static RelativeEncoder pivotEncoder;
 
@@ -36,49 +36,52 @@ public class AlgaePivot extends SubsystemBase {
 
   /** Creates a new AlgaePivot. */
   public AlgaePivot() {
-    intakePivotLeader = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_LEADER, MotorType.kBrushless);
-    intakePivotFollower = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_FOLLOWER, MotorType.kBrushless);
+    intakePivotMotor = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_MOTOR, MotorType.kBrushless);
+    // intakePivotFollower = new SparkMax(AlgaePivotPorts.INTAKE_PIVOT_FOLLOWER,
+    // MotorType.kBrushless);
 
-    pivotEncoder = intakePivotFollower.getEncoder();
+    // pivotEncoder = intakePivotFollower.getEncoder();
 
     globalConfig = new SparkMaxConfig();
 
     globalConfig
-      .inverted(true)
-      .idleMode(IdleMode.kBrake);
-    
+        .inverted(true)
+        .idleMode(IdleMode.kBrake);
+
     globalConfig.encoder
-      .positionConversionFactor(AlgaePivotConstants.POS_CONVERSION_FACTOR)
-      .velocityConversionFactor(AlgaePivotConstants.VEL_CONVERSION_FACTOR);
-    
-    intakePivotLeader.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        .positionConversionFactor(AlgaePivotConstants.POS_CONVERSION_FACTOR)
+        .velocityConversionFactor(AlgaePivotConstants.VEL_CONVERSION_FACTOR);
+
+    intakePivotMotor.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     globalConfig
-      .follow(intakePivotLeader, false);
+        .follow(intakePivotMotor, false);
 
-    intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // intakePivotFollower.configure(globalConfig, ResetMode.kResetSafeParameters,
+    // PersistMode.kPersistParameters);
 
-    //PID and FF
+    // PID and FF
     intakePID = new ProfiledPIDController(
-      AlgaePivotConstants.PIDConstants.kP, 
-      AlgaePivotConstants.PIDConstants.kI, 
-      AlgaePivotConstants.PIDConstants.kD, 
-      new Constraints(AlgaePivotConstants.PIDConstants.MAX_VELOCITY, AlgaePivotConstants.PIDConstants.MAX_ACCELERATION)
-      );
+        AlgaePivotConstants.PIDConstants.kP,
+        AlgaePivotConstants.PIDConstants.kI,
+        AlgaePivotConstants.PIDConstants.kD,
+        new Constraints(AlgaePivotConstants.PIDConstants.MAX_VELOCITY,
+            AlgaePivotConstants.PIDConstants.MAX_ACCELERATION));
 
     // intakeFF = new SimpleMotorFeedforward(
-    //   Constants.AlgaeIntakeConstants.FFConstants.kS, 
-    //   Constants.AlgaeIntakeConstants.FFConstants.kV, 
-    //   Constants.AlgaeIntakeConstants.FFConstants.kA);
+    // Constants.AlgaeIntakeConstants.FFConstants.kS,
+    // Constants.AlgaeIntakeConstants.FFConstants.kV,
+    // Constants.AlgaeIntakeConstants.FFConstants.kA);
   }
 
   /**
    * PID in order to set angle of algae intake to score processor
    */
-  public void setPID(double setpoint){
-    intakePivotLeader.setVoltage(
-      intakePID.calculate(pivotEncoder.getPosition())); // +  intakeFF.calculate(intakePID.getSetpoint().velocity, setpoint));
-    intakePivotFollower.resumeFollowerMode();
+  public void setPID(double setpoint) {
+    intakePivotMotor.setVoltage(
+        intakePID.calculate(pivotEncoder.getPosition())); // + intakeFF.calculate(intakePID.getSetpoint().velocity,
+                                                          // setpoint));
+    // intakePivotFollower.resumeFollowerMode();
   }
 
   public Command setProcessorCmd() {
