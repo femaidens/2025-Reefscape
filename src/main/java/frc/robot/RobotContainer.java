@@ -68,7 +68,7 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
     //   );
-    algaePivot.setDefaultCommand(algaePivot.setGroundCmd());
+    algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
   }
 
   /**
@@ -95,11 +95,11 @@ public class RobotContainer {
     //algaeintake
 
     operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollersCmd())//.alongWith(algaePivot.setGroundCmd()))
+      .whileTrue(algaeIntake.reverseRollersCmd().alongWith(algaePivot.setGroundCmd()))//.alongWith(algaePivot.setGroundCmd()))
       .onFalse(algaeIntake.stopRollersCmd());
 
     operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollersCmd())
+      .whileTrue(algaeIntake.runRollersCmd())
       .onFalse(algaeIntake.stopRollersCmd());
     
     operJoy.leftTrigger()

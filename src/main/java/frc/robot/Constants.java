@@ -34,11 +34,11 @@ public final class Constants {
     public static final double VEL_CONVERSION_FACTOR = 360.0;
     public static double PIVOT_VOLTAGE = 3;
 
-    public static double PROCESSOR_SETPOINT = -60;
-    public static double GROUND_SETPOINT = -80;
+    public static double PROCESSOR_SETPOINT = 90;
+    public static double GROUND_SETPOINT = 53;
 
     public class PIDConstants {
-      public static double kP = 0.16;
+      public static double kP = 0.07;
       public static double kI = 0;
       public static double kD = 0;
 
