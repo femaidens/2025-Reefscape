@@ -28,16 +28,16 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   private final Outtake outtake;
-  private final Intake intake;
+  // private final Intake intake;
 
-  private final CoralTransition coralTransition;
+  // private final CoralTransition coralTransition;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     outtake = new Outtake();
-    intake = new Intake();
-    coralTransition = new CoralTransition(intake, outtake);
+    // intake = new Intake();
+    // coralTransition = new CoralTransition(intake, outtake);
     // Configure the trigger bindings
 
     configureBindings();
@@ -54,9 +54,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    operJoy.a()
-     .whileTrue(outtake.setIntakeCoralSpeedCmd())
-     .onFalse(outtake.stopMotorCmd()); 
+    // operJoy.a()
+    //  .whileTrue(outtake.setIntakeCoralSpeedCmd())
+    //  .onFalse(outtake.stopMotorCmd()); 
 
      operJoy.b()
      .whileTrue(outtake.setOuttakeCoralSpeedCmd())
@@ -70,9 +70,9 @@ public class RobotContainer {
      .whileTrue(outtake.setVoltageCmd())
      .onFalse(outtake.stopMotorCmd());
 
-     operJoy.leftBumper()
-     .whileTrue(coralTransition.moveCoralToOuttake())
-     .onFalse(outtake.stopMotorCmd().alongWith(intake.stopMotorCmd()));
+    //  operJoy.leftBumper()
+    //  .whileTrue(coralTransition.moveCoralToOuttake())
+    // //  .onFalse(outtake.stopMotorCmd().alongWith(intake.stopMotorCmd()));
 
   
 

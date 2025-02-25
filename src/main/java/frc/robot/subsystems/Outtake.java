@@ -24,6 +24,7 @@ public class Outtake extends SubsystemBase {
   private final SparkMaxConfig motorConfig;
   //private final DigitalInput frontReceiver;
   private final DigitalInput receiver;
+  private final DigitalInput beamBreak; 
 
 
 
@@ -41,7 +42,8 @@ public class Outtake extends SubsystemBase {
     // front reciever is the one farthest away from intake
     //frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
     // back reciever is the one located in outtake
-    receiver = new DigitalInput(Ports.BeamBreakPorts.RECEIVER);
+    receiver = new DigitalInput(Ports.OuttakePorts.RECEIVER);
+    beamBreak = new DigitalInput(Ports.IntakePorts.BEAM_BREAK); 
 
 
 
@@ -66,7 +68,7 @@ public class Outtake extends SubsystemBase {
    */
 
   public Command setOuttakeCoralSpeedCmd() {
-    return this.run(() -> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
   }
 
   public Command removeAlgaeCmd() {
@@ -90,9 +92,14 @@ public class Outtake extends SubsystemBase {
     return !receiver.get();
   }
 
+  public boolean isBeamBrokenIntake() {
+    return !beamBreak.get();
+  }
   @Override
   public void periodic() {
 
     SmartDashboard.putBoolean("Outtake Reciever", isBeamBroken()); 
+    SmartDashboard.putBoolean("Intake Beambreak", isBeamBrokenIntake());
+
   }
 }
