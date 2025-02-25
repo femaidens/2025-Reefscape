@@ -12,6 +12,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static edu.wpi.first.units.Units.Seconds;
@@ -25,7 +26,7 @@ import static edu.wpi.first.units.Units.Seconds;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  Drive drivetrain = new Drive();
+  private final Drive drive = new Drive();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -36,17 +37,17 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     configureDefaultCmds();
-    addPeriodic(() -> drive.updateEstimates(vision.estimatedGlobalPoses()), 0.02);
-
   }
 
   private void configureDefaultCmds(){
-    drivetrain.setDefaultCommand(
-      drivetrain.drive(
+    drive.setDefaultCommand(
+      new RunCommand(
+        () -> 
+        drive.drive(
         () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
         () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-      );
+        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
+        drive));
   }
 
   /**

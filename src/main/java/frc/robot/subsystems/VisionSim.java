@@ -68,15 +68,15 @@ public class VisionSim {
             for(PhotonTrackedTarget t :realCam.getLatestResult().getTargets()) {
                 targets.add(current3d.transformBy(cameraTrans).transformBy(t.getBestCameraToTarget()));
             }
-            Logger.recordOutput("photonvision/targetposes", targets.toArray(new Pose3d[targets.size()]));    
+            // Logger.recordOutput("photonvision/targetposes", targets.toArray(new Pose3d[targets.size()]));    
         } else {
-            Logger.getInstance().recordOutput("photonvision/targetposes", new Pose3d[] {});
+            // Logger.getInstance().recordOutput("photonvision/targetposes", new Pose3d[] {});
         }
     }
 
     public void loadAprilTags() {
         try {
-            simVision.addVisionTargets(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField());
+            // simVision.addVisionTargets(AprilTagFields.k2024Crescendo.loadAprilTagLayoutField());
         }
         catch(Exception e) {
             System.out.println("woops can't load the field");
