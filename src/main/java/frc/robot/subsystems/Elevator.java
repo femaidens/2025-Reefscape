@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -78,20 +79,32 @@ public class Elevator extends SubsystemBase {
      * sets motor voltage using calculations from PID and FF values 
      */
     public static void elevatorPID(double setpoint){
-      elevatorMotorLeader.setVoltage(
-        elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
-        ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
-        // elevatorMotorFollower.resumeFollowerMode();
+      if (botLimitSwitch.get()) {
+        elevatorMotorLeader.set(0);
+      }
+
+      else {
+        elevatorMotorLeader.setVoltage(
+          elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
+          ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) ); // not sure if this is correct
+          // elevatorMotorFollower.resumeFollowerMode();
+      }
+       
     }
 
     /**
      * if the limit switch is activated, the elevator motor stops moving
-     */
-    public void hitBotLimit(){
-      if(botLimitSwitch.get()){
-        stopMotorCmd();
-      }
+    //  */
+    // public void hitBotLimit(){
+    //   if(botLimitSwitch.get()){
+    //     stopMotorCmd();
+    //   }
+    // }
+
+    public boolean hitBotLimit() {
+      return botLimitSwitch.get();
     }
+
 
     //Cmds
     /**
@@ -108,9 +121,14 @@ public class Elevator extends SubsystemBase {
      */
 
      public Command reverseRunMotorCmd(){
-      return this.run( () -> 
+      if (botLimitSwitch.get()) {
+        return this.run(() -> stopMotorCmd());
+      }
+      else {
+        return this.run( () -> 
         elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED)
       );
+      }
     }
 
     public Command stopMotorCmd(){
@@ -131,7 +149,8 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    this.hitBotLimit();
+   // this.hitBotLimit();
+   SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
     
   }
 }
