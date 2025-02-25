@@ -57,10 +57,10 @@ public class Outtake extends SubsystemBase {
    * 
    * @return command that sets the speed of the outtake motor to take in a coral
    */
-
-  public Command setIntakeCoralSpeedCmd() { // sets velocity
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_SPEED));
-  }
+   // we don't need this anymore
+  // public Command setIntakeCoralSpeedCmd() { // sets velocity
+  //   return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_SPEED));
+  // }
 
   /**
    * Negative velocity = outtake!
@@ -69,7 +69,7 @@ public class Outtake extends SubsystemBase {
    */
 
   public Command setOuttakeCoralSpeedCmd() {
-    return this.run(() -> outtakeMotor.set(-OuttakeConstants.OUTTAKE_SPEED));
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_SPEED));
   }
 
   public Command removeAlgaeCmd() {

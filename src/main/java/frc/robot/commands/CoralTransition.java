@@ -30,7 +30,7 @@ public class CoralTransition {
 
   public Command moveCoralToOuttake() {
     return intake.runMotorCmd()
-        .alongWith(outtake.setIntakeCoralSpeedCmd())
+        .alongWith(outtake.setOuttakeCoralSpeedCmd())
         .until(this::hasCoral)
         .andThen(intake.stopMotorCmd())
         .alongWith(outtake.stopMotorCmd());

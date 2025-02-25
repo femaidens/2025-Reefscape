@@ -54,9 +54,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    operJoy.a()
-     .whileTrue(outtake.setIntakeCoralSpeedCmd())
-     .onFalse(outtake.stopMotorCmd()); 
+    // operJoy.a()
+    //  .whileTrue(outtake.setIntakeCoralSpeedCmd())
+    //  .onFalse(outtake.stopMotorCmd()); 
 
      operJoy.b()
      .whileTrue(outtake.setOuttakeCoralSpeedCmd())
