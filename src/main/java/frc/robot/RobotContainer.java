@@ -61,16 +61,6 @@ public class RobotContainer {
 
   }
 
-  private void configureDefaultCmds(){
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.drive(
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-    //   );
-    algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
-  }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -107,6 +97,9 @@ public class RobotContainer {
     
     operJoy.rightTrigger()
       .whileTrue(algaePivot.setProcessorCmd());
+
+    
+    algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
     
     //coralouttake
 
@@ -153,7 +146,9 @@ public class RobotContainer {
     
   }
 
-  
+  private void configureDefaultCmds(){
+    
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
