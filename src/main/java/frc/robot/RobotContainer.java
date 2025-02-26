@@ -69,7 +69,11 @@ public class RobotContainer implements Logged {
     // Configure the trigger bindings
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autonChooser);
-    config = new RobotConfig(Constants.PathPlannerConstants.massKg, Constants.PathPlannerConstants.MOI, Constants.PathPlannerConstants.moduleConfig, Constants.PathPlannerConstants.Translation2dModuleOffsets);
+    config = new RobotConfig(
+      Constants.PathPlannerConstants.massKg, 
+      Constants.PathPlannerConstants.MOI, 
+      ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.WHEEL_RADIUS, DriveConstants.DRIVE_CURRENT_LIMIT, DriveConstants.WHEEL_COF, ), 
+      Constants.PathPlannerConstants.Translation2dModuleOffsets);
     configureDefaultCmds();
     configureBindings();
   }

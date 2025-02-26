@@ -15,6 +15,7 @@ public class DriveConstants {
         public static final double GEAR_RATIO = 6.75;
         public static final double DRIVE_MOTOR_FREE_SPEED = Units.feetToMeters(15);
         public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+        public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         // modules stuff
