@@ -118,12 +118,12 @@ public class DriveToPoseCommand extends Command {
       ySpeed = 0;
     }
 
-    var omegaSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
+    var rotSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
     if (thetaController.atGoal()) {
-      omegaSpeed = 0;
+      rotSpeed = 0;
     }
 
-    drive.drive(xSpeed, ySpeed, omegaSpeed);
+    drive.drive(xSpeed, ySpeed, rotSpeed); //need to change 
   }
 
   public void resetPose(Pose2d pose) {
