@@ -121,4 +121,15 @@ public final class Constants {
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
   }
+
+  public static class PathPlannerConstants {
+    double massKg = 0;
+    double MOI = 0;
+    // double WHEEL_RADIUS;
+    // double MAX_DRIVE_VELOCITY_MPS;
+    // double WHEEL_COF;
+    // double DRIVE_GEARING;
+    // double DRIVE_CURRENT_LIMIT;
+    
+  }
 }

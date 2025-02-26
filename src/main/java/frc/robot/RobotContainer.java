@@ -12,6 +12,7 @@ import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.AlgaePivot;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
+import frc.robot.Constants.*;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 import java.util.function.DoubleSupplier;
@@ -68,6 +69,7 @@ public class RobotContainer implements Logged {
     // Configure the trigger bindings
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autonChooser);
+    config = new RobotConfig(Constants.PathPlannerConstants.massKg, Constants.PathPlannerConstants.MOI, Constants.PathPlannerConstants.moduleConfig, Constants.PathPlannerConstants.Translation2dModuleOffsets);
     configureDefaultCmds();
     configureBindings();
   }
