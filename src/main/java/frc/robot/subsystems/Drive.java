@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -39,6 +41,9 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 import monologue.Annotations.Log;
 import monologue.Logged;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+
 
 public class Drive extends SubsystemBase implements Logged {
 
@@ -312,6 +317,14 @@ public class Drive extends SubsystemBase implements Logged {
   //           turn = -1.0 * targetYaw * VISION_TURN_kP * Constants.Swerve.kMaxAngularSpeed;
   //       }
   // }
+  public void setChassisSpeeds(ChassisSpeeds speeds) {
+    SwerveModuleState[] states = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+    // SwerveDriveKinematics.desaturateWheelSpeeds(states, Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond));
+    setModuleStates(
+        Drivetrain.kDriveKinematics.toSwerveModuleStates(
+            ChassisSpeeds.discretize(
+              Drivetrain.kDriveKinematics.toChassisSpeeds(states), Seconds.of(0.02))));
+  }
 
   /* SYSID CMDS */
   public Command driveQuasistatic(SysIdRoutine.Direction direction) {
