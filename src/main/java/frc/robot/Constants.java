@@ -8,10 +8,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-  public static final int kMotorPort = 0;
-  public static final int kEncoderAChannel = 0;
-  public static final int kEncoderBChannel = 1;
-  public static final int kJoystickPort = 0;
+  public static final int kMotorPort = 2;
+  public static final int kEncoderAChannel = 30;
+  public static final int kEncoderBChannel = 27;
+  public static final int kJoystickPort = 4;
 
   public static final double kElevatorKp = 10;
   public static final double kElevatorKi = 0;

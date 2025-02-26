@@ -17,18 +17,18 @@ public class Robot extends TimedRobot implements Logged{
   // private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
   private final Elevator m_elevator = new Elevator();
   //  private Command m_autonomousCommand;
-  // private RobotContainer robotContainer;
+  private RobotContainer robotContainer;
   // private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
   public Robot() {
-    //robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   @Override
   public void robotInit() {
       boolean fileOnly = false;
-      boolean lazyLogging = false;
-      Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
+      boolean lazyLogging = true;
+      Monologue.setupMonologue(this, "/Robot", false, true);
   }
 
   @Override
@@ -39,7 +39,7 @@ public class Robot extends TimedRobot implements Logged{
     
      // setFileOnly is used to shut off NetworkTables broadcasting for most logging calls.
      // Basing this condition on the connected state of the FMS is a suggestion only.
-     Monologue.setFileOnly(DriverStation.isFMSAttached());
+    //  Monologue.setFileOnly(DriverStation.isFMSAttached());
      // This method needs to be called periodically, or no logging annotations will process properly.
      Monologue.updateAll();
   }
