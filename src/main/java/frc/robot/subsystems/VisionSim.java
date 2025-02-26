@@ -44,7 +44,7 @@ public class VisionSim {
             cameraProp.setLatencyStdDevMs(10);
 
             simCam = new PhotonCameraSim(realCam, cameraProp, 0.05, 20);
-            simVision.addCamera(simCam, Constants.VisionConstants.kRobotToCam);
+            // simVision.addCamera(simCam, Constants.VisionConstants.kRobotToCam);
 
             simCam.enableDrawWireframe(true);
 
