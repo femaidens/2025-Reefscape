@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Vision;
 
 import java.util.function.DoubleSupplier;
 
@@ -31,6 +32,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+  private final Vision vision = new Vision();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

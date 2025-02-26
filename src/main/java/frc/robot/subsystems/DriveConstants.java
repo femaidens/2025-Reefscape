@@ -7,6 +7,20 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearVelocity;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 
 /** Add your docs here. */
 public class DriveConstants {
@@ -46,6 +60,9 @@ public class DriveConstants {
             public static final double V = 2.7542;
             public static final double A = 0.41189;
         }
+
+        public static final LinearVelocity MAX_TRANSLATION_VELOCITY = MetersPerSecond.of(4.73);
+        public static final LinearAcceleration MAX_TRANSLATION_ACCELERATION = MetersPerSecondPerSecond.of(2.0);
     }
 
     public class Turn {
@@ -65,6 +82,8 @@ public class DriveConstants {
             public static final double V = 0;
             public static final double A = 0;
         }
+        public static final AngularVelocity MAX_ANGULAR_VELOCITY = RotationsPerSecond.of(1.25);
+        public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(6.0 * Math.PI);
     }
 
     // **************DRIVETRAIN CONSTANTS******************//

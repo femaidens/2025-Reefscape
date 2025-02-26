@@ -268,25 +268,25 @@ public class Drive extends SubsystemBase implements Logged {
             Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
         poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
     }
-  public boolean isFacing(Translation2d target) {
-      return Math.abs(
-              gyro.getRotation2d().getRadians()
-                  - target.minus(poseEstimator.getEstimatedPosition().getTranslation()).getAngle().getRadians()) < turnPIDController.getErrorTolerance();
-  }
+  // public boolean isFacing(Translation2d target) {
+  //     return Math.abs(
+  //             gyro.getRotation2d().getRadians()
+  //                 - target.minus(poseEstimator.getEstimatedPosition().getTranslation()).getAngle().getRadians()) < turnPIDController.getErrorTolerance();
+  // }
 
-  public Command driveTo(Pose2d target) {
-    return run() -> {
-          Transform2d transform = poseEstimator.getEstimatedPosition().minus(target);
-          Vector<N3> difference =
-              VecBuilder.fill(
-                  transform.getX(),
-                  transform.getY(),
-                  transform.getRotation().getRadians());
-          double out = drivePIDController.calculate(difference.norm(), 0);
-          Vector<N3> velocities = difference.unit().times(out);
-          setChassisSpeeds(
-              new ChassisSpeeds();
-        })
+  // public Command driveTo(Pose2d target) {
+  //   return run() -> {
+  //         Transform2d transform = poseEstimator.getEstimatedPosition().minus(target);
+  //         Vector<N3> difference =
+  //             VecBuilder.fill(
+  //                 transform.getX(),
+  //                 transform.getY(),
+  //                 transform.getRotation().getRadians());
+  //         double out = drivePIDController.calculate(difference.norm(), 0);
+  //         Vector<N3> velocities = difference.unit().times(out);
+  //         setChassisSpeeds(
+  //             new ChassisSpeeds();
+  //       })
 
   // public boolean isFacing(Translation2d target) {
   //   var results = camera.getAllUnreadResults();

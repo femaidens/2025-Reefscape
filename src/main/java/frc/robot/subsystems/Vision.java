@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.PoseEstimator;
@@ -26,58 +28,89 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import frc.robot.Constants;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 
 
 
 public class Vision {
-  private final PhotonCamera[] cameras;
-  private final PhotonPoseEstimator[] estimators;
-  private final PhotonPipelineResult[] lastResults;
-  private final PoseEstimator poseEstimator;
+  private final PhotonCamera frontLeftCam, frontRightCam, rearLeftCam, rearRightCam;
+  private PhotonPoseEstimator frontLeftEstimator,frontRightEstimator, rearLeftEstimator, rearRightEstimator;
+  private AprilTagFieldLayout fieldLayout;
+
   private Matrix<N3, N1> currentStdDevs;
 
+  Optional<EstimatedRobotPose> frontLeftUpdate, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
+
+
   public Vision() {
-    cameras = new PhotonCamera[4];
-    estimators = new PhotonPoseEstimator[4];
-    lastResults = new PhotonPipelineResult[4];
-    poseEstimator = new PoseEstimator<>(null, null, currentStdDevs, currentStdDevs)
-    for(int i = 0; i < cameras.length; i++) {
-      cameras[i] = new PhotonCamera("cam" + i);
-      PhotonPoseEstimator estimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRobotToCam);
-      estimators[i] = estimator;
-      lastResults[i] = new PhotonPipelineResult();
-    }
+    frontLeftCam = new PhotonCamera("LeftFront");
+    frontRightCam = new PhotonCamera("RightFront");
+    rearLeftCam = new PhotonCamera("LeftRear");
+    rearRightCam = new PhotonCamera("RightRear");
+
+    frontLeftUpdate = Optional.empty();
+    frontRightUpdate = Optional.empty();
+    rearLeftUpdate = Optional.empty();
+    rearRightUpdate = Optional.empty();
+
+    frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kFrontLeftCamToCenter);
+    frontRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kFrontRightCamToCenter);
+    rearLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRearLeftCamToCenter);
+    rearRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, VisionConstants.kRearRightCamToCenter);
+
+    frontLeftEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    frontRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    rearLeftEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    rearRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+    fieldLayout = AprilTagFields.k2025Reefscape.loadAprilTagLayoutField();
+
+    frontLeftEstimator.setFieldTags(fieldLayout);
+    frontRightEstimator.setFieldTags(fieldLayout);
+    rearLeftEstimator.setFieldTags(fieldLayout);
+    rearRightEstimator.setFieldTags(fieldLayout);
   }
   
-  private void updateEstimatedGlobalPoses() {
-
-    for (int i = 0; i < estimators.length; i++) {
-      var unread = cameras[i].getAllUnreadResults();
-      PhotonPipelineResult result;
-      if (unread.size() > 1) {
-        // gets the latest result if there are multiple unread results
-        int maxIndex = 0;
-        double max = 0;
-        int unreadLength = unread.size();
-        for (int ie = 0; ie < unreadLength; ie++) {
-          double temp = unread.get(ie).getTimestampSeconds();
-          if (temp > max) {
-            max = temp;
-            maxIndex = ie;
-          }
-        }
-        result = unread.get(maxIndex);
-        lastResults[i] = result;
-      } else if (unread.size() == 1) {
-        result = unread.get(0);
-        lastResults[i] = result;
-      } else {
-        result = lastResults[i];
-      }
-      var estimate = estimators[i].update(result);
+  private Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
+    if (frontLeftEstimator == null) {
+      // Configuration failed, there's nothing we can do
+      return Optional.empty();
     }
+    Optional<EstimatedRobotPose> visionEst = Optional.empty();
+    for (var change : frontLeftCam.getAllUnreadResults()) {
+      visionEst = frontLeftEstimator.update(change);
+      updateEstimationStdDevs(visionEst, change.getTargets());
+    }
+    return visionEst;
+
+    // for (int i = 0; i < estimators.length; i++) {
+    //   var unread = cameras[i].getAllUnreadResults();
+    //   PhotonPipelineResult result;
+    //   if (unread.size() > 1) {
+    //     // gets the latest result if there are multiple unread results
+    //     int maxIndex = 0;
+    //     double max = 0;
+    //     int unreadLength = unread.size();
+    //     for (int ie = 0; ie < unreadLength; ie++) {
+    //       double temp = unread.get(ie).getTimestampSeconds();
+    //       if (temp > max) {
+    //         max = temp;
+    //         maxIndex = ie;
+    //       }
+    //     }
+    //     result = unread.get(maxIndex);
+    //     lastResults[i] = result;
+    //   } else if (unread.size() == 1) {
+    //     result = unread.get(0);
+    //     lastResults[i] = result;
+    //   } else {
+    //     result = lastResults[i];
+    //   }
+    //   var estimate = estimators[i].update(result);
+    // }
   }
 
 
