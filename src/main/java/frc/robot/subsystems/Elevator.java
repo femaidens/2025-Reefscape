@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -33,12 +34,14 @@ public class Elevator extends SubsystemBase {
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
   private static ElevatorFeedforward ff;
+  // private boolean underBotSwitch; //in case we need it, threw it in commented sections. Might be needed because limit switch is not at the very
+                                  // bottom of the elevator
    
   public Elevator() {
-    elevatorMotorLeader = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
-    elevatorMotorFollower = new SparkMax( Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
+    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
+    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
 
-    botLimitSwitch = new DigitalInput( Ports.ElevatorPorts.BOT_SWITCH );
+    botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH );
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
 
@@ -73,6 +76,8 @@ public class Elevator extends SubsystemBase {
 
         elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        // underBotSwitch = true;
     }    
   
     /**
@@ -92,6 +97,26 @@ public class Elevator extends SubsystemBase {
        
     }
 
+/**
+ * see line 36, might not be needed. 
+ * @return
+ */
+    // if(botLimitSwitch.get()) {
+    //   elevatorMotorLeader.set(0);
+    // }
+
+    // else if(underBotSwitch){
+    //   elevatorMotorLeader.setVoltage(MathUtil.clamp(elevatorPID.calculate(elevatorEncoder.getPosition() ) + 
+    //   ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition())), 0, 12));
+    //     // not sure if this is correct
+    //     // elevatorMotorFollower.resumeFollowerMode();
+    // } else {
+    //   elevatorMotorLeader.setVoltage(
+    //       elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
+    //       ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) );
+    // }
+     
+
     /**
      * if the limit switch is activated, the elevator motor stops moving
     //  */
@@ -104,6 +129,15 @@ public class Elevator extends SubsystemBase {
     public boolean hitBotLimit() {
       return botLimitSwitch.get();
     }
+
+    // /**
+    //  * see line 36
+    //  */
+    // public void botSwitchStatus(){
+    //   if(hitBotLimit()){
+    //     underBotSwitch = !underBotSwitch;
+    //   }
+    // }
 
 
     //Cmds
@@ -151,6 +185,6 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
    // this.hitBotLimit();
    SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
-    
+  //  botSwitchStatus();
   }
 }
