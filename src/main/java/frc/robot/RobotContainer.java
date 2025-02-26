@@ -73,7 +73,7 @@ public class RobotContainer implements Logged {
     config = new RobotConfig(
       Constants.PathPlannerConstants.massKg, 
       Constants.PathPlannerConstants.MOI, 
-      ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.WHEEL_RADIUS, DriveConstants.DRIVE_CURRENT_LIMIT, DriveConstants.WHEEL_COF, ), 
+      ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.Translation.WHEEL_RADIUS, DriveConstants.Translation.CURRENT_LIMIT, DriveConstants.WHEEL_COF, ), 
       Constants.PathPlannerConstants.Translation2dModuleOffsets);
     configureDefaultCmds();
     configureBindings();
