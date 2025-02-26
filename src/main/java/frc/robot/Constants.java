@@ -123,8 +123,8 @@ public final class Constants {
   }
 
   public static class PathPlannerConstants {
-    double massKg = 0;
-    double MOI = 0;
+    public static final double massKg = 0;
+    public static final double MOI = 0;
     // double WHEEL_RADIUS;
     // double MAX_DRIVE_VELOCITY_MPS;
     // double WHEEL_COF;

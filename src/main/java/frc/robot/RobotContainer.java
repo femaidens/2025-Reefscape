@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 // import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
