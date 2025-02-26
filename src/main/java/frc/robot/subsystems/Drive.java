@@ -16,6 +16,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -45,6 +46,7 @@ public class Drive extends SubsystemBase implements Logged {
   private final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
+  
 
   private ChassisSpeeds speeds = new ChassisSpeeds();
 
@@ -70,8 +72,7 @@ public class Drive extends SubsystemBase implements Logged {
 
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
-    // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kMXP_UART);
+    gyro = new AHRS(NavXComType.kMXP_SPI);
 
     odometry = new SwerveDriveOdometry(
         Drivetrain.kDriveKinematics,
@@ -124,14 +125,24 @@ public class Drive extends SubsystemBase implements Logged {
     setModuleStates(moduleStates);
   }
 
-  public void autoDrive(ChassisSpeeds speeds) {
-    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
-
+  public void setChassisSpeeds(ChassisSpeeds  speedd){
+    // ChassisSpeeds x = ChassisSpeeds.fromFieldRelativeSpeeds(speedd, getAngle());
+    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speedd);
     setModuleStates(moduleStates);
+
   }
 
-  public ChassisSpeeds getChassisSpeeds() {
+  
+
+  public ChassisSpeeds getDesiredChassisSpeeds() {
     return speeds;
+  }
+
+  public ChassisSpeeds getCurrentChassisSpeeds(){
+    ChassisSpeeds spede= DriveConstants.Drivetrain.kDriveKinematics.toChassisSpeeds(
+      getSwerveModuleStates()[0],  getSwerveModuleStates()[1], getSwerveModuleStates()[2], getSwerveModuleStates()[3] 
+    );
+    return spede;
   }
 
   /**
@@ -200,10 +211,12 @@ public class Drive extends SubsystemBase implements Logged {
     return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[]::new);
   }
 
+  // @Log.NT
+  // public ChassisSpeeds[] getDesiredChassisSpeed(){
+  //   return modules.stream().map(m -> m.getDesiredChassisSpeed()).toArray(ChassisSpeeds[]::new);
+  // }
+
   @Log.NT
-  public ChassisSpeeds[] getDesiredChassisSpeed(){
-    return modules.stream().map(m -> m.getDesiredChassisSpeed()).toArray(ChassisSpeeds[]::new);
-  }
 
   /**
    * resets the odometry to the specified pose

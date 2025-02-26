@@ -163,15 +163,16 @@ public class RobotContainer implements Logged {
     AutoBuilder.configure(
       drivetrain::getPose, 
       drivetrain::resetOdometry,
-      drivetrain::getChassisSpeeds,
-      drivetrain.getDesiredSwerveModuleStates(),
-      drivetrain.getDesiredChassisSpeed(),
+      drivetrain::getDesiredChassisSpeeds,
+      drivetrain::setChassisSpeeds,
       new PPHolonomicDriveController(
         new PIDConstants(Translation.PID.P, Translation.PID.D), 
         new PIDConstants(Turn.PID.P, Turn.PID.D)),
       config,
       shouldWeFlip(),
       drivetrain);
+
+    // AutoBuilder.configure(null, null, null, null, null, config, null, null);
     
   }
 
