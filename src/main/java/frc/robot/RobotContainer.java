@@ -14,13 +14,18 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
+import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Turn;
 
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +44,7 @@ import com.pathplanner.lib.config.RobotConfig;
 // import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -72,9 +78,15 @@ public class RobotContainer implements Logged {
     SmartDashboard.putData("Choose Auto: ", autonChooser);
     config = new RobotConfig(
       Constants.PathPlannerConstants.massKg, 
-      Constants.PathPlannerConstants.MOI, 
-      ModuleConfig moduleConfig = new ModuleConfig(DriveConstants.Translation.WHEEL_RADIUS, DriveConstants.Translation.CURRENT_LIMIT, DriveConstants.WHEEL_COF, ), 
-      Constants.PathPlannerConstants.Translation2dModuleOffsets);
+      Constants.PathPlannerConstants.MOI,
+      new ModuleConfig(
+        DriveConstants.Translation.WHEEL_RADIUS, 
+        DriveConstants.Drivetrain.MAX_SPEED, 
+        DriveConstants.Drivetrain.WHEEL_COF, 
+        DCMotor.getKrakenX60(8), 
+        DriveConstants.Translation.CURRENT_LIMIT, 
+        8), 
+        DriveConstants.Drivetrain.TRACK_WIDTH);
     configureDefaultCmds();
     configureBindings();
   }
@@ -94,8 +106,22 @@ public class RobotContainer implements Logged {
     // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
     // );
 
-    algaePivot.setDefaultCommand(
-        algaePivot.setProcessorCmd()}
+    algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
+    }
+
+
+  public boolean shouldWeFlip(){
+    // Boolean supplier that controls when the path will be mirrored for the red alliance
+    // This will flip the path being followed to the red side of the field.
+    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
+  }
+
 
   public boolean configureAuton(){
     try{
@@ -107,38 +133,45 @@ public class RobotContainer implements Logged {
         e.printStackTrace();
       }
 
- // Configure AutoBuilder last
-    AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier
-    drivetrain.resetOdometry(drivetrain.getPose()), // Method to reset odometry (will be called if your auto has a starting pose)
-    drivetrain.getChassisSpeeds(), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-    (speeds,feedforwards)->
+//  // Configure AutoBuilder last
+//     AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier
+//     drivetrain.resetOdometry(drivetrain.getPose()), // Method to reset odometry (will be called if your auto has a starting pose)
+//     drivetrain.getChassisSpeeds(), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+//     (speeds,feedforwards)->
 
-    drivetrain.autoDrive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-              new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                      new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                      new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-              ),
-              config, // The robot configuration
-              () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+//     drivetrain.autoDrive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+//               new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+//                       new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+//                       new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+//               ),
+//               config, // The robot configuration
+//               () -> {
+//                 // Boolean supplier that controls when the path will be mirrored for the red alliance
+//                 // This will flip the path being followed to the red side of the field.
+//                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                  return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-              },
-              drivetrain // Reference to this subsystem to set requirements
-      ),
+//                 var alliance = DriverStation.getAlliance();
+//                 if (alliance.isPresent()) {
+//                   return alliance.get() == DriverStation.Alliance.Red;
+//                 }
+//                 return false;
+//               },
+//               drivetrain // Reference to this subsystem to set requirements
+//       ),
+
 
     AutoBuilder.configure(
       drivetrain::getPose, 
-      drivetrain::resetOdometry, 
-      drivetrain::getChassisSpeeds, 
-      (), null, config, null, null);
-
+      drivetrain::resetOdometry,
+      drivetrain::getChassisSpeeds,
+      drivetrain.getDesiredSwerveModuleStates(),
+      drivetrain.getDesiredChassisSpeed(),
+      new PPHolonomicDriveController(
+        new PIDConstants(Translation.PID.P, Translation.PID.D), 
+        new PIDConstants(Turn.PID.P, Turn.PID.D)),
+      config,
+      shouldWeFlip(),
+      drivetrain);
     
   }
 

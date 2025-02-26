@@ -200,6 +200,11 @@ public class Drive extends SubsystemBase implements Logged {
     return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[]::new);
   }
 
+  @Log.NT
+  public ChassisSpeeds[] getDesiredChassisSpeed(){
+    return modules.stream().map(m -> m.getDesiredChassisSpeed()).toArray(ChassisSpeeds[]::new);
+  }
+
   /**
    * resets the odometry to the specified pose
    */
