@@ -107,7 +107,7 @@ public class Elevator extends SubsystemBase {
 //  */
     public void elevatorPIDw(double setpoint){
     double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
-    if(underBotSwitch){
+    if(hitBotLimit()){
       elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
         // not sure if this is correct
         // elevatorMotorFollower.resumeFollowerMode();
