@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Drive;
@@ -94,6 +95,10 @@ public final class Autos {
 
       NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
       NamedCommands.registerCommand("intake", intake.intakeCoralCmd());
+
+      autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
+
+      autonChooser.addOption("No auto", Commands.none());
 
       return autonChooser;
   }
