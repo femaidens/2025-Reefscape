@@ -164,7 +164,7 @@ public class RobotContainer implements Logged {
       drivetrain::getPose, 
       drivetrain::resetOdometry,
       drivetrain::getDesiredChassisSpeeds,
-      drivetrain::setChassisSpeeds,
+      drivetrain.setChassisSpeeds();,
       new PPHolonomicDriveController(
         new PIDConstants(Translation.PID.P, Translation.PID.D), 
         new PIDConstants(Turn.PID.P, Turn.PID.D)),
