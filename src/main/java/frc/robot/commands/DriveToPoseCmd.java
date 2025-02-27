@@ -32,10 +32,10 @@ public class DriveToPoseCmd extends Command {
   private static final Distance TRANSLATION_TOLERANCE = Inches.of(1.0);
   private static final Angle THETA_TOLERANCE = Degrees.of(1.0);
 
-  private static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
+  public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
     DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond),
     DriveConstants.Translation.MAX_TRANSLATION_ACCELERATION.in(MetersPerSecondPerSecond));
-  private static final TrapezoidProfile.Constraints DEFAULT_OMEGA_CONSTRAINTS = new TrapezoidProfile.Constraints(
+  public static final TrapezoidProfile.Constraints DEFAULT_OMEGA_CONSTRAINTS = new TrapezoidProfile.Constraints(
     DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond),
     DriveConstants.Turn.MAX_ANGULAR_ACCELERATION.in(RadiansPerSecondPerSecond));
 
@@ -109,22 +109,25 @@ public class DriveToPoseCmd extends Command {
   public void execute() {
     var robotPose = poseProvider.get();
 
-    double xSpeed = xController.calculate(robotPose.getX());
+    DoubleSupplier xSpeed = () -> xController.calculate(robotPose.getX());
     if (xController.atGoal()) {
-      xSpeed = 0;
+      xSpeed = () -> 0;
     }
 
-    double ySpeed = yController.calculate(robotPose.getY());
+    DoubleSupplier ySpeed = () -> yController.calculate(robotPose.getY());
     if (yController.atGoal()) {
-      ySpeed = 0;
+      ySpeed = () -> 0;
     }
 
-    double rotSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
+    DoubleSupplier rotSpeed = () -> thetaController.calculate(robotPose.getRotation().getRadians());
     if (thetaController.atGoal()) {
-      rotSpeed = 0;
+      rotSpeed = () -> 0;
     }
 
-    drive.drive(xSpeed, ySpeed, rotSpeed);
+    drive.drive(
+      xSpeed, 
+      ySpeed, 
+      rotSpeed);
   }
 
   public void resetPose(Pose2d pose) {
