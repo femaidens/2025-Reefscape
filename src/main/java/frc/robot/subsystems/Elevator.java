@@ -35,7 +35,9 @@ public class Elevator extends SubsystemBase {
   private static RelativeEncoder elevatorEncoder;
   private static ElevatorFeedforward ff;
   // private boolean underBotSwitch; //in case we need it, threw it in commented sections. Might be needed because limit switch is not at the very
-                                  // bottom of the elevator
+  //                                 // bottom of the elevator
+  // private boolean previousSwitchTriggered;
+  // private boolean currentSwitchTriggered;
    
   public Elevator() {
     elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
@@ -78,12 +80,14 @@ public class Elevator extends SubsystemBase {
         elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // underBotSwitch = true;
+        // currentSwitchTriggered = botLimitSwitch.get();
+        // previousSwitchTriggered = currentSwitchTriggered;
     }    
   
     /**
      * sets motor voltage using calculations from PID and FF values 
      */
-    public static void elevatorPID(double setpoint){
+    public void elevatorPID(double setpoint){
       if (botLimitSwitch.get()) {
         elevatorMotorLeader.set(0);
       }
@@ -100,21 +104,17 @@ public class Elevator extends SubsystemBase {
 /**
  * see line 36, might not be needed. 
  * @return
- */
-    // if(botLimitSwitch.get()) {
-    //   elevatorMotorLeader.set(0);
-    // }
-
-    // else if(underBotSwitch){
-    //   elevatorMotorLeader.setVoltage(MathUtil.clamp(elevatorPID.calculate(elevatorEncoder.getPosition() ) + 
-    //   ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition())), 0, 12));
-    //     // not sure if this is correct
-    //     // elevatorMotorFollower.resumeFollowerMode();
-    // } else {
-    //   elevatorMotorLeader.setVoltage(
-    //       elevatorPID.calculate( elevatorEncoder.getPosition() ) + 
-    //       ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()) ) );
-    // }
+//  */
+    public void elevatorPIDw(double setpoint){
+    double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
+    if(underBotSwitch){
+      elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
+        // not sure if this is correct
+        // elevatorMotorFollower.resumeFollowerMode();
+    } else {
+      elevatorMotorLeader.setVoltage(voltage);
+    }
+  }
      
 
     /**
@@ -130,13 +130,14 @@ public class Elevator extends SubsystemBase {
       return botLimitSwitch.get();
     }
 
-    // /**
-    //  * see line 36
-    //  */
+    /**
+     * see line 36
+     */
     // public void botSwitchStatus(){
-    //   if(hitBotLimit()){
+    //   if(previousSwitchTriggered && !currentSwitchTriggered){
     //     underBotSwitch = !underBotSwitch;
     //   }
+    //   previousSwitchTriggered = currentSwitchTriggered;
     // }
 
 
@@ -185,6 +186,7 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
    // this.hitBotLimit();
    SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
+  //  SmartDashboard.putBoolean("Under limit switch", underBotSwitch);
   //  botSwitchStatus();
   }
 }
