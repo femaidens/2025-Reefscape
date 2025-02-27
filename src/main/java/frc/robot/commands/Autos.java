@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -17,18 +18,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
+import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Outtake;
 
 public final class Autos {
 
-  private final Drive drivetrain = new Drive();
+  private final Drive drivetrain;
+  private final Outtake outtake;
+  private final Intake intake;
   private RobotConfig config;
   private SendableChooser<Command> autonChooser;
 
-  private Autos() {
+
+  private Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, AlgaeIntake algaeIntake) {
 
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autonChooser);
@@ -44,6 +52,11 @@ public final class Autos {
         8), 
         DriveConstants.Drivetrain.TRACK_WIDTH);
 
+
+    this.intake = intake;
+    this.outtake = outtake;
+    this.drivetrain = drive;
+
   }
 
   public boolean shouldWeFlip(){
@@ -58,7 +71,7 @@ public final class Autos {
       return false;
   }
 
-  public void configureAuton(){
+  public SendableChooser<Command> configure() {
     try{
       config = RobotConfig.fromGUISettings();
     }catch(
@@ -79,8 +92,8 @@ public final class Autos {
       config,
       () -> shouldWeFlip(),
       drivetrain);
+
+      NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
+      NamedCommands.registerCommand("intake", intake.intakeCoralCmd());
   }
-
-  NamedCommands.registerCommand("outtake trough", )
-
 }

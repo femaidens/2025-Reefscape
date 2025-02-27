@@ -37,8 +37,8 @@ public final class Constants {
       public static double kI = 0;
       public static double kD = 0;
 
-      public static double MAX_VELOCITY = 5;
-      public static double MAX_ACCELERATION = 10;
+      // public static double MAX_VELOCITY = 5;
+      // public static double MAX_ACCELERATION = 20;
     }
 
     public class FFConstants {
@@ -47,7 +47,8 @@ public final class Constants {
       public static double kA = 0;
     }
   }
-  
+
+
   public static class ElevatorConstants {
       public static final double MOTOR_SPEED = 0;
       public static final double POSITION_CONVERSION_FACTOR = 1000;

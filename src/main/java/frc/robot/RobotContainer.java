@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.*;
 import frc.robot.commands.Autos;
 // import frc.robot.subsystems.Drive;
 import monologue.Logged;
@@ -24,15 +24,19 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
+<<<<<<< HEAD
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+=======
+>>>>>>> main
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import frc.robot.subsystems.Climb; 
 
@@ -46,6 +50,10 @@ import com.pathplanner.lib.config.RobotConfig;
 // import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PathFollowingController;
+=======
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+// import frc.robot.subsystems.Climb; 
+>>>>>>> main
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -183,6 +191,9 @@ public class RobotContainer implements Logged {
             drivetrain.driveStraightCmd());
   }
 
+=======
+ 
+>>>>>>> main
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    * 

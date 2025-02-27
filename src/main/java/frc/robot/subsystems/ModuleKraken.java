@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,8 +36,6 @@ public class ModuleKraken implements Logged {
     private final double chassisAngularOffset;
 
     private SwerveModuleState desiredState = null;
-
-    private ChassisSpeeds desiredChassisSpeed = null;
     double angleSetpoint = 0;
 
     public ModuleKraken(int driveID, int turnID, int CANCoderID, double magnetOffset, double chassisAngularOffset,
@@ -144,10 +141,6 @@ public class ModuleKraken implements Logged {
 
     public SwerveModuleState getDesiredState() {
         return desiredState;
-    }
-
-    public ChassisSpeeds getDesiredChassisSpeed() {
-        return desiredChassisSpeed;
     }
 
     public double getTurnVelocity() {
