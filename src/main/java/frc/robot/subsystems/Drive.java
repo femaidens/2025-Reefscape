@@ -320,10 +320,7 @@ public class Drive extends SubsystemBase implements Logged {
   public void setChassisSpeeds(ChassisSpeeds speeds) {
     SwerveModuleState[] states = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
     // SwerveDriveKinematics.desaturateWheelSpeeds(states, Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond));
-    setModuleStates(
-        Drivetrain.kDriveKinematics.toSwerveModuleStates(
-            ChassisSpeeds.discretize(
-              Drivetrain.kDriveKinematics.toChassisSpeeds(states), Seconds.of(0.02))));
+    setModuleStates(states);
   }
 
   /* SYSID CMDS */

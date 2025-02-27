@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
@@ -26,7 +27,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveToPoseCommand extends Command {
+public class DriveToPoseCmd extends Command {
 
   private static final Distance TRANSLATION_TOLERANCE = Inches.of(1.0);
   private static final Angle THETA_TOLERANCE = Degrees.of(1.0);
@@ -51,7 +52,7 @@ public class DriveToPoseCommand extends Command {
    * @param drive drivetrain subsystem
    * @param goalPose goal pose to drive to
    */
-  public DriveToPoseCommand(Drive drive, Supplier<Pose2d> poseProvider) {
+  public DriveToPoseCmd(Drive drive, Supplier<Pose2d> poseProvider) {
     this(drive, poseProvider, DEFAULT_XY_CONSTRAINTS, DEFAULT_OMEGA_CONSTRAINTS);
   }
 
@@ -63,7 +64,7 @@ public class DriveToPoseCommand extends Command {
    * @param translationConstraints translation motion profile constraints
    * @param omegaConstraints rotation motion profile constraints
    */
-  public DriveToPoseCommand(
+  public DriveToPoseCmd(
     Drive drive,
       Supplier<Pose2d> poseProvider,
       TrapezoidProfile.Constraints translationConstraints,
@@ -108,22 +109,22 @@ public class DriveToPoseCommand extends Command {
   public void execute() {
     var robotPose = poseProvider.get();
 
-    var xSpeed = xController.calculate(robotPose.getX());
+    double xSpeed = xController.calculate(robotPose.getX());
     if (xController.atGoal()) {
       xSpeed = 0;
     }
 
-    var ySpeed = yController.calculate(robotPose.getY());
+    double ySpeed = yController.calculate(robotPose.getY());
     if (yController.atGoal()) {
       ySpeed = 0;
     }
 
-    var rotSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
+    double rotSpeed = thetaController.calculate(robotPose.getRotation().getRadians());
     if (thetaController.atGoal()) {
       rotSpeed = 0;
     }
 
-    drive.drive(xSpeed, ySpeed, rotSpeed); //need to change 
+    drive.drive(xSpeed, ySpeed, rotSpeed);
   }
 
   public void resetPose(Pose2d pose) {
