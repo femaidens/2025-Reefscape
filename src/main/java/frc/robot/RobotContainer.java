@@ -20,6 +20,7 @@ import frc.robot.subsystems.DriveConstants.Turn;
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
@@ -65,116 +66,74 @@ public class RobotContainer implements Logged {
   private final AlgaeIntake algaeIntake = new AlgaeIntake();
   private final AlgaePivot algaePivot = new AlgaePivot();
   private final Drive drivetrain = new Drive();
-  private final RobotConfig config;
-
-  private SendableChooser<Command> autonChooser;
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    autonChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Choose Auto: ", autonChooser);
-    config = new RobotConfig(
-      Constants.PathPlannerConstants.massKg, 
-      Constants.PathPlannerConstants.MOI,
-      new ModuleConfig(
-        DriveConstants.Translation.WHEEL_RADIUS, 
-        DriveConstants.Drivetrain.MAX_SPEED, 
-        DriveConstants.Drivetrain.WHEEL_COF, 
-        DCMotor.getKrakenX60(8), 
-        DriveConstants.Translation.CURRENT_LIMIT, 
-        8), 
-        DriveConstants.Drivetrain.TRACK_WIDTH);
-    configureDefaultCmds();
-    configureBindings();
-  }
-
-  private void configureDefaultCmds() {
-    drivetrain.setDefaultCommand(
-        new RunCommand(
-            () -> drivetrain.drive(
-                () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-                () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-                () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))));
-                
-    // drive.setDefaultCommand(
-    // drive.drive(
-    // () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-    // () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-    // );
-
-    algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
+  private RobotConfig config;
+  
+    private SendableChooser<Command> autonChooser;
+  
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+      // Configure the trigger bindings
+      
+      configureDefaultCmds();
+      configureBindings();
     }
-
-
-  public boolean shouldWeFlip(){
-    // Boolean supplier that controls when the path will be mirrored for the red alliance
-    // This will flip the path being followed to the red side of the field.
-    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-      return alliance.get() == DriverStation.Alliance.Red;
-    }
-    return false;
-  }
-
-
-  public boolean configureAuton(){
-    try{
-        config = RobotConfig.fromGUISettings();
-      }catch(
-      Exception e)
-      {
-        // Handle exception as needed
-        e.printStackTrace();
+  
+    private void configureDefaultCmds() {
+      drivetrain.setDefaultCommand(
+          new RunCommand(
+              () -> drivetrain.drive(
+                  () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+                  () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+                  () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))));
+                  
+      // drive.setDefaultCommand(
+      // drive.drive(
+      // () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+      // () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+      // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+      // );
+  
+      algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
       }
-
-//  // Configure AutoBuilder last
-//     AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier
-//     drivetrain.resetOdometry(drivetrain.getPose()), // Method to reset odometry (will be called if your auto has a starting pose)
-//     drivetrain.getChassisSpeeds(), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-//     (speeds,feedforwards)->
-
-//     drivetrain.autoDrive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-//               new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-//                       new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-//                       new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-//               ),
-//               config, // The robot configuration
-//               () -> {
-//                 // Boolean supplier that controls when the path will be mirrored for the red alliance
-//                 // This will flip the path being followed to the red side of the field.
-//                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-//                 var alliance = DriverStation.getAlliance();
-//                 if (alliance.isPresent()) {
-//                   return alliance.get() == DriverStation.Alliance.Red;
-//                 }
-//                 return false;
-//               },
-//               drivetrain // Reference to this subsystem to set requirements
-//       ),
-
-
-    AutoBuilder.configure(
-      drivetrain::getPose, 
-      drivetrain::resetOdometry,
-      drivetrain::getDesiredChassisSpeeds,
-      drivetrain.setChassisSpeeds();,
-      new PPHolonomicDriveController(
-        new PIDConstants(Translation.PID.P, Translation.PID.D), 
-        new PIDConstants(Turn.PID.P, Turn.PID.D)),
-      config,
-      shouldWeFlip(),
-      drivetrain);
-
-    // AutoBuilder.configure(null, null, null, null, null, config, null, null);
+  
+  
     
-  }
+  
+  
+//     public void configureAuton(){
+      
+
+// //  // Configure AutoBuilder last
+// //     AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier
+// //     drivetrain.resetOdometry(drivetrain.getPose()), // Method to reset odometry (will be called if your auto has a starting pose)
+// //     drivetrain.getChassisSpeeds(), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+// //     (speeds,feedforwards)->
+
+// //     drivetrain.autoDrive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+// //               new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+// //                       new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+// //                       new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+// //               ),
+// //               config, // The robot configuration
+// //               () -> {
+// //                 // Boolean supplier that controls when the path will be mirrored for the red alliance
+// //                 // This will flip the path being followed to the red side of the field.
+// //                 // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+// //                 var alliance = DriverStation.getAlliance();
+// //                 if (alliance.isPresent()) {
+// //                   return alliance.get() == DriverStation.Alliance.Red;
+// //                 }
+// //                 return false;
+// //               },
+// //               drivetrain // Reference to this subsystem to set requirements
+// //       ),
+
+//     // AutoBuilder.configure(null, null, null, null, null, config, null, null);
+    
+//   }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
