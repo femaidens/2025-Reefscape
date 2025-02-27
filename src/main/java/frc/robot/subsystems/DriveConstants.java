@@ -29,10 +29,10 @@ public class DriveConstants {
         public static final double REAR_RIGHT_ANGOFFSET = Math.PI; // Math.PI / 2;
 
         // offset of cancoder magnets
-        public static final double FRONT_LEFT_MAG_OFFSET = -0.4106;
-        public static final double FRONT_RIGHT_MAG_OFFSET = -0.1301;
-        public static final double REAR_LEFT_MAG_OFFSET = -0.1408;
-        public static final double REAR_RIGHT_MAG_OFFSET = -0.5491;
+        public static final double FRONT_LEFT_MAG_OFFSET = -0.551;// 0.4106;
+        public static final double FRONT_RIGHT_MAG_OFFSET = -0.904;// -0.1301;
+        public static final double REAR_LEFT_MAG_OFFSET = -0.857;// -0.1408;
+        public static final double REAR_RIGHT_MAG_OFFSET = -0.701;// -0.5491;
 
         public static final String CANBUS = "rio";
 
