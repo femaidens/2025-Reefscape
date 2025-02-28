@@ -4,8 +4,9 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
@@ -13,8 +14,14 @@ import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 //import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GeneralElevator;
 
+import java.util.GregorianCalendar;
 import java.util.function.DoubleSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -26,138 +33,68 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.config.ModuleConfig;
-
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  // Drive drivetrain = new Drive();
-  DriveSim driveSim = new DriveSim();
+  
+  private GeneralElevator elevator = GeneralElevator.create();
+  private Drive drive = new Drive();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
-  private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+  private final CommandXboxController m_driverController =
+      new CommandXboxController(ControllerConstants.DRIVER_PORT);
 
-  private SendableChooser<Command> autoChooser;
+  private final CommandXboxController operJoy = 
+      new CommandXboxController(ControllerConstants.OPERATOR_PORT);
 
-
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
-    configureDefaultCmds();
-    // configureAuton();
-    // ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
-    // RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
-    
-    // AutoBuilder autoBuilder = new AutoBuilder();
-        // AutoBuilder.configure(
-        // driveSim::getPose, 
-        // driveSim::resetOdometry, 
-        // driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
-        // driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
-        // driveSim.holonomicDriveController, 
-        // config,  
-
-        // () -> {
-        // var alliance = DriverStation.getAlliance();
-        //       if (alliance.isPresent()) {
-        //         return alliance.get() == DriverStation.Alliance.Red;
-        //       }
-        //       return false;
-        //     },
-        // driveSim);
-    autoChooser = AutoBuilder.buildAutoChooser();
-
-    // boolean isCompetition = true;
-
-    // // Build an auto chooser. This will use Commands.none() as the default option.
-    // // As an example, this will only show autos that start with "comp" while at
-    // // competition as defined by the programmer
-    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-    //   (stream) -> isCompetition
-    //     ? stream.filter(auto -> auto.getName().startsWith("Start"))
-    //     : stream
-    // );
-
-    SmartDashboard.putData("Choose Auto: ", autoChooser);
+    // configurations
+    configureButtonBindings();
+//     configureAuton();
+    configureDefaultCommands();
   }
 
-  private void configureDefaultCmds(){
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.drive(
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-    //   );
-    driveSim.setDefaultCommand(
-      driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
-    
+  public void configureSubsystemDefaults() {
   }
 
-   public void configureAuton() {
-    ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
-    RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
-    
-    // AutoBuilder autoBuilder = new AutoBuilder();
-        AutoBuilder.configure(
-        driveSim::getPose, 
-        driveSim::resetOdometry, 
-        driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
-        driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
-        driveSim.holonomicDriveController, 
-        config,  
-
-        () -> {
-        var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-        driveSim);
-// new HolonomicPathFollowerConfig(
-        //     new PIDConstants(Translation.PID.P, Translation.PID.I, Translation.PID.D), // Translation PID constants
-        //     new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D), // Rotation PID constants
-        //     DriveConstants.Drivetrain.MAX_SPEED, // Max module speed, in m/s
-        //     1.0/Math.PI, 
-        //     new ReplanningConfig()),
+  public void configureDefaultCommands() {
   }
-
   
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
+//   public void configureAuton() {
+//     SmartDashboard.putData("Choose Auto: ", autonChooser);
+//     // autonChooser.addOption("Stage 1", new ElevatorCommands(elevator).stage1Command());
+//     // autonChooser.addOption("Stage 2", new ElevatorCommands(elevator).stage2Command());
+//     // autonChooser.addOption("Stage 3", new ElevatorCommands(elevator).stage3Command());
+//     // autonChooser.addOption("Stage 4", new ElevatorCommands(elevator).stage4Command());
+//   }
 
+  private void configureButtonBindings() {
+        // stage 1
+        operJoy.a()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
+            );
+            
+        // stage 2
+        operJoy.b()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
+            );
+
+        // stage 3
+        operJoy.y()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
+            );
+
+        // stage 4
+        operJoy.x()
+            .onTrue(elevator.reachGoal(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
+            );
   }
 
   /**

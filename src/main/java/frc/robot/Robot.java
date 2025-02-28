@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+// import frc.robot.commands.ElevatorCommands;
+import frc.robot.subsystems.Elevator;
+import monologue.Logged;
+import monologue.Monologue;
 import frc.robot.subsystems.*;
 
 import org.littletonrobotics.urcl.URCL;
@@ -17,23 +22,18 @@ import edu.wpi.first.wpilibj.Joystick;
 // import monologue.Logged; 
 
 
-/**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
- */
-public class Robot extends TimedRobot {
+/** This is a sample program to demonstrate the use of elevator simulation. */
+public class Robot extends TimedRobot implements Logged{
+  // private final Joystick m_joystick = new Joystick(Constants.kJoystickPort);
+  private final Elevator m_elevator = new Elevator();
   private Command m_autonomousCommand;
   // private DriveSim bobot = new DriveSim();
   // private final Joystick m_joystick = new Joystick(Constants.OperatorConstants.kJoystickPort);
+  RobotContainer m_RobotContainer;
 
+  private RobotContainer m_robotContainer;
+  // private CommandXboxController operJoy = new CommandXboxController(Constants.kJoystickPort);
 
-  private final RobotContainer m_robotContainer;
-
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -47,28 +47,28 @@ public class Robot extends TimedRobot {
     // URCL.start(DataLogManager.getLog());
   }
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
   @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-    // bobot.simulationPeriodic();
-    // bobot.setDriveVoltage(bobot.getDriveAppliedVolts());
+  public void robotInit() {
+      boolean fileOnly = false;
+      boolean lazyLogging = true;
+      Monologue.setupMonologue(this, "/Robot", false, true);
   }
 
-  /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
+  public void robotPeriodic() {
+    // Update the telemetry, including mechanism visualization, regardless of mode.
+    m_elevator.updateTelemetry();
+    //CommandScheduler.getInstance().run();
+    
+     // setFileOnly is used to shut off NetworkTables broadcasting for most logging calls.
+     // Basing this condition on the connected state of the FMS is a suggestion only.
+    //  Monologue.setFileOnly(DriverStation.isFMSAttached());
+     // This method needs to be called periodically, or no logging annotations will process properly.
+     Monologue.updateAll();
   }
+
+  @Override
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -120,15 +120,15 @@ public class Robot extends TimedRobot {
   //   CommandScheduler.getInstance().cancelAll();
   // }
 
-  // /** This function is called periodically during test mode. */
-  // @Override
-  // public void testPeriodic() {}
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
 
-  // /** This function is called once when the robot is first started up. */
-  // @Override
-  // public void simulationInit() {}
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
 
-  // /** This function is called periodically whilst in simulation. */
-  // @Override
-  // public void simulationPeriodic() {}
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
 }
