@@ -11,6 +11,7 @@ import monologue.Logged;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
@@ -67,6 +68,7 @@ public class RobotContainer implements Logged {
         // private final AlgaeIntake algaeIntake = new AlgaeIntake();
         // private final AlgaePivot algaePivot = new AlgaePivot();
         private final Drive drivetrain;
+        private final Elevator elevator;
         // private RobotConfig config;
 
         // private SendableChooser<Command> autonChooser;
@@ -79,9 +81,11 @@ public class RobotContainer implements Logged {
                 drivetrain = new Drive();
                 configureDefaultCmds();
                 configureBindings();
+                elevator = new Elevator();
         }
 
         private void configureDefaultCmds() {
+                
                 // drivetrain.setDefaultCommand(
                 // () -> drivetrain.drive(
                 // () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
@@ -89,12 +93,17 @@ public class RobotContainer implements Logged {
                 // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)));
 
                 drivetrain.setDefaultCommand(
-                                new RunCommand(() -> drivetrain.drive(
-                                                () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-                                                () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-                                                () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)), drivetrain));
+                        new RunCommand(() -> drivetrain.drive(
+                                () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+                                () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+                                () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)), drivetrain));
+
+        
+                
 
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
+                elevator.setDefaultCommand(
+                        new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
         }
 
         // public void configureAuton(){

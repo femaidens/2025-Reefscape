@@ -32,11 +32,12 @@ public final class Autos {
   private final Drive drivetrain;
   private final Outtake outtake;
   private final Intake intake;
+  private final CoralTransition transition;
   private RobotConfig config;
   private SendableChooser<Command> autonChooser;
 
 
-  private Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, AlgaeIntake algaeIntake) {
+  private Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, AlgaeIntake algaeIntake, CoralTransition transition) {
 
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autonChooser);
@@ -56,7 +57,7 @@ public final class Autos {
     this.intake = intake;
     this.outtake = outtake;
     this.drivetrain = drive;
-
+    this.transition = transition;
   }
 
   public boolean shouldWeFlip(){
@@ -93,8 +94,10 @@ public final class Autos {
       () -> shouldWeFlip(),
       drivetrain);
 
+      NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());
       NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
       NamedCommands.registerCommand("intake", intake.intakeCoralCmd());
+
 
       autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
 
