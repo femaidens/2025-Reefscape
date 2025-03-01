@@ -63,7 +63,7 @@ public class DriveConstants {
         public class PID {
             public static final double P = 2.5;
             public static final double I = 0;
-            public static final double D = 0.001;   
+            public static final double D = 0;   
         }
         
         public class FF {

@@ -34,6 +34,7 @@ import frc.robot.subsystems.DriveConstants.Translation.FF;
 import frc.robot.subsystems.DriveConstants.Translation.PID;
 import frc.robot.subsystems.DriveConstants.Turn;
 import monologue.Logged;
+import monologue.Annotations.Log;
 
 
 public class ModuleKraken implements Logged{
@@ -45,7 +46,7 @@ public class ModuleKraken implements Logged{
     private final CANcoder turnEncoder; 
     //PID? 
     private final PIDController drivePIDController; 
-    private final PIDController turnPIDController;
+    @Log.NT private final PIDController turnPIDController;
     
     private final SimpleMotorFeedforward driveFF;
     private final SimpleMotorFeedforward turnFF; 
@@ -55,7 +56,9 @@ public class ModuleKraken implements Logged{
     private final double chassisAngularOffset;
 
     private SwerveModuleState desiredState = null; 
-    double angleSetpoint = 0; 
+    double angleSetpoint = 0;
+    
+    private double voltage; 
 
     public ModuleKraken(int driveID, int turnID, int CANCoderID, double magnetOffset, double chassisAngularOffset, boolean turnInverted){
         this.chassisAngularOffset = chassisAngularOffset;
@@ -68,19 +71,19 @@ public class ModuleKraken implements Logged{
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
-        turnPIDController.enableContinuousInput(0, Math.PI * 2);//(-Math.PI, Math.PI);
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S,Translation.FF.V); 
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
         // DEVICE IDS SHOULD BE CHANGED!! 
-        driveMotor.setPosition(0);
+        driveMotor.setPosition(0);  
         
 
         directionConfig = new MagnetSensorConfigs();
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
-        directionConfig.withAbsoluteSensorDiscontinuityPoint(1.0);
+        directionConfig.withAbsoluteSensorDiscontinuityPoint(0.5);
         directionConfig.MagnetOffset = magnetOffset;
-        turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
+        turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
     }
         
         
@@ -100,13 +103,22 @@ public class ModuleKraken implements Logged{
     public void setDesiredStateNoPID(SwerveModuleState state){
         // maybe optimize is broken 
         //SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
-        state.optimize(getState().angle);
+        // state.optimize(getState().angle);
         angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
-        // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones 
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones
+        voltage = -turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()); 
+        turnMotor.setVoltage(voltage);
         SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
         desiredState = state;
+    }
+
+    public double getVoltage(){
+        return voltage;
+    }
+
+    public double getAbsolute(){
+        return turnEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
     /**
