@@ -162,15 +162,15 @@ public class RobotContainer {
 
                 operJoy.leftStick()
                                 .whileTrue(
-                                                outtake.reverseOuttakeCmd());
+                                                outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
 
                 operJoy.povUp()
                                 .whileTrue(
-                                               elevator.runMotorCmd());
+                                               elevator.runMotorCmd()); 
 
                 operJoy.povDown()
                                 .whileTrue(
-                                                elevator.reverseRunMotorCmd());
+                                                elevator.reverseRunMotorCmd()); 
                 
         }
 
