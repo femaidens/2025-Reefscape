@@ -40,14 +40,14 @@ public class RobotContainer implements Logged {
   }
 
   private void configureDefaultCmds(){
-    // drivetrain.setDefaultCommand(
-    //   new RunCommand(
-    //     () -> 
-    //     drivetrain.drive(
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
-    //     drivetrain));
+    drivetrain.setDefaultCommand(
+      new RunCommand(
+        () -> 
+        drivetrain.drive(
+        () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+        () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
+        drivetrain));
   }
 
   /**

@@ -67,7 +67,24 @@ public class ModuleKraken implements Logged{
         configureDriveTalon(driveMotor, CANCoderID, Translation.CURRENT_LIMIT); 
 
         turnMotor = new TalonFX(turnID, Translation.CANBUS); 
-        configureTurnTalon(turnMotor, CANCoderID, Turn.CURRENT_LIMIT, turnInverted); 
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.Feedback.FeedbackRemoteSensorID = CANCoderID;
+        config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be attached outside of gearbox
+        config.CurrentLimits.SupplyCurrentLimit = 30;
+        // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
+
+        turnMotor.setNeutralMode(NeutralModeValue.Brake); 
+        // motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));
+        // motor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(Translation.POS_CONVERSION_FACTOR));
+        if(turnInverted){
+        config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+        }
+        else{
+            config.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
+        }
+
+        turnMotor.getConfigurator().apply(config);
+        // configureTurnTalon(turnMotor, CANCoderID, Turn.CURRENT_LIMIT, turnInverted); 
 
         drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
         turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
@@ -96,7 +113,12 @@ public class ModuleKraken implements Logged{
         //state.optimize(state.angle);
         driveMotor.setVoltage(
         driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        
+        if(Math.abs(turnPIDController.getError()) < .2) {
+            turnMotor.setVoltage(0);
+        } else {
+            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        }
         desiredState = state;
     }
 
@@ -107,7 +129,7 @@ public class ModuleKraken implements Logged{
         angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones
-        voltage = -turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()); 
+        voltage = turnPIDController.calculate(getState().angle.getRadians(), angleSetpoint);
         turnMotor.setVoltage(voltage);
         SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
         desiredState = state;
@@ -156,6 +178,13 @@ public class ModuleKraken implements Logged{
         }
 
         motor.getConfigurator().apply(config);
+        if(config.MotorOutput.Inverted == InvertedValue.CounterClockwise_Positive){
+            System.out.println("Configured:");
+        } else {
+            System.out.println("not :(");
+        }
+        System.out.println("help");
+        
     }
 
     public void setDriveVoltage(double volts){
