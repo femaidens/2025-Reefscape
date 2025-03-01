@@ -26,6 +26,7 @@ import frc.robot.subsystems.Outtake;
 // import frc.robot.commands.Elevating;
 // import frc.robot.commands.AlgaeCmds; 
 import frc.robot.commands.CoralTransition;
+import frc.robot.commands.Elevating;
 
 
 /**
@@ -45,10 +46,10 @@ public class RobotContainer {
   private final AlgaeIntake algaeIntake;
   private final AlgaePivot algaePivot;
   private final Drive drivetrain;
-  // private final Elevating elevating;
-  // private final CoralTransition coralTransition;
-  // private final Intake intake; 
-  // private final Outtake outtake;
+  private final Elevating elevating;
+  private final CoralTransition coralTransition;
+  private final Intake intake; 
+  private final Outtake outtake;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -58,10 +59,10 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     // climb = new Climb();
-    // elevating = new Elevating();
-    // outtake = new Outtake();
-    // intake = new Intake();
-    // coralTransition = new CoralTransition(intake, outtake);
+    elevating = new Elevating();
+    outtake = new Outtake();
+    intake = new Intake();
+    coralTransition = new CoralTransition(intake, outtake);
     configureDefaultCmds();
 
   }
@@ -87,16 +88,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // xboxController.leftBumper()
-    //   .whileTrue(climb.climbFwdCmd());
-  
-
-    // xboxController.rightBumper()
-    //   .whileTrue(climb.climbBkwdCmd());
-    
-    // xboxController.rightTrigger()
-    //   .whileTrue(climb.pulleySystemCmd());
-
     //algaeintake
 
     operJoy.rightBumper()
@@ -118,33 +109,33 @@ public class RobotContainer {
     
     //coralouttake
 
-  //   operJoy.a()
-  //     .whileTrue(elevating.firstLevelCmd());
+    operJoy.a()
+      .whileTrue(elevating.firstLevelCmd());
     
-  //   operJoy.b()
-  //     .whileTrue(elevating.secondLevelCmd());
+    operJoy.b()
+      .whileTrue(elevating.secondLevelCmd());
 
-  //   operJoy.y()
-  //     .whileTrue(elevating.thirdLevelCmd());
+    operJoy.y()
+      .whileTrue(elevating.thirdLevelCmd());
 
-  //   operJoy.x()
-  //     .whileTrue(elevating.fourthLevelCmd());
+    operJoy.x()
+      .whileTrue(elevating.fourthLevelCmd());
     
   //   //algaeremoval
 
-  //   operJoy.back()
-  //     .whileTrue(elevating.algaeSecondLevelCmd());
+    operJoy.back()
+      .whileTrue(elevating.algaeSecondLevelCmd());
     
-  //   operJoy.start() 
-  //     .whileTrue(elevating.algaeThirdLevelCmd());
+    operJoy.start() 
+      .whileTrue(elevating.algaeThirdLevelCmd());
 
   //   //reset default
-  //   operJoy.leftTrigger()
-  //     .whileTrue(elevating.resetDefault());
+    operJoy.leftTrigger()
+      .whileTrue(elevating.resetDefault());
     
   //   //transition intake to outtake
-  //   operJoy.rightTrigger()
-  //     .whileTrue(coralTransition.moveCoralToOuttake());
+    operJoy.rightTrigger()
+      .whileTrue(coralTransition.moveCoralToOuttake());
 
   //   // run climb spool
   //   operJoy.povUp()
