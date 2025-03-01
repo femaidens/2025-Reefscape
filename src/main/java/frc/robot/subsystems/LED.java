@@ -41,7 +41,7 @@ public class LED extends SubsystemBase {
 
   public void setLedPurple() {
     for (int i = 0; i < ledBuffer.getLength(); i++) {
-      ledBuffer.setRGB(i, 160, 32, 340);
+      ledBuffer.setRGB(i, 48, 25, 52);
     }
     led.setData(ledBuffer);
   }
@@ -52,7 +52,7 @@ public class LED extends SubsystemBase {
 
   public void setLedGreen() {
     for (int i = 0; i < ledBuffer.getLength(); i++) {
-      ledBuffer.setRGB(i, 0, 225, 0);
+      ledBuffer.setRGB(i, 2, 48, 32);
     }
     led.setData(ledBuffer);
   }
