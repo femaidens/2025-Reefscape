@@ -15,10 +15,12 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 // import frc.robot.commands.Elevating;
@@ -36,11 +38,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final CommandXboxController driveJoy = new CommandXboxController(JoyPort.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
   // private final Climb climb;
   // private final AlgaeCmds algaeCmds = new AlgaeCmds();
   private final AlgaeIntake algaeIntake;
   private final AlgaePivot algaePivot;
+  private final Drive drivetrain;
   // private final Elevating elevating;
   // private final CoralTransition coralTransition;
   // private final Intake intake; 
@@ -50,6 +54,7 @@ public class RobotContainer {
   public RobotContainer() {
     algaePivot = new AlgaePivot();
     algaeIntake  = new AlgaeIntake();
+    drivetrain = new Drive();
     // Configure the trigger bindings
     configureBindings();
     // climb = new Climb();
@@ -63,6 +68,12 @@ public class RobotContainer {
 
   private void configureDefaultCmds(){
     algaePivot.setProcessorCmd();
+
+    drivetrain.setDefaultCommand(
+                        new RunCommand(() -> drivetrain.drive(
+                                () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+                                () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+                                () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)), drivetrain));
   }
 
   /**
