@@ -69,7 +69,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public Command removeAlgaeCmd() {
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.REMOVE_ALGAE_SPEED));
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.REMOVE_ALGAE_SPEED));
   }
 
   public Command setVoltageCmd() {

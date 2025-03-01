@@ -5,17 +5,25 @@
 package frc.robot.Auton;
 
 import frc.robot.subsystems.*;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BlueCenterToReefBack extends SequentialCommandGroup {
+public class CenterToBack extends SequentialCommandGroup {
   /** Creates a new BlueCenterToReefBack. */
-  public BlueCenterToReefBack(Drive drive, ) {
+  public CenterToBack(Drive drivetrain, Outtake outtake, Intake intake, Elevator elevator){
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands();
+    addCommands(
+      new InstantCommand(() -> drivetrain.zeroHeading()),
+      new RunCommand(() -> drivetrain.drive(() -> 0.0, () -> 1.0, () -> 0.0), drivetrain)
+        .withTimeout(5),
+
+      new RunCommand(() -> outtake.setOuttakeCoralSpeedCmd(), outtake)  
+          .withTimeout(5)
+    );
   }
 }

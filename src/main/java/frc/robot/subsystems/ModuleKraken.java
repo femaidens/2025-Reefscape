@@ -15,9 +15,9 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
-import monologue.Logged;
+// import monologue.Logged;
 
-public class ModuleKraken implements Logged {
+public class ModuleKraken{
     private final TalonFX driveMotor;
     private final TalonFX turnMotor;
 

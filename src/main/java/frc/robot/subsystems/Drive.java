@@ -29,10 +29,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Ports.DrivetrainPorts;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
-import monologue.Annotations.Log;
-import monologue.Logged;
+// import monologue.Annotations.Log;
+// import monologue.Logged;
 
-public class Drive extends SubsystemBase implements Logged {
+public class Drive extends SubsystemBase {
 
   private final ModuleKraken frontLeft;
   private final ModuleKraken frontRight;
@@ -202,12 +202,12 @@ public class Drive extends SubsystemBase implements Logged {
     return odometry.getPoseMeters();
   }
 
-  @Log.NT
+//   @Log.NT
   public SwerveModuleState[] getSwerveModuleStates() {
     return modules.stream().map(m -> m.getState()).toArray(SwerveModuleState[]::new);
   }
 
-  @Log.NT
+//   @Log.NT
   public SwerveModuleState[] getDesiredSwerveModuleStates() {
     return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[]::new);
   }
@@ -217,7 +217,7 @@ public class Drive extends SubsystemBase implements Logged {
   //   return modules.stream().map(m -> m.getDesiredChassisSpeed()).toArray(ChassisSpeeds[]::new);
   // }
 
-  @Log.NT
+//   @Log.NT
 
   /**
    * resets the odometry to the specified pose
@@ -238,7 +238,7 @@ public class Drive extends SubsystemBase implements Logged {
    * 
    * @return in radians
    */
-  @Log.NT
+//   @Log.NT
   public double getAngle() {
     return -1 * gyro.getAngle();
   }
