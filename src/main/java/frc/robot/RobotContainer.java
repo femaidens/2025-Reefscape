@@ -137,6 +137,8 @@ public class RobotContainer {
     operJoy.rightTrigger()
       .whileTrue(coralTransition.moveCoralToOuttake());
 
+    operJoy.left
+
   //   // run climb spool
   //   operJoy.povUp()
   //     .whileTrue(climb.pulleySystemCmd());

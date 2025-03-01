@@ -68,6 +68,14 @@ public class Outtake extends SubsystemBase {
     return this.run(() -> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
   }
 
+  /**
+   * reverse of coral outtake, potentially processor score
+   * @return
+   */
+  public Command reverseOuttakeCmd(){
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+  }
+
   public Command removeAlgaeCmd() {
     return this.run(() -> outtakeMotor.set(-OuttakeConstants.REMOVE_ALGAE_SPEED));
   }
