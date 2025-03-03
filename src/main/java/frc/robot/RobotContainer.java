@@ -89,8 +89,8 @@ public class RobotContainer {
                 
 
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
-                elevator.setDefaultCommand(
-                        new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
+                // elevator.setDefaultCommand(
+                //         new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
         }
 
         // public void configureAuton(){
