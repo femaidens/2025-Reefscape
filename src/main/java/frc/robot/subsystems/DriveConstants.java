@@ -34,10 +34,10 @@ public class DriveConstants {
         public static final double REAR_LEFT_ANGOFFSET = Math.PI; //Math.PI;
         public static final double REAR_RIGHT_ANGOFFSET = 0; //Math.PI / 2; 
 
-        public static final double FRONT_LEFT_MAG_OFFSET = -0.4106;
-        public static final double FRONT_RIGHT_MAG_OFFSET = -0.1301;
-        public static final double REAR_LEFT_MAG_OFFSET = -0.1408;
-        public static final double REAR_RIGHT_MAG_OFFSET = -0.5491;
+        public static final double FRONT_LEFT_MAG_OFFSET = 0.4104;
+        public static final double FRONT_RIGHT_MAG_OFFSET = 0.1328;
+        public static final double REAR_LEFT_MAG_OFFSET = 0.1311;
+        public static final double REAR_RIGHT_MAG_OFFSET = -0.4675;
 
         // CHANGE THIS FOR TALONS! 
         public static final String CANBUS = "rio"; 

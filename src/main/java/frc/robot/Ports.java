@@ -12,9 +12,9 @@ public class Ports {
         public static final int FRONT_RIGHT_TURN = 4;
         public static final int REAR_RIGHT_TURN = 20;
 
-        public static final int FRONT_LEFT_CANCODER = 1;
-        public static final int FRONT_RIGHT_CANCODER = 3;
-        public static final int REAR_LEFT_CANCODER = 2;
-        public static final int REAR_RIGHT_CANCODER = 0;
+        public static final int FRONT_LEFT_CANCODER = 0;
+        public static final int FRONT_RIGHT_CANCODER = 2;
+        public static final int REAR_LEFT_CANCODER = 3;
+        public static final int REAR_RIGHT_CANCODER = 1;
     }
 }

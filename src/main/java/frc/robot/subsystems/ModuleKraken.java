@@ -71,7 +71,7 @@ public class ModuleKraken implements Logged{
         config.Feedback.FeedbackRemoteSensorID = CANCoderID;
         config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be attached outside of gearbox
         config.CurrentLimits.SupplyCurrentLimit = 30;
-        // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
+        //config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
 
         turnMotor.setNeutralMode(NeutralModeValue.Brake); 
         // motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));
