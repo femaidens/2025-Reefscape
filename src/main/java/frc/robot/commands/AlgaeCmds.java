@@ -21,10 +21,10 @@ public class AlgaeCmds {
             .alongWith(algaeIntake.runRollersCmd());
     }
 
-    // public Command raiseAlgae(){
-    //     return
-    //         algaeIntake.setProcessor();
-    // }
+    public Command raiseAlgae(){
+        return
+            algaePivot.setProcessorCmd();
+    }
 
     public Command outtakeAlgae(){
         return
