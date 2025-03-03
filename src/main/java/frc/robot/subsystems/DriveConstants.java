@@ -61,7 +61,7 @@ public class DriveConstants {
         public static final int AVERAGE_DEPTH = 0;
 
         public class PID {
-            public static final double P = .5;
+            public static final double P = 2.5;
             public static final double I = 0;
             public static final double D = 0;   
         }
