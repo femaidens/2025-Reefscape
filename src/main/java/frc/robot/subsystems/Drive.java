@@ -59,7 +59,7 @@ public class Drive extends SubsystemBase implements Logged {
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kMXP_UART); 
+    gyro = new AHRS(NavXComType.kMXP_SPI); 
 
     odometry = new SwerveDriveOdometry(
       Drivetrain.kDriveKinematics, 
@@ -249,6 +249,7 @@ public class Drive extends SubsystemBase implements Logged {
       new SwerveModulePosition[] {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
+    SmartDashboard.getNumber("Angle", getAngle());
     SmartDashboard.updateValues();
   }
 }
