@@ -143,6 +143,27 @@ public class RobotContainer {
                 driveJoy.y()
                                 .whileTrue(
                                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+                
+                /* 
+           
+                driveJoy.a()
+                                .whileTrue(
+                                                elevator.quasiCmd(SysIdRoutine.Direction.kForward));
+
+                driveJoy.b()
+                                .whileTrue(
+                                                elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
+
+                driveJoy.x()
+                                .whileTrue(
+                                                elevator.dynaCmd(SysIdRoutine.Direction.kForward));
+
+                driveJoy.y()
+                                .whileTrue(
+                                                elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
+                 */
+                
+                
 
                 driveJoy.leftBumper()
                                 .whileTrue(
@@ -171,6 +192,8 @@ public class RobotContainer {
                 operJoy.povDown()
                                 .whileTrue(
                                                 elevator.reverseRunMotorCmd()); 
+
+                
                 
         }
 
