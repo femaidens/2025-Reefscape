@@ -29,7 +29,7 @@ public class Ports {
   }
 
   public class ElevatorPorts {
-    public static int MOTOR_PORT = 23;
+    public static int MOTOR_PORT = 28;
     public static int BOT_SWITCH = 22;
   }
 
