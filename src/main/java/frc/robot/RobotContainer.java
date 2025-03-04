@@ -177,39 +177,39 @@ public class RobotContainer {
                                                 elevator.dynaCmd(SysIdRoutine.Direction.kForward));
 
                 driveJoy.y()
-                                .whileTrue(
-                                                elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
+                    .whileTrue(
+                        elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
                  */
                 
                 
 
                 // driveJoy.leftBumper()
-                //                 .whileTrue(
-                //                                 drivetrain.setXCmd());
+                //      .whileTrue(
+                //          drivetrain.setXCmd());
 
                 // driveJoy.rightBumper()
-                //                 .whileTrue(
-                //                                 drivetrain.resetGyro());
+                //      .whileTrue(
+                //          drivetrain.resetGyro());
 
                 // driveJoy.leftTrigger()
-                //                 .whileTrue(
-                //                                 drivetrain.setStraightCmd());
+                //      .whileTrue(
+                //       drivetrain.setStraightCmd());
 
                 // driveJoy.rightTrigger()
-                //                 .whileTrue(
-                //                                 drivetrain.driveStraightCmd());
+                //    .whileTrue(
+                //      drivetrain.driveStraightCmd());
 
                 // operJoy.leftStick()
-                //                 .whileTrue(
-                //                                 outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                //   .whileTrue(
+                //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
 
                 operJoy.povUp()
-                                .whileTrue(
-                                               elevator.runMotorCmd()); 
+                    .whileTrue(
+                        elevator.runMotorCmd()); 
 
                 operJoy.povDown()
-                                .whileTrue(
-                                                elevator.reverseRunMotorCmd()); 
+                    .whileTrue(
+                        elevator.reverseRunMotorCmd()); 
 
                 // operJoy.rightBumper()
                 //         .whileTrue(algaeCmds.intakeAlgae())
