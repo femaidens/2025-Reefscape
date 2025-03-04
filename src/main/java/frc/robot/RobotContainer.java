@@ -39,15 +39,15 @@ public class RobotContainer {
         private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
         // private final AlgaeIntake algaeIntake = new AlgaeIntake();
         // private final AlgaePivot algaePivot = new AlgaePivot();
-        private final Drive drivetrain;
+     //   private final Drive drivetrain;
         private final Elevator elevator;
-        private final Outtake outtake;
-        private final Elevating elevating;
-        private final AlgaeCmds algaeCmds;
-        private final AlgaeIntake algaeIntake;
-        private final AlgaePivot algaePivot;
-        private final CoralTransition coralTransition;
-        private final Intake intake;
+        // private final Outtake outtake;
+        // private final Elevating elevating;
+        // private final AlgaeCmds algaeCmds;
+        // private final AlgaeIntake algaeIntake;
+        // private final AlgaePivot algaePivot;
+        // private final CoralTransition coralTransition;
+        // private final Intake intake;
         // private RobotConfig config;
 
         // private SendableChooser<Command> autonChooser;
@@ -57,17 +57,17 @@ public class RobotContainer {
          */
         public RobotContainer() {
                 // Configure the trigger bindings
-                drivetrain = new Drive();
-                configureDefaultCmds();
-                configureBindings();
-                outtake = new Outtake();
+                // drivetrain = new Drive();
+                // configureDefaultCmds();
+                // configureBindings();
+                // outtake = new Outtake();
                 elevator = new Elevator();
-                algaeIntake = new AlgaeIntake();
-                algaePivot = new AlgaePivot();
-                intake = new Intake();
-                algaeCmds = new AlgaeCmds(algaeIntake, algaePivot);
-                coralTransition = new CoralTransition(intake, outtake);
-                elevating = new Elevating(elevator, outtake, intake, algaeIntake);
+                // algaeIntake = new AlgaeIntake();
+                // algaePivot = new AlgaePivot();
+                // intake = new Intake();
+                // algaeCmds = new AlgaeCmds(algaeIntake, algaePivot);
+                // coralTransition = new CoralTransition(intake, outtake);
+                // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
 
         }
 
@@ -79,11 +79,11 @@ public class RobotContainer {
                 // () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
                 // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)));
 
-                drivetrain.setDefaultCommand(
-                        new RunCommand(() -> drivetrain.drive(
-                                () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-                                () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-                                () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)), drivetrain));
+                // drivetrain.setDefaultCommand(
+                //         new RunCommand(() -> drivetrain.drive(
+                //                 () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+                //                 () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+                //                 () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)), drivetrain));
 
         
                 
@@ -146,21 +146,21 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-                driveJoy.a()
-                                .whileTrue(
-                                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+                // driveJoy.a()
+                //                 .whileTrue(
+                //                                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
 
-                driveJoy.b()
-                                .whileTrue(
-                                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+                // driveJoy.b()
+                //                 .whileTrue(
+                //                                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
 
-                driveJoy.x()
-                                .whileTrue(
-                                                drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+                // driveJoy.x()
+                //                 .whileTrue(
+                //                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
 
-                driveJoy.y()
-                                .whileTrue(
-                                                drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+                // driveJoy.y()
+                //                 .whileTrue(
+                //                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
                 
                 /* 
            
@@ -183,25 +183,25 @@ public class RobotContainer {
                 
                 
 
-                driveJoy.leftBumper()
-                                .whileTrue(
-                                                drivetrain.setXCmd());
+                // driveJoy.leftBumper()
+                //                 .whileTrue(
+                //                                 drivetrain.setXCmd());
 
-                driveJoy.rightBumper()
-                                .whileTrue(
-                                                drivetrain.resetGyro());
+                // driveJoy.rightBumper()
+                //                 .whileTrue(
+                //                                 drivetrain.resetGyro());
 
-                driveJoy.leftTrigger()
-                                .whileTrue(
-                                                drivetrain.setStraightCmd());
+                // driveJoy.leftTrigger()
+                //                 .whileTrue(
+                //                                 drivetrain.setStraightCmd());
 
-                driveJoy.rightTrigger()
-                                .whileTrue(
-                                                drivetrain.driveStraightCmd());
+                // driveJoy.rightTrigger()
+                //                 .whileTrue(
+                //                                 drivetrain.driveStraightCmd());
 
-                operJoy.leftStick()
-                                .whileTrue(
-                                                outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                // operJoy.leftStick()
+                //                 .whileTrue(
+                //                                 outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
 
                 operJoy.povUp()
                                 .whileTrue(
@@ -211,42 +211,42 @@ public class RobotContainer {
                                 .whileTrue(
                                                 elevator.reverseRunMotorCmd()); 
 
-                operJoy.rightBumper()
-                        .whileTrue(algaeCmds.intakeAlgae())
-                        .whileFalse(algaeCmds.raiseAlgae());
+                // operJoy.rightBumper()
+                //         .whileTrue(algaeCmds.intakeAlgae())
+                //         .whileFalse(algaeCmds.raiseAlgae());
                 
-                operJoy.leftBumper()
-                        .whileTrue(algaeCmds.outtakeAlgae());
+                // operJoy.leftBumper()
+                //         .whileTrue(algaeCmds.outtakeAlgae());
                 
-                //coralouttake
+                // //coralouttake
                 
-                operJoy.a()
-                        .whileTrue(elevating.firstLevelCmd());
+                // operJoy.a()
+                //         .whileTrue(elevating.firstLevelCmd());
                 
-                operJoy.b()
-                        .whileTrue(elevating.secondLevelCmd());
+                // operJoy.b()
+                //         .whileTrue(elevating.secondLevelCmd());
                 
-                operJoy.y()
-                        .whileTrue(elevating.thirdLevelCmd());
+                // operJoy.y()
+                //         .whileTrue(elevating.thirdLevelCmd());
                 
-                operJoy.x()
-                        .whileTrue(elevating.fourthLevelCmd());
+                // operJoy.x()
+                //         .whileTrue(elevating.fourthLevelCmd());
                 
-                //algaeremoval
+                // //algaeremoval
                 
-                operJoy.back()
-                        .whileTrue(elevating.algaeSecondLevelCmd());
+                // operJoy.back()
+                //         .whileTrue(elevating.algaeSecondLevelCmd());
                 
-                operJoy.start() 
-                        .whileTrue(elevating.algaeThirdLevelCmd());
+                // operJoy.start() 
+                //         .whileTrue(elevating.algaeThirdLevelCmd());
                 
-                //reset default
-                operJoy.leftTrigger()
-                        .whileTrue(elevating.resetDefault());
+                // //reset default
+                // operJoy.leftTrigger()
+                //         .whileTrue(elevating.resetDefault());
                 
-                //transition intake to outtake
-                operJoy.rightTrigger()
-                        .whileTrue(coralTransition.moveCoralToOuttake());
+                // //transition intake to outtake
+                // operJoy.rightTrigger()
+                //         .whileTrue(coralTransition.moveCoralToOuttake());
                 
                 
         }
