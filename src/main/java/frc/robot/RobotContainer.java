@@ -62,12 +62,12 @@ public class RobotContainer {
                 configureBindings();
                 outtake = new Outtake();
                 elevator = new Elevator();
-                elevating = new Elevating();
                 algaeIntake = new AlgaeIntake();
                 algaePivot = new AlgaePivot();
                 intake = new Intake();
                 algaeCmds = new AlgaeCmds(algaeIntake, algaePivot);
                 coralTransition = new CoralTransition(intake, outtake);
+                elevating = new Elevating(elevator, outtake, intake, algaeIntake);
 
         }
 

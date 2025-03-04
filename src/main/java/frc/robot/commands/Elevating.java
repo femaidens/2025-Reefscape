@@ -23,12 +23,11 @@ public class Elevating {
     private AlgaeIntake algaeIntake;
     private Climb climb;
 
-    public Elevating(){
-        this.elevator = new Elevator();
-        this.outtake = new Outtake();
-        this.intake = new Intake();
-        this.algaeIntake = new AlgaeIntake();
-        climb = new Climb();
+    public Elevating(Elevator elevator, Outtake outtake, Intake intake, AlgaeIntake algaeIntake){
+        this.elevator = elevator;
+        this.outtake = outtake;
+        this.intake = intake;
+        this.algaeIntake = algaeIntake;
     }
 
     /**
