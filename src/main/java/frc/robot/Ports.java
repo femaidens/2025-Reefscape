@@ -17,4 +17,21 @@ public class Ports {
         public static final int REAR_LEFT_CANCODER = 3;
         public static final int REAR_RIGHT_CANCODER = 1;
     }
+    public class ElevatorPorts {
+        public static int MOTOR_PORT = 15;
+        // public static int BOT_SWITCH = 22;
+    }
+    public class IntakePorts {
+        public static int INTAKE_MOTOR = 3;
+        public static int BEAM_BREAK = 1;
+        public static int PIVOT_MOTOR = 29;
+      }
+      public class OuttakePorts {
+        public static int OUTTAKE_MOTOR = 12;
+      }
+      public class BeamBreakPorts { // for outtake
+        public static int RECEIVER = 21; // front reciever is the one farthest away from intake
+        // public static int BACK_RECEIVER = 0; // back reciever is the one closest to
+        // intake
+      }
 }
