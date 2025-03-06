@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Ports;
+import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 //import com.ctre.phoenix6.hardware.TalonFX;
@@ -74,7 +75,7 @@ public class Elevator extends SubsystemBase {
       SparkMaxConfig config = new SparkMaxConfig();
 
         config
-        .inverted(true)
+        .inverted(false)
         .idleMode(IdleMode.kBrake);
 
         config.encoder
@@ -169,17 +170,21 @@ public class Elevator extends SubsystemBase {
      * reverse motor
      */
 
-     public Command reverseRunMotorCmd(){
+     public Command reverseMotorCmd(){
       // if (botLimitSwitch.get()) {
       //   return this.run(() -> stopMotorCmd());
       // }
       // else {
         return this.run(() -> {
-        elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
-        System.out.println("reverseeeeeeee");
-      }
+          if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.FIRST_LVL){
+            elevatorMotorLeader.stopMotor();
+          } else {
+            elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
+            System.out.println("reverseeeeeeee");
+          }
+        }
       );
-      }
+    }
 
     public Command stopMotorCmd(){
       return this.run( () -> 

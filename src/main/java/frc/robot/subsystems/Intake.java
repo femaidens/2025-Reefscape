@@ -19,27 +19,29 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
+import monologue.Annotations.Log;
+import monologue.Logged;
 import frc.robot.Constants.IntakeConstants;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Logged{
   /** Creates a new Intake. */
 
   private final SparkMax intakeMotor;
   private final SparkMaxConfig config;
-  // private final DigitalInput beamBreak;
+  private final DigitalInput beamBreak;
   private final PIDController intakePID;
   private final RelativeEncoder encoder;
 
   public Intake() {
     intakeMotor = new SparkMax(IntakePorts.INTAKE_MOTOR, MotorType.kBrushless);
-    // beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
+    beamBreak = new DigitalInput(IntakePorts.BEAM_BREAK);
     config = new SparkMaxConfig();
     intakePID = new PIDController(IntakeConstants.IntakePIDConstants.kP, IntakeConstants.IntakePIDConstants.kI, IntakeConstants.IntakePIDConstants.kD);
     encoder = intakeMotor.getEncoder();
 
     // Configure the motor
     config
-        .inverted(true)
+        .inverted(false)
         .idleMode(IdleMode.kBrake);
     config.encoder
         .positionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR)
@@ -72,9 +74,12 @@ public class Intake extends SubsystemBase {
     return this.run(() -> intakeMotor.setVoltage(voltage));
   }
 
-  // public boolean isBeamBroken() {
-  //   return !beamBreak.get();
-  // }
+  @Log.NT
+  public boolean isBeamBroken() {
+    System.out.println("intake");
+
+    return !beamBreak.get();
+  }
   
   // public Command intakeCoralCmd() {
   //   if (isBeamBroken()) {
@@ -87,6 +92,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // SmartDashboard.putBoolean("Intake Beambreak", isBeamBroken());
+     SmartDashboard.putBoolean("Intake Beambreak", isBeamBroken());
   }
 }

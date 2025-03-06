@@ -12,17 +12,20 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Ports;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class Outtake extends SubsystemBase {
+public class Outtake extends SubsystemBase implements Logged{
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
-  //private final DigitalInput frontReceiver;
-  // private final DigitalInput receiver;
+  private final DigitalInput frontReceiver;
+ private final DigitalInput backReceiver;
 
 
 
@@ -38,9 +41,9 @@ public class Outtake extends SubsystemBase {
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     // front reciever is the one farthest away from intake
-    //frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
+    frontReceiver = new DigitalInput(Ports.OuttakePorts.FRONT_RECEIVER);
     // back reciever is the one located in outtake
-    // receiver = new DigitalInput(Ports.BeamBreakPorts.RECEIVER);
+    backReceiver = new DigitalInput(Ports.OuttakePorts.BACK_RECEIVER);
 
 
 
@@ -56,6 +59,21 @@ public class Outtake extends SubsystemBase {
 
   public Command setIntakeCoralSpeedCmd() { // sets velocity
     return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+  }
+
+  /**
+   * identical to setIntakeCoralSpeedCmd()
+   * @return
+   */
+  public Command runMotorCmd(){
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+  }
+/**
+ * identical to setOuttakeCoralSpeedCmd()
+ * @return
+ */
+  public Command reverseMotorCmd(){
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
   }
 
   /**
@@ -93,12 +111,23 @@ public class Outtake extends SubsystemBase {
    * @return true if coral is at the right position in outtake
    */
 
-  // public boolean isBeamBroken() {
-  //   return !receiver.get();
-  // }
+  @Log.NT
+  public boolean isBeamBrokenFront() {
+    System.out.println("OUTTAKEE111");
+    return !frontReceiver.get();
+  }
+
+  @Log.NT
+  public boolean isBeamBrokenBack() {
+    System.out.println("BACCKCKKCKCCK");
+    return !backReceiver.get();
+  }
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Intake Beambreak front", isBeamBrokenFront());
+    SmartDashboard.putBoolean("Intake Beambreak back", isBeamBrokenBack());
+
 
   }
 }

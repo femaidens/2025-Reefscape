@@ -55,8 +55,8 @@ public final class Constants {
 
   public static class ElevatorConstants {
     public static final double MOTOR_SPEED = 0.9;
-    public static final double POSITION_CONVERSION_FACTOR = 1000;
-    public static final double VELOCITY_CONVERSION_FACTOR = 1000;
+    public static final double POSITION_CONVERSION_FACTOR = 500;
+    public static final double VELOCITY_CONVERSION_FACTOR = 500 / 60;
 
     public static class PIDConstants {
       public static final double kP = 0;
@@ -122,7 +122,7 @@ public final class Constants {
   }
 
   public static class OuttakeConstants {
-    public static final double MOTOR_SPEED = 0.5;
+    public static final double MOTOR_SPEED = 0.3;
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;

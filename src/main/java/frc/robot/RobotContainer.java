@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.CoralTransition;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.*;
@@ -43,7 +44,7 @@ public class RobotContainer {
         // private final AlgaeCmds algaeCmds;
         // private final AlgaeIntake algaeIntake;
         // private final AlgaePivot algaePivot;
-        // private final CoralTransition coralTransition;
+         private final CoralTransition coralTransition;
         // private final Intake intake;
         // private RobotConfig config;
 
@@ -55,8 +56,6 @@ public class RobotContainer {
         public RobotContainer() {
                 // Configure the trigger bindings
                 drivetrain = new Drive();
-                // configureDefaultCmds();
-                // configureBindings();
                 // outtake = new Outtake();
                 elevator = new Elevator();
                 intake = new Intake();
@@ -65,7 +64,7 @@ public class RobotContainer {
                 // algaePivot = new AlgaePivot();
                 // intake = new Intake();
                 // algaeCmds = new AlgaeCmds(algaeIntake, algaePivot);
-                // coralTransition = new CoralTransition(intake, outtake);
+                 coralTransition = new CoralTransition(intake, outtake);
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
@@ -203,37 +202,56 @@ public class RobotContainer {
                 // operJoy.leftStick()
                 //   .whileTrue(
                 //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
-
+                /**
+                 * manual elevator up
+                 */
                 operJoy.povUp()
                     .whileTrue(
-                        elevator.reverseRunMotorCmd())
+                        elevator.runMotorCmd())
                         .onFalse(elevator.stopMotorCmd()); 
-
+                /**
+                 * manual elevator down
+                 */
                 operJoy.povDown()
                     .whileTrue(
-                        elevator.runMotorCmd())
-                .onFalse(elevator.stopMotorCmd()); 
+                        elevator.reverseMotorCmd())
+                        .onFalse(elevator.stopMotorCmd()); 
 
-                operJoy.rightTrigger()
-                .whileTrue(
-                        intake.runMotorCmd())
-                .onFalse(
-                        intake.stopMotorCmd());
+                // operJoy.rightTrigger()
+                // .whileTrue(
+                //         intake.runMotorCmd())
+                // .onFalse(
+                //         intake.stopMotorCmd());
 
+                /**
+                 * run intake manually
+                 */
                 operJoy.leftTrigger()
                 .whileTrue(
-                        intake.reverseMotorCmd())
+                        intake.runMotorCmd())
                 .onFalse(
                         intake.stopMotorCmd()
                 );
 
-                operJoy.leftStick()
-                .whileTrue(outtake.setIntakeCoralSpeedCmd())
+                /**
+                 * outtake
+                 */
+                operJoy.rightBumper()
+                .whileTrue(outtake.runMotorCmd())
                 .onFalse(outtake.stopMotorCmd());
 
-                operJoy.rightStick()
+                /**
+                 * reverse outtake
+                 */
+                operJoy.leftBumper()
                 .whileTrue(outtake.reverseOuttakeCmd())
                 .onFalse(outtake.stopMotorCmd());
+
+                /**
+                 * coral transition
+                 */
+                operJoy.rightTrigger()
+                .onTrue(coralTransition.moveCoralToOuttake());
 
                 // operJoy.rightBumper()
                 //         .whileTrue(algaeCmds.intakeAlgae())
