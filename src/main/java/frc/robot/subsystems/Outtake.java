@@ -25,7 +25,7 @@ public class Outtake extends SubsystemBase implements Logged{
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
   private final DigitalInput frontReceiver;
- private final DigitalInput backReceiver;
+ private final DigitalInput middleReceiver;
 
 
 
@@ -43,7 +43,7 @@ public class Outtake extends SubsystemBase implements Logged{
     // front reciever is the one farthest away from intake
     frontReceiver = new DigitalInput(Ports.OuttakePorts.FRONT_RECEIVER);
     // back reciever is the one located in outtake
-    backReceiver = new DigitalInput(Ports.OuttakePorts.BACK_RECEIVER);
+    middleReceiver = new DigitalInput(Ports.OuttakePorts.MIDDLE_RECEIVER);
 
 
 
@@ -113,21 +113,28 @@ public class Outtake extends SubsystemBase implements Logged{
 
   @Log.NT
   public boolean isBeamBrokenFront() {
-    System.out.println("OUTTAKEE111");
     return !frontReceiver.get();
   }
 
   @Log.NT
   public boolean isBeamBrokenBack() {
-    System.out.println("BACCKCKKCKCCK");
-    return !backReceiver.get();
+    return !middleReceiver.get();
+  }
+
+   /*
+   * @ngozi, emily, yujing
+   * i think this needs editing, need to look at both intake beam break and
+   * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
+   */
+  public boolean isCoral() {
+    return !isBeamBrokenBack() && isBeamBrokenFront();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Intake Beambreak front", isBeamBrokenFront());
-    SmartDashboard.putBoolean("Intake Beambreak back", isBeamBrokenBack());
-
+    SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
+    SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
+    SmartDashboard.putBoolean("IS CORAL", isCoral());
 
   }
 }

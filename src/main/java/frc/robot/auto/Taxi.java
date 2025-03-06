@@ -17,9 +17,9 @@ import frc.robot.subsystems.Outtake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class LeftToLeftTaxi extends SequentialCommandGroup {
+public class Taxi extends SequentialCommandGroup {
   /** Creates a new BlueLeftToReefLeft. */
-  public LeftToLeftTaxi(Drive drivetrain, Outtake outtake, Intake intake, Elevator elevator, Elevating elevating, CoralTransition coralTransition){
+  public Taxi(Drive drivetrain, Outtake outtake, Intake intake, Elevator elevator, Elevating elevating, CoralTransition coralTransition){
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

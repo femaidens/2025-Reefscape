@@ -228,10 +228,12 @@ public class RobotContainer {
                  */
                 operJoy.leftTrigger()
                 .whileTrue(
-                        intake.runMotorCmd())
+                        intake.reverseMotorCmd())
                 .onFalse(
                         intake.stopMotorCmd()
                 );
+
+
 
                 /**
                  * outtake

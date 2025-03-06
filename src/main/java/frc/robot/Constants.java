@@ -55,8 +55,8 @@ public final class Constants {
 
   public static class ElevatorConstants {
     public static final double MOTOR_SPEED = 0.9;
-    public static final double POSITION_CONVERSION_FACTOR = 500;
-    public static final double VELOCITY_CONVERSION_FACTOR = 500 / 60;
+    public static final double POSITION_CONVERSION_FACTOR = 100;
+    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 
     public static class PIDConstants {
       public static final double kP = 0;

@@ -178,6 +178,7 @@ public class Elevator extends SubsystemBase {
         return this.run(() -> {
           if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.FIRST_LVL){
             elevatorMotorLeader.stopMotor();
+            System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
             elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
             System.out.println("reverseeeeeeee");
@@ -185,6 +186,17 @@ public class Elevator extends SubsystemBase {
         }
       );
     }
+
+    public Command forceReverseMotorCmd(){
+      return this.run(() ->
+      elevatorMotorLeader.set(-ElevatorConstants.MOTOR_SPEED));
+    }
+
+    public Command resetEncoder(){
+      return this.runOnce(() ->
+      elevatorEncoder.setPosition(0));
+    }
+
 
     public Command stopMotorCmd(){
       return this.run( () -> 

@@ -21,20 +21,12 @@ public class CoralTransition{
 
   }
 
-  /*
-   * @ngozi, emily, yujing
-   * i think this needs editing, need to look at both intake beam break and
-   * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
-   */
-  public boolean isCoral() {
-    return !outtake.isBeamBrokenBack() && outtake.isBeamBrokenFront();
-  }
-
   public Command moveCoralToOuttake() {
-    return (intake.reverseMotorCmd()
-        .alongWith(outtake.setIntakeCoralSpeedCmd()))
-        .until(this::isCoral)
-        .andThen(intake.stopMotorCmd())
-        .andThen(outtake.stopMotorCmd());
+    return intake.runMotorCmd()
+        .alongWith(outtake.runMotorCmd())
+        .until(outtake::isCoral)
+        .andThen(outtake.stopMotorCmd())
+        .andThen(intake.stopMotorCmd());
+        
   }
 }
