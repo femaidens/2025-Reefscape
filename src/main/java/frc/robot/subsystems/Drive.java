@@ -59,7 +59,7 @@ public class Drive extends SubsystemBase implements Logged {
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kMXP_SPI); 
+    gyro = new AHRS(NavXComType.kUSB1);
 
     odometry = new SwerveDriveOdometry(
       Drivetrain.kDriveKinematics, 
@@ -76,7 +76,6 @@ public class Drive extends SubsystemBase implements Logged {
         new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
           volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
 
-      SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
     }
 
   //PLEASE CHECK THE SPEED FACTOR
@@ -249,7 +248,8 @@ public class Drive extends SubsystemBase implements Logged {
       new SwerveModulePosition[] {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
     });
-    SmartDashboard.getNumber("Angle", getAngle());
+    //SmartDashboard.getNumber("Angle", getAngle());
+    SmartDashboard.putNumber("Gyro Angle", getAngle());
     SmartDashboard.updateValues();
   }
-}
+  }

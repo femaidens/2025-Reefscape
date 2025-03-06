@@ -10,11 +10,13 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.auto.Taxi;
 
 
 /**
@@ -48,7 +50,7 @@ public class RobotContainer {
         // private final Intake intake;
         // private RobotConfig config;
 
-        // private SendableChooser<Command> autonChooser;
+        private SendableChooser<Command> autonChooser;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -68,6 +70,7 @@ public class RobotContainer {
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
+                autonChooser = new SendableChooser<>();
 
         }
 
@@ -93,7 +96,9 @@ public class RobotContainer {
                 //         new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
         }
 
-        // public void configureAuton(){
+        public void configureAuton(){
+                autonChooser.addOption("taxi", new Taxi(drivetrain));
+        }
 
         // // // Configure AutoBuilder last
         // // AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier

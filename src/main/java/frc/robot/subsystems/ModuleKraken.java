@@ -148,7 +148,7 @@ public class ModuleKraken implements Logged{
         config.Feedback.FeedbackRemoteSensorID = encoderID;
         config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be attached outside of gearbox
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
 
         // motor.setNeutralMode(NeutralModeValue.Brake); 
