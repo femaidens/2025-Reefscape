@@ -55,7 +55,9 @@ public final class Constants {
 
   public static class ElevatorConstants {
     public static final double MOTOR_SPEED = 0.9;
-    public static final double POSITION_CONVERSION_FACTOR = 100;
+    public static final double FORCE_MOTOR_SPEED = 0.7;
+    public static final double GEAR_RATIO = 1.0 / 60.0;
+    public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 
     public static class PIDConstants {
@@ -81,6 +83,7 @@ public final class Constants {
       public static final double THIRD_LVL = 0;
       public static final double ALGAE_THIRD_LVL = 0;
       public static final double FOURTH_LVL = 0;
+      public static final double DEFAULT_LVL = 7583.58;
     }
   }
 

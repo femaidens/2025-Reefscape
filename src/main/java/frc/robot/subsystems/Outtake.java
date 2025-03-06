@@ -103,7 +103,7 @@ public class Outtake extends SubsystemBase implements Logged{
   }
 
   public Command stopMotorCmd() {
-    return this.run(() -> outtakeMotor.setVoltage(0));
+    return this.runOnce(() -> outtakeMotor.setVoltage(0));
   }
 
   /**

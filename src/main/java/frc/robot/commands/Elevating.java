@@ -49,7 +49,7 @@ public class Elevating {
      * @return goes to third level of reef and then outtakes
      */
     public Command thirdLevelCmd(){
-        return 
+        return
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
             .andThen(outtake.setOuttakeCoralSpeedCmd());
     }

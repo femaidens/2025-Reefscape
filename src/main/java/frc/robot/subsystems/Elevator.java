@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Seconds; 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -37,7 +38,9 @@ public class Elevator extends SubsystemBase {
   // private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
+  private static AbsoluteEncoder absoluteEncoder;
   private static ElevatorFeedforward ff;
+  private double initialOffset;
   // private boolean underBotSwitch; //in case we need it, threw it in commented sections. Might be needed because limit switch is not at the very
   //                                 // bottom of the elevator
   // private boolean previousSwitchTriggered;
@@ -59,6 +62,7 @@ public class Elevator extends SubsystemBase {
     // botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH );
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
+    absoluteEncoder = elevatorMotorLeader.getAbsoluteEncoder();
 
     elevatorPID = new PIDController(
       Constants.ElevatorConstants.PIDConstants.kP,
@@ -86,6 +90,8 @@ public class Elevator extends SubsystemBase {
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
         //probably unneeded 
+        config.absoluteEncoder
+        .zeroOffset(0.49);
 
         elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -93,6 +99,7 @@ public class Elevator extends SubsystemBase {
         // underBotSwitch = true;
         // currentSwitchTriggered = botLimitSwitch.get();
         // previousSwitchTriggered = currentSwitchTriggered;
+        initialOffset = absoluteEncoder.getPosition();
 
         
     }    
@@ -187,9 +194,22 @@ public class Elevator extends SubsystemBase {
       );
     }
 
+    public Command upToDefaultCmd() {
+      return this.run(()-> {
+        if(elevatorEncoder.getPosition() > ElevatorConstants.SetpointConstants.DEFAULT_LVL) {
+          elevatorMotorLeader.stopMotor();
+          System.out.println("REACHED DEFAULT LEVEL");
+        }
+        else {
+          elevatorMotorLeader.set(-ElevatorConstants.MOTOR_SPEED);
+
+        }
+      });
+    }
+
     public Command forceReverseMotorCmd(){
       return this.run(() ->
-      elevatorMotorLeader.set(-ElevatorConstants.MOTOR_SPEED));
+      elevatorMotorLeader.set(-ElevatorConstants.FORCE_MOTOR_SPEED));
     }
 
     public Command resetEncoder(){
@@ -199,10 +219,12 @@ public class Elevator extends SubsystemBase {
 
 
     public Command stopMotorCmd(){
-      return this.run( () -> 
+      return this.runOnce( () -> 
         elevatorMotorLeader.set(0)
       );
     }
+
+
 
     /**
      * 
@@ -226,6 +248,10 @@ public class Elevator extends SubsystemBase {
       return elevatorRoutine.dynamic(direction);
     }
 
+    public double getCurrentPosition(){
+      return initialOffset + elevatorEncoder.getPosition(); 
+    }
+
 
 
   @Override
@@ -234,6 +260,8 @@ public class Elevator extends SubsystemBase {
    // this.hitBotLimit();
   //  SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
    SmartDashboard.putNumber("encoder", elevatorEncoder.getPosition());
+   SmartDashboard.putNumber("absolute encoder", absoluteEncoder.getPosition());
+   SmartDashboard.putNumber("current position", getCurrentPosition());
   //  SmartDashboard.putBoolean("Under limit switch", underBotSwitch);
   //  botSwitchStatus();
   }

@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase implements Logged{
   }
 
   public Command stopMotorCmd() {
-    return this.run(() -> intakeMotor.stopMotor());
+    return this.runOnce(() -> intakeMotor.stopMotor());
   }
 
   public Command setVoltage(double voltage) {
@@ -76,8 +76,7 @@ public class Intake extends SubsystemBase implements Logged{
 
   @Log.NT
   public boolean isBeamBroken() {
-    System.out.println("intake");
-
+    // System.out.println("intake");
     return !beamBreak.get();
   }
   

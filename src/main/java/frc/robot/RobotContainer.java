@@ -11,6 +11,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -71,6 +72,7 @@ public class RobotContainer {
                 configureBindings();
                 configureDefaultCmds();
                 autonChooser = new SendableChooser<>();
+                configureAuton();
 
         }
 
@@ -98,6 +100,7 @@ public class RobotContainer {
 
         public void configureAuton(){
                 autonChooser.addOption("taxi", new Taxi(drivetrain));
+                SmartDashboard.putData("Choose auto: ", autonChooser);
         }
 
         // // // Configure AutoBuilder last
@@ -188,13 +191,13 @@ public class RobotContainer {
                 
                 
 
-                // driveJoy.leftBumper()
-                //      .whileTrue(
-                //          drivetrain.setXCmd());
+                driveJoy.leftBumper()
+                     .whileTrue(
+                         drivetrain.setXCmd());
 
-                // driveJoy.rightBumper()
-                //      .whileTrue(
-                //          drivetrain.resetGyro());
+                driveJoy.rightBumper()
+                     .whileTrue(
+                         drivetrain.resetGyro());
 
                 // driveJoy.leftTrigger()
                 //      .whileTrue(
@@ -259,6 +262,14 @@ public class RobotContainer {
                  */
                 operJoy.rightTrigger()
                 .onTrue(coralTransition.moveCoralToOuttake());
+
+                operJoy.a()
+                .whileTrue(elevator.upToDefaultCmd())
+                .onFalse(elevator.stopMotorCmd());
+
+                operJoy.rightStick()
+                .whileTrue(elevator.forceReverseMotorCmd())
+                .onFalse(elevator.stopMotorCmd().andThen(elevator.resetEncoder()));
 
                 // operJoy.rightBumper()
                 //         .whileTrue(algaeCmds.intakeAlgae())
@@ -335,7 +346,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return null;
+                return autonChooser.getSelected();
         }
 
 }
