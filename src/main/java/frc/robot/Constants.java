@@ -59,6 +59,7 @@ public final class Constants {
     public static final double GEAR_RATIO = 1.0 / 60.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+    public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
       public static final double kP = 12;
@@ -85,7 +86,7 @@ public final class Constants {
       public static final double ALGAE_THIRD_LVL = 0;
       public static final double FOURTH_LVL = 0; 
       public static final double DEFAULT_LVL = 1.5; //1.83;
-      public static final double MINIMUM_LVL = 0.39;
+      public static final double MINIMUM_LVL = 0.2;
       public static final double MAXIMUM_LVL = 7.8;
     }
   }

@@ -266,17 +266,18 @@ public class RobotContainer {
                 operJoy.rightTrigger()
                 .onTrue(coralTransition.moveCoralToOuttake());
 
-                operJoy.a()
-                .onTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint));
-                // .onFalse(elevator.stopMotorCmd());
+                operJoy.rightStick()
+                .whileTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
+                .onFalse(elevator.stopMotorCmd());
 
                 // operJoy.b()
                 // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))
                 // .onFalse(elevator.stopMotorCmd());
 
-                operJoy.rightStick()
+                operJoy.a()
                 .whileTrue(elevator.forceReverseMotorCmd())
-                .onFalse(elevator.stopMotorCmd().andThen(elevator.resetEncoder()));
+                .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
 
                 // operJoy.rightBumper()
                 //         .whileTrue(algaeCmds.intakeAlgae())

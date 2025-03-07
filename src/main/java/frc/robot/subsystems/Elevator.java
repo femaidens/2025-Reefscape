@@ -95,11 +95,11 @@ public class Elevator extends SubsystemBase {
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
         //probably unneeded 
-        config.absoluteEncoder
-        .zeroOffset(0.49);
+        // config.absoluteEncoder
+        // .zeroOffset(0.49);
 
         elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorEncoder.setPosition(absoluteEncoder.getPosition());
+        elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
 
         // underBotSwitch = true;
         // currentSwitchTriggered = botLimitSwitch.get();
@@ -196,7 +196,7 @@ public class Elevator extends SubsystemBase {
       // }
       // else {
         return this.run(() -> {
-          if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.FIRST_LVL){
+          if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
             elevatorMotorLeader.stopMotor();
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
@@ -227,7 +227,7 @@ public class Elevator extends SubsystemBase {
 
     public Command resetEncoder(){
       return this.runOnce(() ->
-      elevatorEncoder.setPosition(0));
+      elevatorEncoder.setPosition(ElevatorConstants.SetpointConstants.MINIMUM_LVL));
     }
 
 
@@ -243,7 +243,7 @@ public class Elevator extends SubsystemBase {
      * @return lifts elevator to specified setpoint
      */
     public Command setLevel(double setpoint) {
-      return this.run(() -> elevatorPID(setpoint));
+      return this.runOnce(() -> elevatorPID(setpoint));
     }
 
 
