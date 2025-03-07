@@ -78,7 +78,7 @@ public final class Constants {
     }
 
     public static class SetpointConstants {
-      public static final double FIRST_LVL = 0;
+      public static final double FIRST_LVL = 2.5;
       public static final double SECOND_LVL = 3.59;
       public static final double ALGAE_SECOND_LVL = 0;
       public static final double THIRD_LVL = 6.28;

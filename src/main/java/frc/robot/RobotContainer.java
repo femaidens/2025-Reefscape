@@ -50,6 +50,7 @@ public class RobotContainer {
          private final CoralTransition coralTransition;
         // private final Intake intake;
         // private RobotConfig config;
+        // private final Camera camera; 
 
         private SendableChooser<Command> autonChooser;
 
@@ -63,6 +64,7 @@ public class RobotContainer {
                 elevator = new Elevator();
                 intake = new Intake();
                 outtake = new Outtake();
+                // camera = new Camera(); 
                 // algaeIntake = new AlgaeIntake();
                 // algaePivot = new AlgaePivot();
                 // intake = new Intake();
@@ -72,6 +74,7 @@ public class RobotContainer {
                 configureBindings();
                 configureDefaultCmds();
                 autonChooser = new SendableChooser<>();
+                
                 configureAuton();
 
         }
@@ -154,21 +157,21 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-                driveJoy.a()
-                        .whileTrue(
-                                elevator.quasiCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
+                // driveJoy.a()
+                //         .whileTrue(
+                //                 elevator.quasiCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
 
-                driveJoy.b()
-                        .whileTrue(
-                                elevator.quasiCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
+                // driveJoy.b()
+                //         .whileTrue(
+                //                 elevator.quasiCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
 
-                driveJoy.x()
-                        .whileTrue(
-                                elevator.dynaCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
+                // driveJoy.x()
+                //         .whileTrue(
+                //                 elevator.dynaCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
 
-                driveJoy.y()
-                        .whileTrue(
-                                elevator.dynaCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
+                // driveJoy.y()
+                //         .whileTrue(
+                //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
                 
                 /* 
            
@@ -263,9 +266,9 @@ public class RobotContainer {
                 operJoy.rightTrigger()
                 .onTrue(coralTransition.moveCoralToOuttake());
 
-                // operJoy.a()
-                // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
-                // .onFalse(elevator.stopMotorCmd());
+                operJoy.a()
+                .onTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
+                .onFalse(elevator.stopMotorCmd());
 
                 // operJoy.b()
                 // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))

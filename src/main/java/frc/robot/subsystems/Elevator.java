@@ -243,7 +243,7 @@ public class Elevator extends SubsystemBase {
      * @return lifts elevator to specified setpoint
      */
     public Command setLevel(double setpoint) {
-      return this.run(() -> elevatorPID(setpoint)).until(elevatorPID::atSetpoint);
+      return this.run(() -> elevatorPID(setpoint));
     }
 
 
