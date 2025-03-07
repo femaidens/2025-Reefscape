@@ -27,7 +27,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Constants.*;
 
 public class Vision {
-  private final PhotonCamera frontLeftCam, frontRightCam, rearLeftCam, rearRightCam;
+  private final PhotonCamera frontLeftCam;//, frontRightCam, rearLeftCam, rearRightCam;
   private PhotonPoseEstimator frontLeftEstimator, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
   private AprilTagFieldLayout fieldLayout;
 
@@ -37,9 +37,9 @@ public class Vision {
 
   public Vision() {
     frontLeftCam = new PhotonCamera("LeftFront");
-    frontRightCam = new PhotonCamera("RightFront");
-    rearLeftCam = new PhotonCamera("LeftRear");
-    rearRightCam = new PhotonCamera("RightRear");
+    // frontRightCam = new PhotonCamera("RightFront");
+    // rearLeftCam = new PhotonCamera("LeftRear");
+    // rearRightCam = new PhotonCamera("RightRear");
 
     frontLeftUpdate = Optional.empty();
     frontRightUpdate = Optional.empty();
