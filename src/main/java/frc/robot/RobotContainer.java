@@ -267,8 +267,8 @@ public class RobotContainer {
                 .onTrue(coralTransition.moveCoralToOuttake());
 
                 operJoy.a()
-                .onTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
-                .onFalse(elevator.stopMotorCmd());
+                .onTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint));
+                // .onFalse(elevator.stopMotorCmd());
 
                 // operJoy.b()
                 // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))
