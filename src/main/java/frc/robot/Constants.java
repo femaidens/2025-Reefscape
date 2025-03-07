@@ -61,29 +61,32 @@ public final class Constants {
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
 
     public static class PIDConstants {
-      public static final double kP = 0;
+      public static final double kP = 12;
       public static final double kI = 0;
       public static final double kD = 0;
-      public static final double kMaxVelocity = 0;
-      public static final double kMaxAcceleration = 0;
+      public static final double kMaxVelocity = 7;
+      public static final double kMaxAcceleration = 10;
       public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity,
           kMaxAcceleration);
     }
 
     public static class FeedForwardConstants {
-      public static final double kS = 0;
-      public static final double kG = 0;
-      public static final double kV = 0;
+      public static final double kS = 0.25722;
+      public static final double kG = 0.18831;
+      public static final double kV = 7.6552;
+      public static final double kA = 0.56958;
     }
 
     public static class SetpointConstants {
       public static final double FIRST_LVL = 0;
-      public static final double SECOND_LVL = 0;
+      public static final double SECOND_LVL = 3.59;
       public static final double ALGAE_SECOND_LVL = 0;
-      public static final double THIRD_LVL = 0;
+      public static final double THIRD_LVL = 6.28;
       public static final double ALGAE_THIRD_LVL = 0;
-      public static final double FOURTH_LVL = 0;
-      public static final double DEFAULT_LVL = 7583.58;
+      public static final double FOURTH_LVL = 0; 
+      public static final double DEFAULT_LVL = 1.5; //1.83;
+      public static final double MINIMUM_LVL = 0.39;
+      public static final double MAXIMUM_LVL = 7.8;
     }
   }
 

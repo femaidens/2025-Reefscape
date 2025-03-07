@@ -25,7 +25,7 @@ public class Taxi extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> drivetrain.zeroHeading()),
       new RunCommand(() -> drivetrain.drive(() -> -0.2, () -> 0.0, () -> 0.0), drivetrain)
-        .withTimeout(5)
+        .withTimeout(2)
     );
   }
 }

@@ -154,21 +154,21 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-                // driveJoy.a()
-                //                 .whileTrue(
-                //                                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+                driveJoy.a()
+                        .whileTrue(
+                                elevator.quasiCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
 
-                // driveJoy.b()
-                //                 .whileTrue(
-                //                                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+                driveJoy.b()
+                        .whileTrue(
+                                elevator.quasiCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
 
-                // driveJoy.x()
-                //                 .whileTrue(
-                //                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+                driveJoy.x()
+                        .whileTrue(
+                                elevator.dynaCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
 
-                // driveJoy.y()
-                //                 .whileTrue(
-                //                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+                driveJoy.y()
+                        .whileTrue(
+                                elevator.dynaCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
                 
                 /* 
            
@@ -263,9 +263,13 @@ public class RobotContainer {
                 operJoy.rightTrigger()
                 .onTrue(coralTransition.moveCoralToOuttake());
 
-                operJoy.a()
-                .whileTrue(elevator.upToDefaultCmd())
-                .onFalse(elevator.stopMotorCmd());
+                // operJoy.a()
+                // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
+                // .onFalse(elevator.stopMotorCmd());
+
+                // operJoy.b()
+                // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))
+                // .onFalse(elevator.stopMotorCmd());
 
                 operJoy.rightStick()
                 .whileTrue(elevator.forceReverseMotorCmd())
