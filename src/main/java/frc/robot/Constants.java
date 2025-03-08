@@ -79,14 +79,14 @@ public final class Constants {
     }
 
     public static class SetpointConstants {
-      public static final double FIRST_LVL = 2.5;
+      public static final double FIRST_LVL = 1.3; //2.5;
       public static final double SECOND_LVL = 3.59;
       public static final double ALGAE_SECOND_LVL = 0;
-      public static final double THIRD_LVL = 6.28;
+      public static final double THIRD_LVL = 5.40; //6.28;
       public static final double ALGAE_THIRD_LVL = 0;
-      public static final double FOURTH_LVL = 0; 
-      public static final double DEFAULT_LVL = 1.5; //1.83;
-      public static final double MINIMUM_LVL = 0.2;
+      public static final double FOURTH_LVL = 7.8; 
+      public static final double DEFAULT_LVL = 1.54; //1.83;
+      public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
     }
   }

@@ -19,7 +19,7 @@ public class Ports {
     }
     public class ElevatorPorts {
         public static int MOTOR_PORT = 15;
-        // public static int BOT_SWITCH = 22;
+        public static int BOT_SWITCH = 7;
     }
     public class IntakePorts {
         public static int INTAKE_MOTOR = 3;

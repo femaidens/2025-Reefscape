@@ -99,6 +99,8 @@ public class RobotContainer {
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
                 // elevator.setDefaultCommand(
                 //         new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
+
+                
         }
 
         public void configureAuton(){
@@ -266,15 +268,28 @@ public class RobotContainer {
                 operJoy.rightTrigger()
                 .onTrue(coralTransition.moveCoralToOuttake());
 
-                operJoy.rightStick()
-                .whileTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint))
-                .onFalse(elevator.stopMotorCmd());
+                // operJoy.
+
+                operJoy.b()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                //.onFalse(elevator.stopMotorCmd());
 
                 // operJoy.b()
                 // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))
                 // .onFalse(elevator.stopMotorCmd());
+                operJoy.y()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
 
+                operJoy.x()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+
+                operJoy.rightStick()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                
                 operJoy.a()
                 .whileTrue(elevator.forceReverseMotorCmd())
                 .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
@@ -304,7 +319,7 @@ public class RobotContainer {
                 
                 // operJoy.back()
                 //         .whileTrue(elevating.algaeSecondLevelCmd());
-                
+                ;
                 // operJoy.start() 
                 //         .whileTrue(elevating.algaeThirdLevelCmd());
                 

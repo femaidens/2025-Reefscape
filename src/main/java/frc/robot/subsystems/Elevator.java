@@ -37,7 +37,7 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
-  // private static DigitalInput botLimitSwitch;
+  private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
   private static AbsoluteEncoder absoluteEncoder;
@@ -61,7 +61,7 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
 
-    // botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH );
+    botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH);
 
     elevatorEncoder = elevatorMotorLeader.getEncoder();
     absoluteEncoder = elevatorMotorLeader.getAbsoluteEncoder();
@@ -72,7 +72,7 @@ public class Elevator extends SubsystemBase {
       ElevatorConstants.PIDConstants.kD
     );
 
-    elevatorPID.setTolerance(0.1);
+    elevatorPID.setTolerance(0.05);
   
     ff = new ElevatorFeedforward(
       ElevatorConstants.FeedForwardConstants.kS, 
@@ -116,14 +116,14 @@ public class Elevator extends SubsystemBase {
      * sets motor voltage using calculations from PID and FF values 
      * 
      */
-    public void elevatorPID(double setpoint){
+    public void elevatorPID(double current, double setpoint){
       // if (botLimitSwitch.get()) {
       //   elevatorMotorLeader.set(0);
       // }
 
       // else {
         elevatorMotorLeader.setVoltage(
-          elevatorPID.calculate(elevatorEncoder.getPosition(), setpoint));
+          elevatorPID.calculate(current, setpoint));
           // elevatorMotorFollower.resumeFollowerMode();
       // }
        
@@ -151,16 +151,16 @@ public class Elevator extends SubsystemBase {
 
     /**
      * if the limit switch is activated, the elevator motor stops moving
-    //  */
+     */
     // public void hitBotLimit(){
     //   if(botLimitSwitch.get()){
     //     stopMotorCmd();
     //   }
     // }
 
-    // public boolean hitBotLimit() {
-    //   return botLimitSwitch.get();
-    // }
+    public boolean hitBotLimit() {
+      return !botLimitSwitch.get();
+    }
 
     /**
      * see line 36
@@ -180,7 +180,7 @@ public class Elevator extends SubsystemBase {
     public Command runMotorCmd(){
       return this.run( () -> {
         elevatorMotorLeader.set(Constants.ElevatorConstants.MOTOR_SPEED);
-        System.out.println("FORWARD " + elevatorMotorLeader.getAppliedOutput());
+        // System.out.println("FORWARD " + elevatorMotorLeader.getAppliedOutput());
       }
       );
 
@@ -196,12 +196,14 @@ public class Elevator extends SubsystemBase {
       // }
       // else {
         return this.run(() -> {
-          if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
+          // if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
+          if(hitBotLimit()){
             elevatorMotorLeader.stopMotor();
+            elevatorEncoder.setPosition(0);
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
             elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
-            System.out.println("reverseeeeeeee");
+            // System.out.println("reverseeeeeeee");
           }
         }
       );
@@ -243,7 +245,10 @@ public class Elevator extends SubsystemBase {
      * @return lifts elevator to specified setpoint
      */
     public Command setLevel(double setpoint) {
-      return this.runOnce(() -> elevatorPID(setpoint));
+      return this.run(() -> {
+        elevatorPID(elevatorEncoder.getPosition(), setpoint);
+        System.out.println(elevatorEncoder.getPosition());}
+      );
     }
 
 
@@ -277,12 +282,14 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
    // this.hitBotLimit();
-  //  SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
+   SmartDashboard.putData(this);
+   SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
    SmartDashboard.putNumber("encoder", elevatorEncoder.getPosition());
    SmartDashboard.putNumber("absolute encoder", absoluteEncoder.getPosition());
    SmartDashboard.putNumber("current position", getCurrentPosition());
   //  SmartDashboard.putBoolean("Under limit switch", underBotSwitch);
   //  botSwitchStatus();
+   SmartDashboard.updateValues();
   }
 }
 // }
