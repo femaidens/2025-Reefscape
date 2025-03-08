@@ -67,6 +67,41 @@ public class Vision {
     rearLeftEstimator.setFieldTags(fieldLayout);
     rearRightEstimator.setFieldTags(fieldLayout);
   }
+  public double getTagArea(PhotonTrackedTarget target){
+    double area = target.getArea();
+    return area;
+  }
+  
+  public void updatePose(){
+    List<PhotonPipelineResult> result = frontLeftCam.getAllUnreadResults();
+    for (int i = 0; i < result.size(); i++) {
+    PhotonPipelineResult pipelineResult;
+      if (result.size() > 1) {
+    // gets the latest result if there are multiple unread results
+      int maxIndex = 0;
+      double max = 0;
+      int unreadLength = result.size();
+        for (int ie = 0; ie < unreadLength; ie++) {
+          double temp = result.get(ie).getTimestampSeconds();
+            if (temp > max) {
+              max = temp;
+              }
+            }
+            //   var latest = result.get(maxIndex);
+            //   // lastResults[i] = latest;
+            // } else if (result.size() == 1) {
+            //   // latest = result.get(0);
+            //   // lastResults[i] = latest;
+            // } else {
+            //   // result = lastResults[i];
+          }
+            var estimate = frontLeftEstimator.update(pipelineResult);
+      }
+  }
+
+  public boolean isFinding(){
+    return frontLeftUpdate != null && frontLeftCam.getAllUnreadResults() != null;
+  }
 
   private Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
     if (frontLeftEstimator == null) {
@@ -92,7 +127,6 @@ public class Vision {
     // double temp = unread.get(ie).getTimestampSeconds();
     // if (temp > max) {
     // max = temp;
-    // maxIndex = ie;
     // }
     // }
     // result = unread.get(maxIndex);
