@@ -41,7 +41,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   private final AHRS gyro;
 
-  private final SwerveDriveOdometry odometry;
+  @Log.NT private final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
 
