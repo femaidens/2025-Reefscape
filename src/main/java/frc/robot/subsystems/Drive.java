@@ -257,14 +257,10 @@ public class Drive extends SubsystemBase implements Logged {
         () -> zeroHeading());
   }
 
-  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
-  }
+  // public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+  //   poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+  // }
 
-  public void addVisionMeasurement(
-            Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
-        poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
-    }
   // public boolean isFacing(Translation2d target) {
   //     return Math.abs(
   //             gyro.getRotation2d().getRadians()
@@ -339,6 +335,8 @@ public class Drive extends SubsystemBase implements Logged {
         frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
         rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
         });
+    
+    poseEstimator.addVisionMeasurement(getPose(), getAngle());
 
     SmartDashboard.updateValues();
     SmartDashboard.putNumber("angle", getAngle());

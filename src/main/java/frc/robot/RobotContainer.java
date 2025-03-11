@@ -5,12 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
 
 import java.util.function.DoubleSupplier;
+
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,9 +38,12 @@ public class RobotContainer {
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
+  private final AlignToCenter alignToCenter;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    alignToCenter = new AlignToCenter(drive, vision, null);
     configureBindings();
     configureDefaultCmds();
   }
@@ -63,7 +69,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // operJoy.x().onTrue(new DriveToPoseCmd(drive, null, null, null));
+    operJoy.a().whileTrue(alignToCenter);
   }
 
   

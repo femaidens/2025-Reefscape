@@ -8,10 +8,14 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,16 +28,17 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import frc.robot.Constants;
 import frc.robot.Constants.*;
 
 public class Vision {
-  private final PhotonCamera frontLeftCam;//, frontRightCam, rearLeftCam, rearRightCam;
-  private PhotonPoseEstimator frontLeftEstimator, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
+  private final PhotonCamera frontLeftCam; //, frontRightCam, rearLeftCam, rearRightCam;
+  private PhotonPoseEstimator frontLeftEstimator;//, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
   private AprilTagFieldLayout fieldLayout;
 
   private Matrix<N3, N1> currentStdDevs;
 
-  Optional<EstimatedRobotPose> frontLeftUpdate, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
+  Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
 
   public Vision() {
     frontLeftCam = new PhotonCamera("LeftFront");
@@ -42,70 +47,34 @@ public class Vision {
     // rearRightCam = new PhotonCamera("RightRear");
 
     frontLeftUpdate = Optional.empty();
-    frontRightUpdate = Optional.empty();
-    rearLeftUpdate = Optional.empty();
-    rearRightUpdate = Optional.empty();
+    // frontRightUpdate = Optional.empty();
+    // rearLeftUpdate = Optional.empty();
+    // rearRightUpdate = Optional.empty();
 
     frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         VisionConstants.kFrontLeftCamToCenter);
-    frontRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        VisionConstants.kFrontRightCamToCenter);
-    rearLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        VisionConstants.kRearLeftCamToCenter);
-    rearRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        VisionConstants.kRearRightCamToCenter);
+    // frontRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    //     VisionConstants.kFrontRightCamToCenter);
+    // rearLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    //     VisionConstants.kRearLeftCamToCenter);
+    // rearRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    //     VisionConstants.kRearRightCamToCenter);
 
     frontLeftEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    frontRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    rearLeftEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    rearRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // frontRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // rearLeftEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // rearRightEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     frontLeftEstimator.setFieldTags(fieldLayout);
-    frontRightEstimator.setFieldTags(fieldLayout);
-    rearLeftEstimator.setFieldTags(fieldLayout);
-    rearRightEstimator.setFieldTags(fieldLayout);
-  }
-  public double getTagArea(PhotonTrackedTarget target){
-    double area = target.getArea();
-    return area;
-  }
-  
-  public void updatePose(){
-    List<PhotonPipelineResult> result = frontLeftCam.getAllUnreadResults();
-    for (int i = 0; i < result.size(); i++) {
-    PhotonPipelineResult pipelineResult;
-      if (result.size() > 1) {
-    // gets the latest result if there are multiple unread results
-      int maxIndex = 0;
-      double max = 0;
-      int unreadLength = result.size();
-        for (int ie = 0; ie < unreadLength; ie++) {
-          double temp = result.get(ie).getTimestampSeconds();
-            if (temp > max) {
-              max = temp;
-              }
-            }
-            //   var latest = result.get(maxIndex);
-            //   // lastResults[i] = latest;
-            // } else if (result.size() == 1) {
-            //   // latest = result.get(0);
-            //   // lastResults[i] = latest;
-            // } else {
-            //   // result = lastResults[i];
-          }
-            var estimate = frontLeftEstimator.update(pipelineResult);
-      }
+    // frontRightEstimator.setFieldTags(fieldLayout);
+    // rearLeftEstimator.setFieldTags(fieldLayout);
+    // rearRightEstimator.setFieldTags(fieldLayout);
   }
 
-  public boolean isFinding(){
-    return frontLeftUpdate != null && frontLeftCam.getAllUnreadResults() != null;
-  }
-
-  private Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
+  public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
     if (frontLeftEstimator == null) {
-      // Configuration failed, there's nothing we can do
       return Optional.empty();
     }
     Optional<EstimatedRobotPose> visionEst = Optional.empty();
@@ -114,36 +83,28 @@ public class Vision {
       updateEstimationStdDevs(visionEst, change.getTargets());
     }
     return visionEst;
-
-    // for (int i = 0; i < estimators.length; i++) {
-    // var unread = cameras[i].getAllUnreadResults();
-    // PhotonPipelineResult result;
-    // if (unread.size() > 1) {
-    // // gets the latest result if there are multiple unread results
-    // int maxIndex = 0;
-    // double max = 0;
-    // int unreadLength = unread.size();
-    // for (int ie = 0; ie < unreadLength; ie++) {
-    // double temp = unread.get(ie).getTimestampSeconds();
-    // if (temp > max) {
-    // max = temp;
-    // }
-    // }
-    // result = unread.get(maxIndex);
-    // lastResults[i] = result;
-    // } else if (unread.size() == 1) {
-    // result = unread.get(0);
-    // lastResults[i] = result;
-    // } else {
-    // result = lastResults[i];
-    // }
-    // var estimate = estimators[i].update(result);
-    // }
+  }
+  public double distanceToTarget(PhotonTrackedTarget target){
+    double distance =
+      PhotonUtils.calculateDistanceToTargetMeters(
+              0, 
+              0, 
+              Units.degreesToRadians(0), 
+              Units.degreesToRadians(target.getPitch()));
+    return distance;
   }
 
-  private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+  public PhotonTrackedTarget getTag(){
+    PhotonTrackedTarget target = null;
+    var result = frontLeftCam.getLatestResult();
+    if(result.hasTargets()) {
+     target = result.getBestTarget();
+    }
+    return target;
+  }
+
+  public void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
-      // No pose input. Default to single-tag std devs
       currentStdDevs = VisionConstants.kSingleTagStdDevs;
 
     } else {
@@ -152,8 +113,7 @@ public class Vision {
       int numTags = 0;
       double avgDist = 0;
 
-      // Precalculation - see how many tags we found, and calculate an
-      // average-distance metric
+      //use all seen tags to calculate an average distance metric
       for (var tgt : targets) {
         var tagPose = VisionConstants.kTagLayout.getTagPose(tgt.getFiducialId());
         if (tagPose.isEmpty()) {
@@ -167,15 +127,11 @@ public class Vision {
       }
 
       if (numTags == 0) {
-        // No tags visible. Default to single-tag std devs
         currentStdDevs = VisionConstants.kSingleTagStdDevs;
       } else {
-        // One or more tags visible, run the full heuristic.
         avgDist /= numTags;
-        // Decrease std devs if multiple targets are visible
         if (numTags > 1)
           estStdDevs = VisionConstants.kMultiTagStdDevs;
-        // Increase std devs based on (average) distance
         if (numTags == 1 && avgDist > 4) {
           estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
@@ -185,8 +141,44 @@ public class Vision {
       }
     }
   }
+  
+  public Pose3d getPose3d(PhotonTrackedTarget target){
+    // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
+     return robotPose;
+    // }
+    // return robotPose;
+  }
+
+  public Pose2d getPose2d(PhotonTrackedTarget target){
+    
+    Pose2d robotPose = getPose3d(target).toPose2d();
+    return robotPose;
+  }
+
+  public Rotation2d getYawDistance(PhotonTrackedTarget target, Pose2d targetPose){
+     Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose2d(target), targetPose);
+     return targetYaw;
+  }
+
 
   public Matrix<N3, N1> getEstimationStdDevs() {
     return currentStdDevs;
+  }
+
+  // public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+  //   frontLeftEstimator.addVisionMeaurement(visionMeasurement, timestampSeconds);
+  // }
+
+  // public boolean isFacing(Pose2d pose, Pose2d curPose2d) {    
+
+  //   // Disregard measurements too far away from odometry
+  //   // this can be tuned to find a threshold that helps us remove jumping vision
+  //   // poses
+  //   return (Math.abs(pose.getX() - curPose2d.getX()) <= 0.1)
+  //       && (Math.abs(pose.getY() - curPose2d.getY()) <= 0.1);
+  // }
+
+  public void periodic(){
   }
 }
