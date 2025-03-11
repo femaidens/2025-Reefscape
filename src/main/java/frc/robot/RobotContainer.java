@@ -159,21 +159,21 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-                // driveJoy.a()
-                //         .whileTrue(
-                //                 elevator.quasiCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
+                driveJoy.a()
+                        .whileTrue(
+                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
 
-                // driveJoy.b()
-                //         .whileTrue(
-                //                 elevator.quasiCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
+                driveJoy.b()
+                        .whileTrue(
+                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
 
-                // driveJoy.x()
-                //         .whileTrue(
-                //                 elevator.dynaCmd(SysIdRoutine.Direction.kForward).until(elevator::atMaximum));
+                driveJoy.x()
+                        .whileTrue(
+                                drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
 
-                // driveJoy.y()
-                //         .whileTrue(
-                //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse).until(elevator::atMinimum));
+                 driveJoy.y()
+                         .whileTrue(
+                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
                 
                 /* 
            
@@ -204,95 +204,95 @@ public class RobotContainer {
                      .whileTrue(
                          drivetrain.resetGyro());
 
-                // driveJoy.leftTrigger()
-                //      .whileTrue(
-                //       drivetrain.setStraightCmd());
+                driveJoy.leftTrigger()
+                     .whileTrue(
+                      drivetrain.setStraightCmd());
 
-                // driveJoy.rightTrigger()
-                //    .whileTrue(
-                //      drivetrain.driveStraightCmd());
+                // // driveJoy.rightTrigger()
+                // //    .whileTrue(
+                // //      drivetrain.driveStraightCmd());
 
-                // operJoy.leftStick()
-                //   .whileTrue(
-                //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
-                /**
-                 * manual elevator up
-                 */
-                operJoy.povUp()
-                    .whileTrue(
-                        elevator.runMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
-                /**
-                 * manual elevator down
-                 */
-                operJoy.povDown()
-                    .whileTrue(
-                        elevator.reverseMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
+                // // operJoy.leftStick()
+                // //   .whileTrue(
+                // //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                // /**
+                //  * manual elevator up
+                //  */
+                // operJoy.povUp()
+                //     .whileTrue(
+                //         elevator.runMotorCmd())
+                //         .onFalse(elevator.stopMotorCmd()); 
+                // /**
+                //  * manual elevator down
+                //  */
+                // operJoy.povDown()
+                //     .whileTrue(
+                //         elevator.reverseMotorCmd())
+                //         .onFalse(elevator.stopMotorCmd()); 
 
-                // operJoy.rightTrigger()
+                // // operJoy.rightTrigger()
+                // // .whileTrue(
+                // //         intake.runMotorCmd())
+                // // .onFalse(
+                // //         intake.stopMotorCmd());
+
+                // /**
+                //  * run intake manually
+                //  */
+                // operJoy.leftTrigger()
                 // .whileTrue(
-                //         intake.runMotorCmd())
+                //         intake.reverseMotorCmd())
                 // .onFalse(
-                //         intake.stopMotorCmd());
-
-                /**
-                 * run intake manually
-                 */
-                operJoy.leftTrigger()
-                .whileTrue(
-                        intake.reverseMotorCmd())
-                .onFalse(
-                        intake.stopMotorCmd()
-                );
+                //         intake.stopMotorCmd()
+                // );
 
 
 
-                /**
-                 * outtake
-                 */
-                operJoy.rightBumper()
-                .whileTrue(outtake.runMotorCmd())
-                .onFalse(outtake.stopMotorCmd());
+                // /**
+                //  * outtake
+                //  */
+                // operJoy.rightBumper()
+                // .whileTrue(outtake.runMotorCmd())
+                // .onFalse(outtake.stopMotorCmd());
 
-                /**
-                 * reverse outtake
-                 */
-                operJoy.leftBumper()
-                .whileTrue(outtake.reverseOuttakeCmd())
-                .onFalse(outtake.stopMotorCmd());
+                // /**
+                //  * reverse outtake
+                //  */
+                // operJoy.leftBumper()
+                // .whileTrue(outtake.reverseOuttakeCmd())
+                // .onFalse(outtake.stopMotorCmd());
 
                 /**
                  * coral transition
                  */
-                operJoy.rightTrigger()
-                .onTrue(coralTransition.moveCoralToOuttake());
+                // operJoy.rightTrigger()
+                // .onTrue(coralTransition.moveCoralToOuttake());
 
-                // operJoy.
+                // // operJoy.
 
-                operJoy.b()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
-                //.onFalse(elevator.stopMotorCmd());
+                // operJoy.b()
+                // .onTrue(
+                // elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                // //.onFalse(elevator.stopMotorCmd());
 
                 // operJoy.b()
                 // .whileTrue(elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL))
                 // .onFalse(elevator.stopMotorCmd());
-                operJoy.y()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                // operJoy.y()
+                // .onTrue(
+                // elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
 
-                operJoy.x()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                // operJoy.x()
+                // .onTrue(
+                // elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
 
-                operJoy.rightStick()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                // operJoy.rightStick()
+                // .onTrue(
+                // elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
                 
-                operJoy.a()
-                .whileTrue(elevator.forceReverseMotorCmd())
-                .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
+                // operJoy.a()
+                // .whileTrue(elevator.forceReverseMotorCmd())
+                // .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
 
                 // operJoy.rightBumper()
                 //         .whileTrue(algaeCmds.intakeAlgae())

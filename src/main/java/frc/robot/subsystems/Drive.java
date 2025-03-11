@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -73,8 +77,16 @@ public class Drive extends SubsystemBase implements Logged {
       zeroHeading();
 
       driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))), null, this));
+        new SysIdRoutine.Config(null, null,
+        //  Volts.of(2).per(Seconds.of(1)),
+        //  Volts.of(9),
+         null,
+         (state) -> SignalLogger.writeString("state", state.toString())),
+        new SysIdRoutine.Mechanism(
+          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
+          null,
+          this));
+  
 
     }
 
@@ -232,6 +244,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   /* SYSID CMDS */
   public Command driveQuasistatic(SysIdRoutine.Direction direction){
+    System.out.println("RUNNING");
     return driveRoutine.quasistatic(direction);
   }
   public Command driveDynamic(SysIdRoutine.Direction direction){

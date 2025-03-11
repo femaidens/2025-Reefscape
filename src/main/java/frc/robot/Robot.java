@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import org.littletonrobotics.urcl.URCL;
+import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
@@ -35,12 +35,14 @@ public class Robot extends TimedRobot implements Logged {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+
     boolean fileOnly = false;
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     DataLogManager.start();
-    URCL.start();
-    CameraServer.startAutomaticCapture(); 
+    SignalLogger.start();
+    // URCL.start();
+    //CameraServer.startAutomaticCapture(); 
     // PortForwarder.add(5800, "10.22.65.11", 5800);
   }
 
@@ -67,7 +69,9 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SignalLogger.stop();
+  }
 
   @Override
   public void disabledPeriodic() {}
