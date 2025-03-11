@@ -40,7 +40,6 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     DataLogManager.start();
-    SignalLogger.start();
     // URCL.start();
     //CameraServer.startAutomaticCapture(); 
     // PortForwarder.add(5800, "10.22.65.11", 5800);
@@ -97,6 +96,7 @@ public class Robot extends TimedRobot implements Logged {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    SignalLogger.start();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
