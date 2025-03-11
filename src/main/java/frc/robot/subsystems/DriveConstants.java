@@ -65,6 +65,8 @@ public class DriveConstants {
         public static final double POS_CONVERSION_FACTOR = 1.0 / (Math.PI * 2); // (2*Math.PI)/(150/7);
         public static final double VEL_CONVERSION_FACTOR = (2 * Math.PI) / (150 / 7);
         public static final int AVERAGE_DEPTH = 0;
+        public static final AngularVelocity MAX_ANGULAR_VELOCITY = RotationsPerSecond.of(1.25);
+        public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(6.0 * Math.PI);
 
         public class PID {
             public static final double P = 2.5;
@@ -77,8 +79,7 @@ public class DriveConstants {
             public static final double V = 0;
             public static final double A = 0;
         }
-        public static final AngularVelocity MAX_ANGULAR_VELOCITY = RotationsPerSecond.of(1.25);
-        public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(6.0 * Math.PI);
+        
     }
 
     // **************DRIVETRAIN CONSTANTS******************//
@@ -97,7 +98,7 @@ public class DriveConstants {
         public static final double SPEED_FACTOR = 0.75;
     }
 
-    public static final class TalonMotorConstants {
+    public class TalonMotorConstants {
         public static final double FREE_SPEED_RPM = 6000;
     }
 }

@@ -44,6 +44,7 @@ public class AlignToCenter extends Command {
   //change to command
 
   public Command driveToCmd(Pose2d target){
+    System.out.println("running");
     return new RunCommand(
       () -> drive.drive(
         () -> xController.calculate(target.getTranslation().getX())*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond),
