@@ -44,7 +44,7 @@ public class AlignToCenter extends Command {
   //change to command
 
   public Command driveToCmd(Pose2d target){
-    return new runCommand(
+    return new RunCommand(
       () -> drive.drive(
         () -> xController.calculate(target.getTranslation().getX())*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond),
         () -> yController.calculate(target.getTranslation().getY()),
@@ -52,12 +52,12 @@ public class AlignToCenter extends Command {
       drive);
   }
 
-  public Command align() {
-    new RunCommand(
-    () -> drive.drive(
-    //need to change 1 to desired range from apriltag
-  () -> (1-vision.distanceToTarget(target)*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond)), 
-  () -> 0, 
-  () -> target.getYaw()*DriveConstants.Turn.PID.P*DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)), drive);
-  }
+  // public Command align() {
+  //   new RunCommand(
+  //   () -> drive.drive(
+  //   //need to change 1 to desired range from apriltag
+  // () -> (1-vision.distanceToTarget(target)*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond)), 
+  // () -> 0, 
+  // () -> target.getYaw()*DriveConstants.Turn.PID.P*DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)), drive);
+  // }
 }
