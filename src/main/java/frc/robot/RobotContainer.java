@@ -11,6 +11,7 @@ import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
 
+import java.lang.reflect.Field;
 import java.util.function.DoubleSupplier;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -69,7 +70,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operJoy.a().whileTrue(alignToCenter);
+    operJoy.a().whileTrue(new DriveToPoseCmd(drive, drive::getPose));
   }
 
   
