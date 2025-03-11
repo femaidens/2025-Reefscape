@@ -12,8 +12,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.DriveConstants;
 import frc.robot.Constants.*;
 
@@ -24,28 +25,39 @@ public class AlignToCenter extends Command {
   private Drive drive;
   private Vision vision;
 
-  // private final PIDController xController;
-  // private final PIDController yController;
-  // private final PIDController thetaController;
+  private final PIDController xController;
+  private final PIDController yController;
+  private final PIDController thetaController;
   private PhotonTrackedTarget target;
   public AlignToCenter(Drive drive, Vision vision, PhotonTrackedTarget target) {
     this.drive = drive;
     this.target = vision.getTag();
-    // xController = new PIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D);
+    xController = new PIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D);
 
-    // yController = new PIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D);
+    yController = new PIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D);
 
-    // thetaController = new PIDController(DriveConstants.Turn.PID.P, DriveConstants.Turn.PID.I, DriveConstants.Turn.PID.D);
-    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController = new PIDController(DriveConstants.Turn.PID.P, DriveConstants.Turn.PID.I, DriveConstants.Turn.PID.D);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(drive);
   }
   //change to command
-  public void align() {
-   drive.drive(
-      //need to change 1 to desired range from apriltag
-    () -> (1-vision.distanceToTarget(target)*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond)), 
-    () -> 0, 
-    () -> target.getYaw()*DriveConstants.Turn.PID.P*DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond));
+
+  public Command driveToCmd(Pose2d target){
+    return new runCommand(
+      () -> drive.drive(
+        () -> xController.calculate(target.getTranslation().getX())*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond),
+        () -> yController.calculate(target.getTranslation().getY()),
+        () -> thetaController.calculate(target.getRotation().getRadians())*DriveConstants.Turn.PID.P*DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)),
+      drive);
+  }
+
+  public Command align() {
+    new RunCommand(
+    () -> drive.drive(
+    //need to change 1 to desired range from apriltag
+  () -> (1-vision.distanceToTarget(target)*DriveConstants.Translation.PID.P*DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond)), 
+  () -> 0, 
+  () -> target.getYaw()*DriveConstants.Turn.PID.P*DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond)), drive);
   }
 }
