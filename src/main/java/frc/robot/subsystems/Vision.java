@@ -74,6 +74,15 @@ public class Vision {
     // rearRightEstimator.setFieldTags(fieldLayout);
   }
 
+  public void printYaw(){
+    var result = frontLeftCam.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    List<PhotonTrackedTarget> targets = result.getTargets();
+    PhotonTrackedTarget target = result.getBestTarget();
+    double yaw = target.getYaw();
+    System.out.println("Yaw: " + yaw);
+  }
+
   public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
     if (frontLeftEstimator == null) {
       return Optional.empty();
@@ -182,5 +191,6 @@ public class Vision {
   // }
 
   public void periodic(){
+    printYaw();
   }
 }
