@@ -218,17 +218,17 @@ public class RobotContainer {
                 // /**
                 //  * manual elevator up
                 //  */
-                // operJoy.povUp()
-                //     .whileTrue(
-                //         elevator.runMotorCmd())
-                //         .onFalse(elevator.stopMotorCmd()); 
-                // /**
-                //  * manual elevator down
-                //  */
-                // operJoy.povDown()
-                //     .whileTrue(
-                //         elevator.reverseMotorCmd())
-                //         .onFalse(elevator.stopMotorCmd()); 
+                operJoy.povUp()
+                    .whileTrue(
+                        elevator.runMotorCmd())
+                        .onFalse(elevator.stopMotorCmd()); 
+                /**
+                 * manual elevator down
+                 */
+                operJoy.povDown()
+                    .whileTrue(
+                        elevator.reverseMotorCmd())
+                        .onFalse(elevator.stopMotorCmd()); 
 
                 // // operJoy.rightTrigger()
                 // // .whileTrue(
