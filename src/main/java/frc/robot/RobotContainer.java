@@ -5,9 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
+import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Elevator;
+import frc.robot.commands.Elevating;
 import frc.robot.subsystems.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -42,6 +42,8 @@ public class RobotContainer {
         private final Elevator elevator;
         private final Intake intake;
         private final Outtake outtake;
+        private final Elevating elevating;
+        private final Autos autos;
         // private final Outtake outtake;
         // private final Elevating elevating;
         // private final AlgaeCmds algaeCmds;
@@ -64,12 +66,15 @@ public class RobotContainer {
                 elevator = new Elevator();
                 intake = new Intake();
                 outtake = new Outtake();
+                elevating = new Elevating(elevator, outtake, intake);
+                coralTransition = new CoralTransition(intake, outtake);
+
+                autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition, elevating);
                 // camera = new Camera(); 
                 // algaeIntake = new AlgaeIntake();
                 // algaePivot = new AlgaePivot();
                 // intake = new Intake();
                 // algaeCmds = new AlgaeCmds(algaeIntake, algaePivot);
-                 coralTransition = new CoralTransition(intake, outtake);
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();

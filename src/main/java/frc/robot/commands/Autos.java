@@ -37,7 +37,7 @@ public final class Autos {
   private SendableChooser<Command> autonChooser;
 
 
-  private Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, CoralTransition transition, Elevating elevating) {
+  public Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, CoralTransition transition, Elevating elevating) {
 
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autonChooser);
@@ -48,9 +48,9 @@ public final class Autos {
         DriveConstants.Translation.WHEEL_RADIUS, 
         DriveConstants.Drivetrain.MAX_SPEED, 
         DriveConstants.Drivetrain.WHEEL_COF, 
-        DCMotor.getKrakenX60(8), 
+        DCMotor.getKrakenX60(1), 
         DriveConstants.Translation.CURRENT_LIMIT, 
-        8), 
+        1), 
         DriveConstants.Drivetrain.TRACK_WIDTH);
 
 
@@ -61,7 +61,7 @@ public final class Autos {
     this.elevating = elevating;
   }
 
-  public boolean shouldWeFlip(){
+  public boolean isRedAlliance(){
       // Boolean supplier that controls when the path will be mirrored for the red alliance
       // This will flip the path being followed to the red side of the field.
       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
@@ -92,7 +92,7 @@ public final class Autos {
         new PIDConstants(Translation.PID.P, Translation.PID.D), 
         new PIDConstants(Turn.PID.P, Turn.PID.D)),
       config,
-      () -> shouldWeFlip(),
+      () -> isRedAlliance(),
       drivetrain);
 
       NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());

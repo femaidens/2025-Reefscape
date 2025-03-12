@@ -19,7 +19,7 @@ public class DriveConstants {
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         // modules stuff
-        public static final int CURRENT_LIMIT = 35;
+        public static final int CURRENT_LIMIT = 40;
         public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters;
         public static final double VEL_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters per second
 

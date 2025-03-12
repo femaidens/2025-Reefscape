@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.DriveConstants;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
@@ -23,7 +24,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static class PathPlannerConstants {
-    public static final double massKg = 54.43;
+    public static final double massKg = Units.lbsToKilograms(120);
     public static final double MOI = 1.0/12 * massKg * (Math.pow(DriveConstants.Drivetrain.TRACK_WIDTH, 2) + Math.pow(DriveConstants.Drivetrain.WHEEL_BASE, 2));
     // double WHEEL_RADIUS;
     // double MAX_DRIVE_VELOCITY_MPS;
