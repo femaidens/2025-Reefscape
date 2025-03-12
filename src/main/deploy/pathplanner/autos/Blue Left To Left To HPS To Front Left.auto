@@ -11,15 +11,45 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake to outtake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake trough"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue Reef Left To HPS"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Blue HPS To Reef Front Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake to outtake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
           }
         }
       ]

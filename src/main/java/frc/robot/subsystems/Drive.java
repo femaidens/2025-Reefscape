@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -42,34 +44,28 @@ public class Drive extends SubsystemBase implements Logged {
 
   private final AHRS gyro;
 
-  private final SwerveDriveOdometry odometry;
+  @Log.NT private final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
+  
+
+  private ChassisSpeeds speeds = new ChassisSpeeds();
 
   /** Creates a new Drive. */
   public Drive() {
-    // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE,
-    // DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
-    // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE,
-    // DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
-    // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE,
-    // DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
-    // rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE,
-    // DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
-    frontLeft = new ModuleKraken(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN,
-        DrivetrainPorts.FRONT_LEFT_CANCODER, Translation.FRONT_LEFT_MAG_OFFSET, Translation.FRONT_LEFT_ANGOFFSET, true);
-    frontRight = new ModuleKraken(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN,
-        DrivetrainPorts.FRONT_RIGHT_CANCODER, Translation.FRONT_RIGHT_MAG_OFFSET, Translation.FRONT_RIGHT_ANGOFFSET,
-        true);
-    rearLeft = new ModuleKraken(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN,
-        DrivetrainPorts.REAR_LEFT_CANCODER, Translation.REAR_LEFT_MAG_OFFSET, Translation.REAR_LEFT_ANGOFFSET, true);
-    rearRight = new ModuleKraken(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN,
-        DrivetrainPorts.REAR_RIGHT_CANCODER, Translation.REAR_RIGHT_MAG_OFFSET, Translation.REAR_RIGHT_ANGOFFSET, true);
+    // frontLeft = new ModuleSpark(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, Translation.FRONT_LEFT_ANGOFFSET);
+    // frontRight = new ModuleSpark(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, Translation.FRONT_RIGHT_ANGOFFSET);
+    // rearLeft = new ModuleSpark(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, Translation.REAR_LEFT_ANGOFFSET);
+    // rearRight = new ModuleSpark(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, Translation.REAR_RIGHT_ANGOFFSET);
+    frontLeft = new ModuleKraken(DrivetrainPorts.FRONT_LEFT_DRIVE, DrivetrainPorts.FRONT_LEFT_TURN, DrivetrainPorts.FRONT_LEFT_CANCODER, Translation.FRONT_LEFT_MAG_OFFSET, Translation.FRONT_LEFT_ANGOFFSET, false);
+    frontRight = new ModuleKraken(DrivetrainPorts.FRONT_RIGHT_DRIVE, DrivetrainPorts.FRONT_RIGHT_TURN, DrivetrainPorts.FRONT_RIGHT_CANCODER, Translation.FRONT_RIGHT_MAG_OFFSET, Translation.FRONT_RIGHT_ANGOFFSET, false);
+    rearLeft = new ModuleKraken(DrivetrainPorts.REAR_LEFT_DRIVE, DrivetrainPorts.REAR_LEFT_TURN, DrivetrainPorts.REAR_LEFT_CANCODER, Translation.REAR_LEFT_MAG_OFFSET, Translation.REAR_LEFT_ANGOFFSET, false);
+    rearRight = new ModuleKraken(DrivetrainPorts.REAR_RIGHT_DRIVE, DrivetrainPorts.REAR_RIGHT_TURN, DrivetrainPorts.REAR_RIGHT_CANCODER, Translation.REAR_RIGHT_MAG_OFFSET, Translation.REAR_RIGHT_ANGOFFSET, false);
 
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kMXP_UART);
+    gyro = new AHRS(NavXComType.kUSB1);
 
     odometry = new SwerveDriveOdometry(
         Drivetrain.kDriveKinematics,
@@ -83,24 +79,19 @@ public class Drive extends SubsystemBase implements Logged {
 
     zeroHeading();
 
-    driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null, // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
-            null, // Use default timeout (10 s)
-                  // Log state with Phoenix SignalLogger class
-            (state) -> SignalLogger.writeString("state", state.toString())),
+      driveRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(null, null,
+        //  Volts.of(2).per(Seconds.of(1)),
+        //  Volts.of(9),
+         null,
+         (state) -> SignalLogger.writeString("state", state.toString())),
         new SysIdRoutine.Mechanism(
-            (volts) -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
-            null,
-            this));
-    // driveRoutine = new SysIdRoutine(
-    // new SysIdRoutine.Config(), new SysIdRoutine.Mechanism(
-    // volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
-    // null, this));
+          volts -> modules.forEach(m -> m.setDriveVoltage(volts.in(Units.Volts))),
+          null,
+          this));
+  
 
-    // SmartDashboard.putNumber("Gyro angle", gyro.getRotation2d().getDegrees());
-  }
+    }
 
   // consider changing to profiledpid control
   /**
@@ -116,10 +107,31 @@ public class Drive extends SubsystemBase implements Logged {
     double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
     SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
 
     setModuleStates(moduleStates);
+  }
+
+  public void setChassisSpeeds(ChassisSpeeds  speedd){
+    // ChassisSpeeds x = ChassisSpeeds.fromFieldRelativeSpeeds(speedd, getAngle());
+    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speedd);
+    setModuleStates(moduleStates);
+
+  }
+
+
+  
+
+  public ChassisSpeeds getDesiredChassisSpeeds() {
+    return speeds;
+  }
+
+  public ChassisSpeeds getCurrentChassisSpeeds(){
+    ChassisSpeeds spede= DriveConstants.Drivetrain.kDriveKinematics.toChassisSpeeds(
+      getSwerveModuleStates()[0],  getSwerveModuleStates()[1], getSwerveModuleStates()[2], getSwerveModuleStates()[3] 
+    );
+    return spede;
   }
 
   /**
@@ -127,11 +139,11 @@ public class Drive extends SubsystemBase implements Logged {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR);
-    frontLeft.setDesiredStateNoPID(desiredStates[1]); // frontLeft.setDesiredStateNoPID(desiredStates[1]);
-    frontRight.setDesiredStateNoPID(desiredStates[0]); // frontRight.setDesiredStateNoPID(desiredStates[0]);
-    rearLeft.setDesiredStateNoPID(desiredStates[3]); // rearLeft.setDesiredStateNoPID(desiredStates[3]);
-    rearRight.setDesiredStateNoPID(desiredStates[2]); // rearRight.setDesiredStateNoPID(desiredStates[2]);
+      desiredStates, Drivetrain.MAX_SPEED);
+    frontLeft.setDesiredStateNoPID(desiredStates[0]); //frontLeft.setDesiredStateNoPID(desiredStates[1]);
+    frontRight.setDesiredStateNoPID(desiredStates[1]); //frontRight.setDesiredStateNoPID(desiredStates[0]);
+    rearLeft.setDesiredStateNoPID(desiredStates[2]); //rearLeft.setDesiredStateNoPID(desiredStates[3]);
+    rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
 
   /**
@@ -184,8 +196,20 @@ public class Drive extends SubsystemBase implements Logged {
   }
 
   @Log.NT
-  public SwerveModuleState[] getDesiredSwerveModuleStates() {
-    return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[]::new);
+  public SwerveModuleState[] getDesiredSwerveModuleStates(){
+    return modules.stream().map(m -> m.getDesiredState()).toArray(SwerveModuleState[] :: new);
+  }
+
+  @Log.NT
+  public double[] getVoltage(){
+    double[] voltages = {frontLeft.getVoltage(), frontRight.getVoltage(), rearLeft.getVoltage(), rearRight.getVoltage()};
+    return voltages;
+  }
+
+  @Log.NT
+  public double[] getAbsolutes(){
+    double[] absolutes = {frontLeft.getAbsolute(), frontRight.getAbsolute(), rearLeft.getAbsolute(), rearRight.getAbsolute()};
+    return absolutes;
   }
 
   /**
@@ -235,7 +259,8 @@ public class Drive extends SubsystemBase implements Logged {
   }
 
   /* SYSID CMDS */
-  public Command driveQuasistatic(SysIdRoutine.Direction direction) {
+  public Command driveQuasistatic(SysIdRoutine.Direction direction){
+    System.out.println("RUNNING");
     return driveRoutine.quasistatic(direction);
   }
 
@@ -248,12 +273,13 @@ public class Drive extends SubsystemBase implements Logged {
     // This method will be called once per scheduler run
     // if gyro is inverted, getRotation2d() --- getAngle() can be negated
     odometry.update(
-        gyro.getRotation2d(),
-        new SwerveModulePosition[] {
-            frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(),
-            rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
-        });
+      gyro.getRotation2d(), 
+      new SwerveModulePosition[] {
+        frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()
+    });
+    //SmartDashboard.getNumber("Angle", getAngle());
+    SmartDashboard.putNumber("Gyro Angle", getAngle());
     SmartDashboard.updateValues();
     SmartDashboard.putNumber("angle", getAngle());
   }
-}
+  }

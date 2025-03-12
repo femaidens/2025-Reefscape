@@ -6,6 +6,13 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import org.littletonrobotics.urcl.URCL;
+
+import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,11 +39,13 @@ public class Robot extends TimedRobot implements Logged {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+
     boolean fileOnly = false;
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
-    // SignalLogger.setPath("/logsNew/");
-    SignalLogger.start();
+    DataLogManager.start();
+    //CameraServer.startAutomaticCapture(); 
+    // PortForwarder.add(5800, "10.22.65.11", 5800);
   }
 
   /**
@@ -90,6 +99,8 @@ public class Robot extends TimedRobot implements Logged {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    URCL.start();
+    SignalLogger.start();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

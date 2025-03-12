@@ -15,23 +15,23 @@ public class DriveConstants {
         public static final double GEAR_RATIO = 6.75;
         public static final double DRIVE_MOTOR_FREE_SPEED = Units.feetToMeters(15);
         public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
+        public static final double WHEEL_RADIUS = Units.inchesToMeters(2);
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
         // modules stuff
-        public static final int CURRENT_LIMIT = 35;
+        public static final int CURRENT_LIMIT = 40;
         public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters;
         public static final double VEL_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters per second
 
-        public static final double FRONT_LEFT_ANGOFFSET = 0; // -Math.PI / 2;
-        public static final double FRONT_RIGHT_ANGOFFSET = Math.PI;
-        public static final double REAR_LEFT_ANGOFFSET = 0; // Math.PI;
-        public static final double REAR_RIGHT_ANGOFFSET = Math.PI; // Math.PI / 2;
+        public static final double FRONT_LEFT_ANGOFFSET = Math.PI; //-Math.PI / 2;
+        public static final double FRONT_RIGHT_ANGOFFSET = 0;
+        public static final double REAR_LEFT_ANGOFFSET = Math.PI; //Math.PI;
+        public static final double REAR_RIGHT_ANGOFFSET = 0; //Math.PI / 2; 
 
-        // offset of cancoder magnets
-        public static final double FRONT_LEFT_MAG_OFFSET = -0.4106;
-        public static final double FRONT_RIGHT_MAG_OFFSET = -0.1301;
-        public static final double REAR_LEFT_MAG_OFFSET = -0.1408;
-        public static final double REAR_RIGHT_MAG_OFFSET = -0.5491;
+        public static final double FRONT_LEFT_MAG_OFFSET = 0.4104;
+        public static final double FRONT_RIGHT_MAG_OFFSET = 0.1328;
+        public static final double REAR_LEFT_MAG_OFFSET = 0.1311;
+        public static final double REAR_RIGHT_MAG_OFFSET = -0.4675;
 
         public static final String CANBUS = "rio";
 
@@ -42,9 +42,9 @@ public class DriveConstants {
         }
 
         public class FF {
-            public static final double S = .18484;
-            public static final double V = 2.7542;
-            public static final double A = 0.41189;
+            public static final double S = 0.064397;
+            public static final double V = 2.5716;
+            public static final double A = 0.15861; 
         }
     }
 
@@ -57,7 +57,7 @@ public class DriveConstants {
         public class PID {
             public static final double P = 2.5;
             public static final double I = 0;
-            public static final double D = 0.001;
+            public static final double D = 0;   
         }
 
         public class FF {
@@ -81,6 +81,7 @@ public class DriveConstants {
         public static final double MAX_SPEED = 4.8; // in meters per second
         public static final double MAX_ROT_SPEED = Math.PI * 2; // in rad/s
         public static final double SPEED_FACTOR = 0.75;
+        public static final double WHEEL_COF = 1; // not true
     }
 
     public static final class TalonMotorConstants {

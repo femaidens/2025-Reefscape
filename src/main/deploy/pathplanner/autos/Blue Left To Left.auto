@@ -9,6 +9,18 @@
           "data": {
             "pathName": "Blue Left To Reef Left"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake to outtake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake trough"
+          }
         }
       ]
     }

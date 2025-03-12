@@ -11,23 +11,21 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.OuttakeConstants;
 import frc.robot.Ports;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class Outtake extends SubsystemBase {
+public class Outtake extends SubsystemBase implements Logged{
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
   private final DigitalInput frontReceiver;
-  private final DigitalInput backReceiver;
+ private final DigitalInput middleReceiver;
 
 
 
@@ -43,9 +41,9 @@ public class Outtake extends SubsystemBase {
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     // front reciever is the one farthest away from intake
-    frontReceiver = new DigitalInput(Ports.BeamBreakPorts.FRONT_RECEIVER);
-    // back reciever is the one closest to intake
-    backReceiver = new DigitalInput(Ports.BeamBreakPorts.BACK_RECEIVER);
+    frontReceiver = new DigitalInput(Ports.OuttakePorts.FRONT_RECEIVER);
+    // back reciever is the one located in outtake
+    middleReceiver = new DigitalInput(Ports.OuttakePorts.MIDDLE_RECEIVER);
 
 
 
@@ -64,6 +62,21 @@ public class Outtake extends SubsystemBase {
   }
 
   /**
+   * identical to setIntakeCoralSpeedCmd()
+   * @return
+   */
+  public Command runMotorCmd(){
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+  }
+/**
+ * identical to setOuttakeCoralSpeedCmd()
+ * @return
+ */
+  public Command reverseMotorCmd(){
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
+  }
+
+  /**
    * Negative velocity = outtake!
    * 
    * @return a command that sets the speed of the outtake motor to release a coral
@@ -73,8 +86,16 @@ public class Outtake extends SubsystemBase {
     return this.run(() -> outtakeMotor.set(-OuttakeConstants.MOTOR_SPEED));
   }
 
+  /**
+   * reverse of coral outtake, potentially processor score
+   * @return
+   */
+  public Command reverseOuttakeCmd(){
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+  }
+
   public Command removeAlgaeCmd() {
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.REMOVE_ALGAE_SPEED));
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.REMOVE_ALGAE_SPEED));
   }
 
   public Command setVoltageCmd() {
@@ -82,7 +103,7 @@ public class Outtake extends SubsystemBase {
   }
 
   public Command stopMotorCmd() {
-    return this.run(() -> outtakeMotor.setVoltage(0));
+    return this.runOnce(() -> outtakeMotor.setVoltage(0));
   }
 
   /**
@@ -90,15 +111,30 @@ public class Outtake extends SubsystemBase {
    * @return true if coral is at the right position in outtake
    */
 
+  @Log.NT
+  public boolean isBeamBrokenFront() {
+    return !frontReceiver.get();
+  }
+
+  @Log.NT
+  public boolean isBeamBrokenBack() {
+    return !middleReceiver.get();
+  }
+
+   /*
+   * @ngozi, emily, yujing
+   * i think this needs editing, need to look at both intake beam break and
+   * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
+   */
   public boolean isCoral() {
-    if (frontReceiver.get() == false && backReceiver.get()) {
-      return true;
-    }
-    return false;
+    return !isBeamBrokenBack() && isBeamBrokenFront();
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
+    SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
+    SmartDashboard.putBoolean("IS CORAL", isCoral());
 
   }
 }

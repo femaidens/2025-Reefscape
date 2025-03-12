@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 import monologue.Logged;
+import monologue.Annotations.Log;
 
 public class ModuleKraken implements Logged {
     private final TalonFX driveMotor;
@@ -23,11 +24,11 @@ public class ModuleKraken implements Logged {
 
     // This is both an absolute and relative encoder
     // private final CANcoder driveEncoder;
-    private final CANcoder turnEncoder;
-    // PID?
-    private final PIDController drivePIDController;
-    private final PIDController turnPIDController;
-
+    private final CANcoder turnEncoder; 
+    //PID? 
+    private final PIDController drivePIDController; 
+    @Log.NT private final PIDController turnPIDController;
+    
     private final SimpleMotorFeedforward driveFF;
     private final SimpleMotorFeedforward turnFF;
 
@@ -35,8 +36,10 @@ public class ModuleKraken implements Logged {
 
     private final double chassisAngularOffset;
 
-    private SwerveModuleState desiredState = null;
+    private SwerveModuleState desiredState = null; 
     double angleSetpoint = 0;
+    
+    private double voltage; 
 
     public ModuleKraken(int driveID, int turnID, int CANCoderID, double magnetOffset, double chassisAngularOffset,
             boolean turnInverted) {
@@ -48,21 +51,21 @@ public class ModuleKraken implements Logged {
         turnMotor = new TalonFX(turnID, Translation.CANBUS);
         configureTurnTalon(turnMotor, CANCoderID, Turn.CURRENT_LIMIT, turnInverted);
 
-        drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
-        turnPIDController = new PIDController(Turn.PID.P, Turn.PID.I, Turn.PID.D);
-        turnPIDController.enableContinuousInput(0, Math.PI * 2);// (-Math.PI, Math.PI);
+        drivePIDController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D); 
+        turnPIDController = new PIDController(Turn.PID.P,Turn.PID.I, Turn.PID.D);
+        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         driveFF = new SimpleMotorFeedforward(Translation.FF.S, Translation.FF.V);
         turnFF = new SimpleMotorFeedforward(Turn.FF.S, Turn.FF.V);
-    
-        driveMotor.setPosition(0);
+        // DEVICE IDS SHOULD BE CHANGED!! 
+        driveMotor.setPosition(0);  
+        
 
         directionConfig = new MagnetSensorConfigs();
         turnEncoder = new CANcoder(CANCoderID, Translation.CANBUS);
-        directionConfig.withAbsoluteSensorDiscontinuityPoint(1.0);
+        directionConfig.withAbsoluteSensorDiscontinuityPoint(0.5);
         directionConfig.MagnetOffset = magnetOffset;
-        turnEncoder.getConfigurator()
-                .apply(directionConfig.withSensorDirection(SensorDirectionValue.Clockwise_Positive));
+        turnEncoder.getConfigurator().apply(directionConfig.withSensorDirection(SensorDirectionValue.CounterClockwise_Positive));
     }
 
     public SwerveModuleState getState() {
@@ -73,9 +76,13 @@ public class ModuleKraken implements Logged {
     public void setDesiredState(SwerveModuleState state) {
         state.optimize(getState().angle);
         driveMotor.setVoltage(
-                driveFF.calculate(state.speedMetersPerSecond)
-                        + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        driveFF.calculate(state.speedMetersPerSecond) + drivePIDController.calculate(getDriveVelocity(), state.speedMetersPerSecond));
+        
+        if(Math.abs(turnPIDController.getError()) < .2) {
+            turnMotor.setVoltage(0);
+        } else {
+            turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        }
         desiredState = state;
     }
 
@@ -83,9 +90,19 @@ public class ModuleKraken implements Logged {
         state.optimize(getState().angle);
         angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
-        turnMotor.setVoltage(turnPIDController.calculate(getState().angle.getRadians(), state.angle.getRadians()));
+        // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones
+        voltage = turnPIDController.calculate(getState().angle.getRadians(), angleSetpoint);
+        turnMotor.setVoltage(voltage);
         SmartDashboard.putString("Swerve " + driveMotor.getDeviceID() + ":", state.toString());
         desiredState = state;
+    }
+
+    public double getVoltage(){
+        return voltage;
+    }
+
+    public double getAbsolute(){
+        return turnEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
     /**
@@ -116,15 +133,21 @@ public class ModuleKraken implements Logged {
         config.Feedback.SensorToMechanismRatio = 1.0; // / Translation.POS_CONVERSION_FACTOR; // cancoder seems to be
                                                       // attached outside of gearbox
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        // config.MotorOutput.Inverted = inverted ? InvertedValue.CounterClockwise_Positive : IN;
 
-        if (inverted) {
-            config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
-        } else {
+        // motor.setNeutralMode(NeutralModeValue.Brake); 
+        // motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(currentLimit));
+        // motor.getConfigurator().apply(new FeedbackConfigs().withSensorToMechanismRatio(Translation.POS_CONVERSION_FACTOR));
+
+        if(inverted){
+        config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+        }
+        else{
             config.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
         }
 
-        motor.getConfigurator().apply(config);
+        motor.getConfigurator().apply(config);  
     }
 
     public void setDriveVoltage(double volts) {

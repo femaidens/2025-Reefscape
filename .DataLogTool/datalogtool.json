@@ -1,6 +1,7 @@
 {
   "download": {
-    "localDir": "C:\\Users\\thema\\Downloads",
+    "deleteAfter": false,
+    "localDir": "C:\\Users\\robotics\\Downloads",
     "serverTeam": "2265"
   }
 }

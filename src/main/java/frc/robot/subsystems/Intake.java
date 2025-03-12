@@ -19,10 +19,11 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import frc.robot.Ports.*;
-import frc.robot.Constants;
-import frc.robot.Constants.*;
+import monologue.Annotations.Log;
+import monologue.Logged;
+import frc.robot.Constants.IntakeConstants;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Logged{
   /** Creates a new Intake. */
 
   private final SparkMax intakeMotor;
@@ -40,7 +41,7 @@ public class Intake extends SubsystemBase {
 
     // Configure the motor
     config
-        .inverted(true)
+        .inverted(false)
         .idleMode(IdleMode.kBrake);
     config.encoder
         .positionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR)
@@ -66,28 +67,30 @@ public class Intake extends SubsystemBase {
   }
 
   public Command stopMotorCmd() {
-    return this.run(() -> intakeMotor.stopMotor());
+    return this.runOnce(() -> intakeMotor.stopMotor());
   }
 
   public Command setVoltage(double voltage) {
     return this.run(() -> intakeMotor.setVoltage(voltage));
   }
 
+  @Log.NT
   public boolean isBeamBroken() {
-    return beamBreak.get();
+    // System.out.println("intake");
+    return !beamBreak.get();
   }
-
-  public Command intakeCoralCmd() {
-    if (isBeamBroken()) {
-      return this.run(() -> runMotorCmd());
-    } else {
-      return this.run(() -> stopMotorCmd());
-    }
-  }
+  
+  // public Command intakeCoralCmd() {
+  //   if (isBeamBroken()) {
+  //     return this.run(() -> runMotorCmd());
+  //   } else {
+  //     return this.run(() -> stopMotorCmd());
+  //   }
+  // }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Intake Beambreak", isBeamBroken());
+     SmartDashboard.putBoolean("Intake BB", isBeamBroken());
   }
 }
