@@ -49,9 +49,9 @@ public class DriveConstants {
             public static final double D = 0.00005;
         }
         public class FF {
-            public static final double S = .18484;
-            public static final double V = 2.7542;
-            public static final double A = 0.41189; 
+            public static final double S = 0.064397;
+            public static final double V = 2.5716;
+            public static final double A = 0.15861; 
         }
     }
     public class Turn {

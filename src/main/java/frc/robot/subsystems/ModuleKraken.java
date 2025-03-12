@@ -108,7 +108,7 @@ public class ModuleKraken implements Logged{
     public void setDesiredStateNoPID(SwerveModuleState state){
         // maybe optimize is broken 
         //SwerveModuleState newState = optimizeTest(new SwerveModuleState(state.speedMetersPerSecond, new Rotation2d(Math.toRadians(state.angle.getRadians()))), new Rotation2d(Math.toRadians(getTurnAngle())));
-        // state.optimize(getState().angle);
+        state.optimize(getState().angle);
         angleSetpoint = state.angle.getRadians();
         driveMotor.setVoltage(driveFF.calculate(state.speedMetersPerSecond));
         // going right breaks the frontleft motor but you can fix it bro!!! but I can't fix any of the other ones
