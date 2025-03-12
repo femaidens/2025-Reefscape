@@ -17,6 +17,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.Constants;
 import frc.robot.Constants.*;
 
-public class Vision {
+public class Vision extends SubsystemBase{
   private final PhotonCamera frontLeftCam; //, frontRightCam, rearLeftCam, rearRightCam;
   private PhotonPoseEstimator frontLeftEstimator;//, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
   private AprilTagFieldLayout fieldLayout;
@@ -42,7 +43,7 @@ public class Vision {
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
 
   public Vision() {
-    frontLeftCam = new PhotonCamera("LeftFront");
+    frontLeftCam = new PhotonCamera("2265-ironfish");
     // frontRightCam = new PhotonCamera("RightFront");
     // rearLeftCam = new PhotonCamera("LeftRear");
     // rearRightCam = new PhotonCamera("RightRear");
@@ -77,10 +78,12 @@ public class Vision {
   public void printYaw(){
     var result = frontLeftCam.getLatestResult();
     boolean hasTargets = result.hasTargets();
-    List<PhotonTrackedTarget> targets = result.getTargets();
-    PhotonTrackedTarget target = result.getBestTarget();
-    double yaw = target.getYaw();
-    System.out.println("Yaw: " + yaw);
+    
+    if(hasTargets){
+      PhotonTrackedTarget target = result.getBestTarget();
+      double yaw = target.getYaw();
+      System.out.println("Yaw: " + yaw);
+    }
   }
 
   public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
@@ -189,7 +192,7 @@ public class Vision {
   //   return (Math.abs(pose.getX() - curPose2d.getX()) <= 0.1)
   //       && (Math.abs(pose.getY() - curPose2d.getY()) <= 0.1);
   // }
-
+  @Override
   public void periodic(){
     printYaw();
   }
