@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import frc.robot.subsystems.DriveConstants;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -19,6 +22,16 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class PathPlannerConstants {
+    public static final double massKg = 54.43;
+    public static final double MOI = 1.0/12 * massKg * (Math.pow(DriveConstants.Drivetrain.TRACK_WIDTH, 2) + Math.pow(DriveConstants.Drivetrain.WHEEL_BASE, 2));
+    // double WHEEL_RADIUS;
+    // double MAX_DRIVE_VELOCITY_MPS;
+    // double WHEEL_COF;
+    // double DRIVE_GEARING;
+    // double DRIVE_CURRENT_LIMIT;
+    
+  }
   public static class OperatorConstants {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;

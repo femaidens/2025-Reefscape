@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import org.littletonrobotics.urcl.URCL;
 
 import com.ctre.phoenix6.SignalLogger;
