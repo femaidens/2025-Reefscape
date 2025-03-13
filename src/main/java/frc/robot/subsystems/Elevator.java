@@ -33,7 +33,6 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
-  private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
@@ -55,7 +54,6 @@ public class Elevator extends SubsystemBase {
    
   public Elevator() {
     elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
-    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
 
     botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH );
 
@@ -87,11 +85,9 @@ public class Elevator extends SubsystemBase {
         // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         // .pid(Constants.ElevatorConstants.PIDConstants.kP, Constants.ElevatorConstants.PIDConstants.kI, Constants.ElevatorConstants.PIDConstants.kD);
         //probably unneeded 
-        config
-        .follow(elevatorMotorLeader, false);
 
         elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorMotorFollower.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
 
         // underBotSwitch = true;
         // currentSwitchTriggered = botLimitSwitch.get();
@@ -217,6 +213,7 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
    // this.hitBotLimit();
    SmartDashboard.putBoolean("Bottom Limit Switch", hitBotLimit());
+   SmartDashboard.putNumber("encoder", elevatorEncoder.getPosition());
   //  SmartDashboard.putBoolean("Under limit switch", underBotSwitch);
   //  botSwitchStatus();
   }

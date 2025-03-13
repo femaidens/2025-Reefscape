@@ -89,8 +89,8 @@ public class RobotContainer {
                 
 
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
-                elevator.setDefaultCommand(
-                        new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
+                // elevator.setDefaultCommand(
+                //         new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
         }
 
         // public void configureAuton(){
@@ -271,7 +271,7 @@ public class RobotContainer {
         // new com.pathplanner.lib.config.PIDConstants(Turning.kP, Turning.kI,
         // Turning.kD), // Rotation PID constants
         // DriveConstants.MAX_SPEED, // Max module speed, in m/s
-        // ModuleConstants.WHEEL_DIAMETER/2,
+        // ModuleConstants.WHEEL_DIAMETER/3,
         // new ReplanningConfig()),
         // () -> {
         // var alliance = DriverStation.getAlliance();
