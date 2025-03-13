@@ -74,6 +74,12 @@ public class RobotContainer {
       //.andThen(leds.setGreenCmd().withTimeout(2))
     
 
+    xboxController.a()
+      .onTrue(led.setRainbow()); 
+
+    xboxController.b()
+    .onTrue(led.setRainbowScroll());
+
   // xboxController.rightBumper()
   //   .onFalse(algaeIntake.stopRollersCmd());
 
