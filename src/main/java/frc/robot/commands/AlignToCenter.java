@@ -5,6 +5,7 @@
 package frc.robot.commands;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.DriveConstants.Translation;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -36,7 +37,8 @@ public class AlignToCenter extends Command {
 
     yController = new PIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D);
 
-    thetaController = new PIDController(DriveConstants.Turn.PID.P, DriveConstants.Turn.PID.I, DriveConstants.Turn.PID.D);
+    // thetaController = new PIDController(DriveConstants.Turn.PID.P, DriveConstants.Turn.PID.I, DriveConstants.Turn.PID.D);
+    thetaController = new PIDController(Translation.PID.P, Translation.PID.I, Translation.PID.D);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(drive);

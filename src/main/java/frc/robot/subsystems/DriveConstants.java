@@ -46,7 +46,7 @@ public class DriveConstants {
         public static final String CANBUS = "rio";
 
         public class PID {
-            public static final double P = 0.0001;
+            public static final double P = 0.5;
             public static final double I = 0;
             public static final double D = 0.00005;
         }

@@ -37,7 +37,6 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     // SignalLogger.setPath("/logsNew/");
-    SignalLogger.start();
     // CameraServer.startAutomaticCapture();
   }
 
@@ -95,6 +94,7 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    SignalLogger.start();
   }
 
   /** This function is called periodically during operator control. */
