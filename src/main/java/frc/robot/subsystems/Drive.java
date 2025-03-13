@@ -45,7 +45,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   private final AHRS gyro;
 
-  @Log.NT private final SwerveDriveOdometry odometry;
+  public final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
 
@@ -172,9 +172,12 @@ public class Drive extends SubsystemBase implements Logged {
   /**
    * @return currently-estimated pose of robot
    */
+  @Log.NT
   public Pose2d getPose(){
     return odometry.getPoseMeters();
   }
+
+  
 
   @Log.NT
   public SwerveModuleState[] getSwerveModuleStates(){

@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
+import monologue.Logged;
 
 import java.lang.reflect.Field;
 import java.util.function.DoubleSupplier;
@@ -30,7 +31,7 @@ import static edu.wpi.first.units.Units.Seconds;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Logged {
   // The robot's subsystems and commands are defined here...
   private final Drive drive = new Drive();
   private final Vision vision = new Vision();
