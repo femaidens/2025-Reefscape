@@ -212,41 +212,41 @@ public class RobotContainer {
                         elevator.reverseRunMotorCmd()); 
 
                 // operJoy.rightBumper()
-                //         .whileTrue(algaeCmds.intakeAlgae())
-                //         .whileFalse(algaeCmds.raiseAlgae());
+                //   .whileTrue(algaeCmds.intakeAlgae())
+                //   .whileFalse(algaeCmds.raiseAlgae());
                 
                 // operJoy.leftBumper()
-                //         .whileTrue(algaeCmds.outtakeAlgae());
+                //   .whileTrue(algaeCmds.outtakeAlgae());
                 
                 // //coralouttake
                 
                 // operJoy.a()
-                //         .whileTrue(elevating.firstLevelCmd());
+                //  .whileTrue(elevating.firstLevelCmd());
                 
                 // operJoy.b()
-                //         .whileTrue(elevating.secondLevelCmd());
+                //  .whileTrue(elevating.secondLevelCmd());
                 
                 // operJoy.y()
-                //         .whileTrue(elevating.thirdLevelCmd());
+                //  .whileTrue(elevating.thirdLevelCmd());
                 
                 // operJoy.x()
-                //         .whileTrue(elevating.fourthLevelCmd());
+                //  .whileTrue(elevating.fourthLevelCmd());
                 
                 // //algaeremoval
                 
                 // operJoy.back()
-                //         .whileTrue(elevating.algaeSecondLevelCmd());
+                //  .whileTrue(elevating.algaeSecondLevelCmd());
                 
                 // operJoy.start() 
-                //         .whileTrue(elevating.algaeThirdLevelCmd());
+                //  .whileTrue(elevating.algaeThirdLevelCmd());
                 
                 // //reset default
                 // operJoy.leftTrigger()
-                //         .whileTrue(elevating.resetDefault());
+                //  .whileTrue(elevating.resetDefault());
                 
                 // //transition intake to outtake
                 // operJoy.rightTrigger()
-                //         .whileTrue(coralTransition.moveCoralToOuttake());
+                //  .whileTrue(coralTransition.moveCoralToOuttake());
                 
                 
         }
