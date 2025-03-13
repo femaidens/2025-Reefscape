@@ -113,6 +113,7 @@ public class DriveToPoseCmd extends Command {
 
   @Override
   public void execute() {
+    System.out.println("Running");
     var robotPose = poseProvider.get();
 
     DoubleSupplier xSpeed = () -> xController.calculate(robotPose.getX());

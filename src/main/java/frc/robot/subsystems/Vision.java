@@ -11,6 +11,8 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
@@ -32,18 +34,25 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants;
 import frc.robot.Constants.*;
+import monologue.Logged;
+import monologue.Annotations.Log;
 
-public class Vision extends SubsystemBase{
+public class Vision extends SubsystemBase implements Logged{
   private final PhotonCamera frontLeftCam; //, frontRightCam, rearLeftCam, rearRightCam;
   private PhotonPoseEstimator frontLeftEstimator;//, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
   private AprilTagFieldLayout fieldLayout;
 
   private Matrix<N3, N1> currentStdDevs;
 
+  private Pose3d pose;
+
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
+
+
 
   public Vision() {
     frontLeftCam = new PhotonCamera("2265-ironfish");
+    pose = new Pose3d();
     // frontRightCam = new PhotonCamera("RightFront");
     // rearLeftCam = new PhotonCamera("LeftRear");
     // rearRightCam = new PhotonCamera("RightRear");
@@ -52,6 +61,7 @@ public class Vision extends SubsystemBase{
     // frontRightUpdate = Optional.empty();
     // rearLeftUpdate = Optional.empty();
     // rearRightUpdate = Optional.empty();
+    
 
     frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         VisionConstants.kFrontLeftCamToCenter);
@@ -73,7 +83,9 @@ public class Vision extends SubsystemBase{
     // frontRightEstimator.setFieldTags(fieldLayout);
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
+
   }
+
 
   public void printYaw(){
     var result = frontLeftCam.getLatestResult();
@@ -156,18 +168,38 @@ public class Vision extends SubsystemBase{
     }
   }
   
-  public Pose3d getPose3d(PhotonTrackedTarget target){
+  // public Pose3d getPose3d(PhotonTrackedTarget target){
+  //   // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+  //    Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
+  //    log("robot pose", robotPose);
+  //    return robotPose;
+  //   // }
+  //   // return robotPose;
+  // }
+  public Pose3d update(PhotonTrackedTarget target){
     // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
      Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
+     log("robot pose", robotPose);
      return robotPose;
     // }
     // return robotPose;
   }
 
+  public Pose3d get3d(){
+    return 
+  }
+
+  
+
+
   public Pose2d getPose2d(PhotonTrackedTarget target){
     
     Pose2d robotPose = getPose3d(target).toPose2d();
     return robotPose;
+  }
+
+  public Pose2d examplePose(){
+    return new Pose2d(new Translation2d(30,30), new Rotation2d(0));
   }
 
   public Rotation2d getYawDistance(PhotonTrackedTarget target, Pose2d targetPose){
@@ -195,5 +227,6 @@ public class Vision extends SubsystemBase{
   @Override
   public void periodic(){
     printYaw();
+    update(getTag());
   }
 }

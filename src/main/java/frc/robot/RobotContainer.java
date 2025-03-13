@@ -55,8 +55,8 @@ public class RobotContainer implements Logged {
       new RunCommand(
         () -> 
         drive.drive(
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+        () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
+        () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
         () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)),
         drive));
   }
@@ -71,7 +71,7 @@ public class RobotContainer implements Logged {
    * joysticks}.
    */
   private void configureBindings() {
-    operJoy.a().whileTrue(new DriveToPoseCmd(drive, drive::getPose));
+    operJoy.a().whileTrue(new DriveToPoseCmd(drive, vision::examplePose));
   }
 
   
