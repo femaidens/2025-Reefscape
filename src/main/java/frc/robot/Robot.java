@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonCamera;
+
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Drive;
 import monologue.Logged;
 import monologue.Monologue;
 
@@ -24,6 +28,7 @@ public class Robot extends TimedRobot implements Logged {
 
   private final RobotContainer m_robotContainer;
 
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -37,7 +42,7 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     // SignalLogger.setPath("/logsNew/");
-    // CameraServer.startAutomaticCapture();
+    SignalLogger.start();
   }
 
   /**

@@ -11,7 +11,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
@@ -36,23 +35,17 @@ import frc.robot.Constants;
 import frc.robot.Constants.*;
 import monologue.Logged;
 import monologue.Annotations.Log;
-
-public class Vision extends SubsystemBase implements Logged{
+public class Vision extends SubsystemBase implements Logged {
   private final PhotonCamera frontLeftCam; //, frontRightCam, rearLeftCam, rearRightCam;
   private PhotonPoseEstimator frontLeftEstimator;//, frontRightEstimator, rearLeftEstimator, rearRightEstimator;
   private AprilTagFieldLayout fieldLayout;
 
   private Matrix<N3, N1> currentStdDevs;
 
-  private Pose3d pose;
-
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
-
-
 
   public Vision() {
     frontLeftCam = new PhotonCamera("2265-ironfish");
-    pose = new Pose3d();
     // frontRightCam = new PhotonCamera("RightFront");
     // rearLeftCam = new PhotonCamera("LeftRear");
     // rearRightCam = new PhotonCamera("RightRear");
@@ -61,7 +54,6 @@ public class Vision extends SubsystemBase implements Logged{
     // frontRightUpdate = Optional.empty();
     // rearLeftUpdate = Optional.empty();
     // rearRightUpdate = Optional.empty();
-    
 
     frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         VisionConstants.kFrontLeftCamToCenter);
@@ -83,18 +75,31 @@ public class Vision extends SubsystemBase implements Logged{
     // frontRightEstimator.setFieldTags(fieldLayout);
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
-
   }
-
+  public Pose2d getCurrentPose(){
+    var result = frontLeftCam.getLatestResult();
+    boolean check = result.hasTargets();
+    Pose2d botPose = new Pose2d();
+    if(check) {
+      var update = frontLeftEstimator.update(result);
+      Pose3d currentPose3d = update.get().estimatedPose;
+      botPose = currentPose3d.toPose2d();
+    }
+    return botPose;
+  }
 
   public void printYaw(){
     var result = frontLeftCam.getLatestResult();
     boolean hasTargets = result.hasTargets();
     
     if(hasTargets){
-      PhotonTrackedTarget target = result.getBestTarget();
-      double yaw = target.getYaw();
-      System.out.println("Yaw: " + yaw);
+    PhotonTrackedTarget target = result.getBestTarget();
+    double yaw = target.getYaw();
+    System.out.println("Yaw: " + yaw);
+    double distanceToTarget = PhotonUtils.getDistanceToPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.5, 0.5, new Rotation2d(0)));
+
+    Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
+  distanceToTarget, Rotation2d.fromDegrees(-target.getYaw()));
     }
   }
 
@@ -168,14 +173,14 @@ public class Vision extends SubsystemBase implements Logged{
     }
   }
   
-  // public Pose3d getPose3d(PhotonTrackedTarget target){
-  //   // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-  //    Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
-  //    log("robot pose", robotPose);
-  //    return robotPose;
-  //   // }
-  //   // return robotPose;
-  // }
+  public Pose3d getPose3d(PhotonTrackedTarget target){
+    // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
+     log("robot pose", robotPose);
+     return robotPose;
+    // }
+    // return robotPose;
+  }
   public Pose3d update(PhotonTrackedTarget target){
     // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
      Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
@@ -184,13 +189,6 @@ public class Vision extends SubsystemBase implements Logged{
     // }
     // return robotPose;
   }
-
-  public Pose3d get3d(){
-    return 
-  }
-
-  
-
 
   public Pose2d getPose2d(PhotonTrackedTarget target){
     
