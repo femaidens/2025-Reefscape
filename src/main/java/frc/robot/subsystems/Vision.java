@@ -168,15 +168,8 @@ public class Vision extends SubsystemBase implements Logged{
     }
   }
   
-  // public Pose3d getPose3d(PhotonTrackedTarget target){
-  //   // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-  //    Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
-  //    log("robot pose", robotPose);
-  //    return robotPose;
-  //   // }
-  //   // return robotPose;
-  // }
-  public Pose3d update(PhotonTrackedTarget target){
+ 
+  public Pose3d getPose3d(PhotonTrackedTarget target){
     // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
      Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
      log("robot pose", robotPose);
@@ -185,8 +178,9 @@ public class Vision extends SubsystemBase implements Logged{
     // return robotPose;
   }
 
+  @Log.NT
   public Pose3d get3d(){
-    return 
+    return pose;
   }
 
   
@@ -227,6 +221,6 @@ public class Vision extends SubsystemBase implements Logged{
   @Override
   public void periodic(){
     printYaw();
-    update(getTag());
+    pose = getPose3d(getTag());
   }
 }
