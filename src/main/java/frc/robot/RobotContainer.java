@@ -29,7 +29,7 @@ public class RobotContainer {
   // private final CommandXboxController operJoy = new CommandXboxController(JoyPort.OPERATOR_PORT);
   // private final Climb climb;
   private final LED leds;
-  private final AlgaeIntake algaeIntake = new AlgaeIntake();
+ // private final AlgaeIntake algaeIntake = new AlgaeIntake();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -75,10 +75,10 @@ public class RobotContainer {
     
 
     xboxController.a()
-      .onTrue(led.setRainbow()); 
+      .onTrue(leds.setRainbowCmd()); 
 
-    xboxController.b()
-    .onTrue(led.setRainbowScroll());
+    // xboxController.b()
+    // .onTrue(leds.setRainbowScrollCmd());
 
   // xboxController.rightBumper()
   //   .onFalse(algaeIntake.stopRollersCmd());

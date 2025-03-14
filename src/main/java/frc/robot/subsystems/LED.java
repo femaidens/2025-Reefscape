@@ -103,7 +103,7 @@ public class LED extends SubsystemBase {
   }
 
   public void scrollGreenPurple(){
-    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,Color.kGreen, Color.kYellow); 
+    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,Color.kGreen, Color.kPurple); 
     LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(25)); 
     pattern.applyTo(ledBuffer);
     led.setData(ledBuffer);
