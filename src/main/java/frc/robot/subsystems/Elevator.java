@@ -85,7 +85,8 @@ public class Elevator extends SubsystemBase {
 
         config
         .inverted(false)
-        .idleMode(IdleMode.kBrake);
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
 
         config.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
