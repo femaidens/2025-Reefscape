@@ -190,6 +190,14 @@ public class Vision extends SubsystemBase implements Logged {
     // return robotPose;
   }
 
+  @Log.NT
+  public Pose3d get3d(){
+    return pose;
+  }
+
+  
+
+
   public Pose2d getPose2d(PhotonTrackedTarget target){
     
     Pose2d robotPose = getPose3d(target).toPose2d();
@@ -225,6 +233,6 @@ public class Vision extends SubsystemBase implements Logged {
   @Override
   public void periodic(){
     printYaw();
-    update(getTag());
+    pose = getPose3d(getTag());
   }
 }
