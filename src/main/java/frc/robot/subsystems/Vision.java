@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -176,15 +178,6 @@ public class Vision extends SubsystemBase implements Logged {
   public Pose3d getPose3d(PhotonTrackedTarget target){
     // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
      Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
-     log("robot pose", robotPose);
-     return robotPose;
-    // }
-    // return robotPose;
-  }
-  public Pose3d update(PhotonTrackedTarget target){
-    // if (Constants.VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-     Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), VisionConstants.kTagLayout.getTagPose(target.getFiducialId()).get(), VisionConstants.kFrontLeftCamToCenter);
-     log("robot pose", robotPose);
      return robotPose;
     // }
     // return robotPose;
@@ -192,11 +185,8 @@ public class Vision extends SubsystemBase implements Logged {
 
   @Log.NT
   public Pose3d get3d(){
-    return pose;
+    return getPose3d(getTag());
   }
-
-  
-
 
   public Pose2d getPose2d(PhotonTrackedTarget target){
     
@@ -204,9 +194,6 @@ public class Vision extends SubsystemBase implements Logged {
     return robotPose;
   }
 
-  public Pose2d examplePose(){
-    return new Pose2d(new Translation2d(30,30), new Rotation2d(0));
-  }
 
   public Rotation2d getYawDistance(PhotonTrackedTarget target, Pose2d targetPose){
      Rotation2d targetYaw = PhotonUtils.getYawToPose(getPose2d(target), targetPose);
@@ -233,6 +220,7 @@ public class Vision extends SubsystemBase implements Logged {
   @Override
   public void periodic(){
     printYaw();
-    pose = getPose3d(getTag());
-  }
+    SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
+    SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
+    }
 }
