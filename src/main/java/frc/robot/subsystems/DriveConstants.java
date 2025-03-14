@@ -51,8 +51,8 @@ public class DriveConstants {
         // CHANGE THIS FOR TALONS! 
         public static final String CANBUS = "rio"; 
 
-        public static final LinearVelocity MAX_TRANSLATION_VELOCITY = MetersPerSecond.of(4.73);
-        public static final LinearAcceleration MAX_TRANSLATION_ACCELERATION = MetersPerSecondPerSecond.of(2.0);
+        public static final LinearVelocity MAX_TRANSLATION_VELOCITY = MetersPerSecond.of(0.5);
+        public static final LinearAcceleration MAX_TRANSLATION_ACCELERATION = MetersPerSecondPerSecond.of(1.0);
         
         
         public class PID {

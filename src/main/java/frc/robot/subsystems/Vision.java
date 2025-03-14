@@ -45,9 +45,11 @@ public class Vision extends SubsystemBase implements Logged {
   private Matrix<N3, N1> currentStdDevs;
 
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
+  private Drive drive;
 
   public Vision() {
     frontLeftCam = new PhotonCamera("2265-ironfish");
+    drive = new Drive();
     // frontRightCam = new PhotonCamera("RightFront");
     // rearLeftCam = new PhotonCamera("LeftRear");
     // rearRightCam = new PhotonCamera("RightRear");
@@ -57,7 +59,7 @@ public class Vision extends SubsystemBase implements Logged {
     // rearLeftUpdate = Optional.empty();
     // rearRightUpdate = Optional.empty();
 
-    frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    frontLeftEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.LOWEST_AMBIGUITY,
         VisionConstants.kFrontLeftCamToCenter);
     // frontRightEstimator = new PhotonPoseEstimator(fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
     //     VisionConstants.kFrontRightCamToCenter);
@@ -78,6 +80,7 @@ public class Vision extends SubsystemBase implements Logged {
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
   }
+  @Log.NT
   public Pose2d getCurrentPose(){
     var result = frontLeftCam.getLatestResult();
     boolean check = result.hasTargets();
@@ -90,19 +93,79 @@ public class Vision extends SubsystemBase implements Logged {
     return botPose;
   }
 
-  public void printYaw(){
-    var result = frontLeftCam.getLatestResult();
+  public Command printYaw(){
+    return this.run(() -> {
+      var result = frontLeftCam.getLatestResult();
     boolean hasTargets = result.hasTargets();
     
     if(hasTargets){
     PhotonTrackedTarget target = result.getBestTarget();
     double yaw = target.getYaw();
-    System.out.println("Yaw: " + yaw);
-    double distanceToTarget = PhotonUtils.getDistanceToPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.5, 0.5, new Rotation2d(0)));
 
-    Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
-  distanceToTarget, Rotation2d.fromDegrees(-target.getYaw()));
+    if(yaw > 0){
+      drive.drive(()-> 0.0, ()-> 0.0, ()-> 0.1);
+    }else if(yaw < 0){
+      drive.drive(()-> 0.0, ()->0.0, ()-> -0.1);
+    }else{
+      drive.drive(()-> 0.0, ()-> 0.0, ()-> 0.0);
     }
+    System.out.println("Yaw: " + yaw);
+  
+  }});
+}
+
+  public Command driveTranslational(){
+    return this.run(()->{
+      var result = frontLeftCam.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    
+    if(hasTargets){
+    PhotonTrackedTarget target = result.getBestTarget();
+    if(this.distanceToTarget(target) > 0.5){
+      drive.drive(()-> 0.1, ()-> 0.0, ()-> 0.0);
+    }else if(this.distanceToTarget(target) < 0.5){
+      drive.drive(()-> -0.1, ()->0.0, ()-> 0.0);
+    }else{
+      drive.drive(()-> 0.0, ()-> 0.0, ()-> 0.0);
+    }
+    }
+    });
+  }
+  public Command stopDriving(){
+    return this.run(()-> drive.drive(()-> 0.0, () -> 0.0, () -> 0.0));
+  }
+  //   double distanceToTarget = PhotonUtils.getDistanceToPose(new Pose2d(0.0, 0.0, new Rotation2d(0.0)), new Pose2d(0.5, 0.5, new Rotation2d(0)));
+
+  //   Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
+  // distanceToTarget, Rotation2d.fromDegrees(-target.getYaw()));
+  public Command funky(){
+    boolean targetVisible = false;
+        double targetYaw = 0.0;
+        double targetRange = 0.0;
+        var results = frontLeftCam.getAllUnreadResults();
+        if (!results.isEmpty()) {
+            // Camera processed a new frame since last
+            // Get the last one in the list.
+            var result = results.get(results.size() - 1);
+            if (result.hasTargets()) {
+                // At least one AprilTag was seen by the camera
+                for (var target : result.getTargets()) {
+                    if (target.getFiducialId() == 7) {
+                        // Found Tag 7, record its information
+                        targetYaw = target.getYaw();
+                        targetRange =
+                                PhotonUtils.calculateDistanceToTargetMeters(
+                                        0.5, // Measured with a tape measure, or in CAD.
+                                        1.435, // From 2024 game manual for ID 7
+                                        Units.degreesToRadians(-30.0), // Measured with a protractor, or in CAD.
+                                        Units.degreesToRadians(target.getPitch()));
+
+                        targetVisible = true;
+                    }
+                }
+            }
+        }
+        drive.drive()
   }
 
   public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
@@ -124,6 +187,16 @@ public class Vision extends SubsystemBase implements Logged {
               Units.degreesToRadians(0), 
               Units.degreesToRadians(target.getPitch()));
     return distance;
+  }
+
+  public Command getYDistanceToTarget(PhotonTrackedTarget target){
+    return this.run(()->{
+      var result = frontLeftCam.getLatestResult();
+    boolean hasTargets = result.hasTargets();
+    if(hasTargets){
+      double distance = result.getTransfo.getMeasureX()
+    }
+    })
   }
 
   public PhotonTrackedTarget getTag(){
@@ -183,10 +256,6 @@ public class Vision extends SubsystemBase implements Logged {
     // return robotPose;
   }
 
-  @Log.NT
-  public Pose3d get3d(){
-    return getPose3d(getTag());
-  }
 
   public Pose2d getPose2d(PhotonTrackedTarget target){
     
@@ -219,8 +288,8 @@ public class Vision extends SubsystemBase implements Logged {
   // }
   @Override
   public void periodic(){
-    printYaw();
-    SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
-    SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
+    // printYaw();
+    // SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
+    // SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
     }
 }

@@ -5,10 +5,12 @@
 package frc.robot;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -27,6 +29,7 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
+  private PhotonCamera frontLeftCam;
 
   
   /**
@@ -43,6 +46,8 @@ public class Robot extends TimedRobot implements Logged {
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     // SignalLogger.setPath("/logsNew/");
     SignalLogger.start();
+    frontLeftCam = new PhotonCamera("2265-ironfish");
+
   }
 
   /**
@@ -104,7 +109,41 @@ public class Robot extends TimedRobot implements Logged {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    boolean targetVisible = false;
+        double targetYaw = 0.0;
+        double targetRange = 0.0;
+        var results = frontLeftCam.getAllUnreadResults();
+        if (!results.isEmpty()) {
+            // Camera processed a new frame since last
+            // Get the last one in the list.
+            var result = results.get(results.size() - 1);
+            if (result.hasTargets()) {
+                // At least one AprilTag was seen by the camera
+                for (var target : result.getTargets()) {
+                    if (target.getFiducialId() == 7) {
+                        // Found Tag 7, record its information
+                        targetYaw = target.getYaw();
+                        targetRange =
+                                PhotonUtils.calculateDistanceToTargetMeters(
+                                        0.5, // Measured with a tape measure, or in CAD.
+                                        1.435, // From 2024 game manual for ID 7
+                                        Units.degreesToRadians(-30.0), // Measured with a protractor, or in CAD.
+                                        Units.degreesToRadians(target.getPitch()));
+
+                        targetVisible = true;
+                        turn =
+                    (VISION_DES_ANGLE_deg - targetYaw) * VISION_TURN_kP * Constants.Swerve.kMaxAngularSpeed;
+            forward =
+                    (VISION_DES_RANGE_m - targetRange) * VISION_STRAFE_kP * Constants.Swerve.kMaxLinearSpeed;
+                    }
+                    
+                }
+                
+            }
+        }
+        drive.drive()
+  }
 
   @Override
   public void testInit() {

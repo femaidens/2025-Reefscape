@@ -75,6 +75,9 @@ public class RobotContainer implements Logged {
     .onTrue(drive.resetGyro());
     
     operJoy.a().onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+    operJoy.b().onTrue(vision.printYaw()).onFalse(vision.stopDriving());
+    operJoy.x().onTrue(vision.driveTranslational()).onFalse(vision.stopDriving());
+
   }
 
   

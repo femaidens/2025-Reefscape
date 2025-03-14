@@ -30,8 +30,8 @@ import frc.robot.subsystems.DriveConstants;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveToPoseCmd extends Command {
 
-  private static final Distance TRANSLATION_TOLERANCE = Inches.of(1.0);
-  private static final Angle THETA_TOLERANCE = Degrees.of(1.0);
+  private static final Distance TRANSLATION_TOLERANCE = Inches.of(6);
+  private static final Angle THETA_TOLERANCE = Degrees.of(20);
 
   public static final TrapezoidProfile.Constraints DEFAULT_XY_CONSTRAINTS = new TrapezoidProfile.Constraints(
     DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond),
@@ -80,7 +80,7 @@ public class DriveToPoseCmd extends Command {
     yController = new ProfiledPIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D, translationConstraints);
     yController.setTolerance(TRANSLATION_TOLERANCE.in(Meters));
 
-    thetaController = new ProfiledPIDController(DriveConstants.Turn.PID.P, DriveConstants.Turn.PID.I, DriveConstants.Turn.PID.D, omegaConstraints);
+    thetaController = new ProfiledPIDController(DriveConstants.Translation.PID.P, DriveConstants.Translation.PID.I, DriveConstants.Translation.PID.D, omegaConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     thetaController.setTolerance(THETA_TOLERANCE.in(Radians));
 
@@ -145,6 +145,6 @@ public class DriveToPoseCmd extends Command {
 
   @Override
   public boolean isFinished() {
-    return xController.atGoal() && yController.atGoal() && thetaController.atGoal();
+    return thetaController.atGoal(); // && xController.atGoal() && yController.atGoal();
   }
 }
