@@ -240,7 +240,7 @@ public class Drive extends SubsystemBase implements Logged {
   }
 
   public Command resetGyro(){
-    return this.run(
+    return this.runOnce(
       () -> zeroHeading()
     );
   }

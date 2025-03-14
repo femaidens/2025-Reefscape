@@ -71,6 +71,9 @@ public class RobotContainer implements Logged {
    * joysticks}.
    */
   private void configureBindings() {
+    driveJoy.rightBumper()
+    .onTrue(drive.resetGyro());
+    
     operJoy.a().onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
   }
 
