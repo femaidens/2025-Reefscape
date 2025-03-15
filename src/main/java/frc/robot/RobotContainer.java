@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 // import frc.robot.Ports.JoyPort;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -12,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 // import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.AlgaeIntake;
+// import frc.robot.subsystems.AlgaeIntake;
 
 
 /**
@@ -75,12 +76,24 @@ public class RobotContainer {
     
 
     xboxController.a()
-      .onTrue(leds.setRainbowCmd()); 
+      .whileTrue(leds.setRainbowScrollCmd()); 
 
-    // xboxController.b()
-    // .onTrue(leds.setRainbowScrollCmd());
+    xboxController.b()
+    .whileTrue(leds.setScrollGPCmd());
 
-  // xboxController.rightBumper()
+    xboxController.x()
+    .onTrue(leds.setRainbowScrollCmd());
+
+    xboxController.y()
+    .onTrue(leds.setOrangeCmd());
+
+    
+
+
+    xboxController.leftTrigger()
+    .onTrue(leds.setBlinkCmd()); 
+
+  // xboxController.rightBumper()s
   //   .onFalse(algaeIntake.stopRollersCmd());
 
   // climb commands
