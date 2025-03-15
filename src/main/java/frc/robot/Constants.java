@@ -50,5 +50,11 @@ public final class Constants {
     public static final Transform3d kRearRightCamToCenter = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
+
+    //for a strange aligning to target manually idea
+    //i think its a percentage?
+    public static final double GOAL_AREA = 30;
+    public static final double GOAL_X = 0; // x position of apriltag crosshair
+    public static final double GOAL_Y = 0; // y position of apriltag crosshair
   }
 }

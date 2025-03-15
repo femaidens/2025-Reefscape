@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import frc.robot.Constants;
 import frc.robot.Constants.*;
@@ -108,7 +110,7 @@ public class Vision extends SubsystemBase implements Logged {
     
     if(hasTargets){
     PhotonTrackedTarget target = result.getBestTarget();
-    double yaw = target.getYaw();
+    double yaw = target.getYaw(); 
 
     if(yaw > 0){
       drive.drive(()-> 0.0, ()-> 0.0, ()-> 0.1);
@@ -188,6 +190,65 @@ public class Vision extends SubsystemBase implements Logged {
         }
         drive.drive(() -> forward, () -> .1, () -> turn);
       });
+  }
+
+  /**
+   * Uses the target corners of the photontrackedtarget, yaw, and pitch to align (without pose estimation)
+   * @return
+   */
+  public Command funkier(){
+    return this.run(() -> {
+      var result = frontLeftCam.getLatestResult();
+      boolean hasTargets = result.hasTargets();
+      // double xSpeed = 0; //forward
+      // double ySpeed = 0; //strafe
+      // double thetaSpeed = 0;
+      double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
+      
+      if(hasTargets){
+        PhotonTrackedTarget target = result.getBestTarget();
+        List<TargetCorner> targetCorners = target.getDetectedCorners();
+        // corners as specified by getDetectedCorners()
+        TargetCorner bottomLeft = targetCorners.get(0);
+        TargetCorner bottomRight = targetCorners.get(1);
+        TargetCorner topRight = targetCorners.get(2);
+        TargetCorner topLeft = targetCorners.get(3);
+    
+        double targetArea = target.area; // area in percentage?
+        if(targetArea > VisionConstants.GOAL_AREA){
+          speeds[0] = -0.1;
+        } else if(targetArea < VisionConstants.GOAL_AREA){
+          speeds[0] = 0.1;
+        }
+
+        double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair
+        if(targetX > VisionConstants.GOAL_X){ // current tag is farther right than desired
+          speeds[1] = -0.1;
+        } else if(targetX < VisionConstants.GOAL_X){
+          speeds[1] = 0.1;
+        }
+        
+        double tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
+        if(tilt > 1.05){ // left side of id is longer than right
+          speeds[2] = -0.1;
+        } else if(tilt < 0.95){ // left side is shorter than right
+          speeds[2] = 0.1;
+        }
+      }
+      drive.drive(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
+    });
+  }
+/**
+ * just to confirm what getDetectedCorners actually gives, seems to give positions 
+ * relative to top left of camera stream
+ */
+  public void funkierPrint(){
+    var result = frontLeftCam.getLatestResult();
+    if(result.hasTargets()){
+      PhotonTrackedTarget target = result.getBestTarget();
+      List<TargetCorner> corners = target.getDetectedCorners();
+      System.out.println(Arrays.toString(corners.toArray()));
+    }
   }
 
   public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
@@ -304,5 +365,6 @@ public class Vision extends SubsystemBase implements Logged {
     // printYaw();
     // SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
     // SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
+    // funkierPrint();
     }
 }

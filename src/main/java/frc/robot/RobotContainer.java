@@ -74,9 +74,24 @@ public class RobotContainer implements Logged {
     driveJoy.rightBumper()
     .onTrue(drive.resetGyro());
     
-    operJoy.a().onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
-    operJoy.b().onTrue(vision.printYaw()).onFalse(vision.stopDriving());
-    operJoy.x().onTrue(vision.driveTranslational()).onFalse(vision.stopDriving());
+    operJoy.a()
+    .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+
+    operJoy.b()
+    .onTrue(vision.printYaw())
+    .onFalse(vision.stopDriving());
+    
+    operJoy.x()
+    .onTrue(vision.driveTranslational())
+    .onFalse(vision.stopDriving());
+
+    operJoy.y()
+    .onTrue(vision.funky())
+    .onFalse(vision.stopDriving());
+
+    driveJoy.a()
+    .onTrue(vision.funkier())
+    .onFalse(vision.stopDriving());
 
   }
 

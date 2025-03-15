@@ -63,7 +63,7 @@ public class Drive extends SubsystemBase implements Logged {
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
-    gyro = new AHRS(NavXComType.kUSB1);
+    gyro = new AHRS(NavXComType.kUSB2);
 
     odometry = new SwerveDriveOdometry(
       Drivetrain.kDriveKinematics, 
