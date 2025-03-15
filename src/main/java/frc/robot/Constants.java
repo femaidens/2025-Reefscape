@@ -40,10 +40,12 @@ public final class Constants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    
-    public static final Transform2d kFrontLeftCamToCenter = new Transform2d(
+    public static final Transform2d robotToCam = new Transform2d(
         new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)),
-        new Rotation2d(Units.degreesToRadians(0), Units.degreesToRadians(0)));
+        new Rotation2d(Units.degreesToRadians(0), Units.degreesToRadians(0))); //only for the new drive to pose cmd that uses tag data
+    public static final Transform3d kFrontLeftCamToCenter = new Transform3d(
+        new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
+        new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
     public static final Transform3d kFrontRightCamToCenter = new Transform3d(
         new Translation3d(Units.inchesToMeters(0), Units.inchesToMeters(0), Units.inchesToMeters(0)),
         new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0), Units.degreesToRadians(0)));
