@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +47,15 @@ public class Vision extends SubsystemBase implements Logged {
 
   private Matrix<N3, N1> currentStdDevs;
 
+  double forward;
+  double turn;
+
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
   private Drive drive;
 
   public Vision() {
+    turn = 0.0;
+    forward = 0.0;
     frontLeftCam = new PhotonCamera("2265-ironfish");
     drive = new Drive();
     // frontRightCam = new PhotonCamera("RightFront");
@@ -139,6 +147,8 @@ public class Vision extends SubsystemBase implements Logged {
   //   Translation2d translation = PhotonUtils.estimateCameraToTargetTranslation(
   // distanceToTarget, Rotation2d.fromDegrees(-target.getYaw()));
   public Command funky(){
+    return this.run( () -> {
+    double range = 0.0;
     boolean targetVisible = false;
         double targetYaw = 0.0;
         double targetRange = 0.0;
@@ -161,11 +171,23 @@ public class Vision extends SubsystemBase implements Logged {
                                         Units.degreesToRadians(target.getPitch()));
 
                         targetVisible = true;
+
+                        if (targetVisible) {
+                          // Driver wants auto-alignment to tag 7
+                          // And, tag 7 is in sight, so we can turn toward it.
+                          // Override the driver's turn and fwd/rev command with an automatic one
+                          // That turns toward the tag, and gets the range right.
+                          turn =
+                                  (-targetYaw) * DriveConstants.Translation.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+                          forward =
+                                  (range - targetRange) * DriveConstants.Translation.PID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+                      }
                     }
                 }
             }
         }
-        drive.drive()
+        drive.drive(() -> forward, () -> .1, () -> turn);
+      });
   }
 
   public Optional<EstimatedRobotPose> updateEstimatedGlobalPoses() {
@@ -189,15 +211,6 @@ public class Vision extends SubsystemBase implements Logged {
     return distance;
   }
 
-  public Command getYDistanceToTarget(PhotonTrackedTarget target){
-    return this.run(()->{
-      var result = frontLeftCam.getLatestResult();
-    boolean hasTargets = result.hasTargets();
-    if(hasTargets){
-      double distance = result.getTransfo.getMeasureX()
-    }
-    })
-  }
 
   public PhotonTrackedTarget getTag(){
     PhotonTrackedTarget target = null;
