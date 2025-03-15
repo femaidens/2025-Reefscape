@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 // import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Vision;
 import monologue.Logged;
 
@@ -35,6 +37,7 @@ public class RobotContainer implements Logged {
   // The robot's subsystems and commands are defined here...
   // private final Drive drive = new Drive();
   private final Vision vision = new Vision();
+  private final Elevator elevator = new Elevator();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
@@ -77,17 +80,17 @@ public class RobotContainer implements Logged {
     // operJoy.a()
     // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
 
-    operJoy.b()
-    .onTrue(vision.printYaw())
-    .onFalse(vision.stopDriving());
+//     operJoy.b()
+//     .onTrue(vision.printYaw())
+//     .onFalse(vision.stopDriving());
     
-    operJoy.x()
-    .onTrue(vision.driveTranslational())
-    .onFalse(vision.stopDriving());
+//     operJoy.x()
+//     .onTrue(vision.driveTranslational())
+//     .onFalse(vision.stopDriving());
 
-    operJoy.y()
-    .onTrue(vision.run(() -> vision.funky()))
-    .onFalse(vision.stopDriving());
+//     operJoy.y()
+//     .onTrue(vision.run(() -> vision.funky()))
+//     .onFalse(vision.stopDriving());
 
     operJoy.rightTrigger()
     .onTrue(vision.funkierRight())
@@ -96,6 +99,27 @@ public class RobotContainer implements Logged {
     operJoy.leftTrigger()
     .onTrue(vision.funkierLeft())
     .onFalse(vision.stopDriving());
+
+     operJoy.b()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+                //.onFalse(elevator.stopMotorCmd());
+
+                operJoy.y()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+
+                operJoy.x()
+                .onTrue(
+                elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+
+                operJoy.povUp()
+                .whileTrue(elevator.runMotorCmd())
+                .onFalse(elevator.stopMotorCmd());
+
+                operJoy.povDown()
+                .whileTrue(elevator.forceReverseMotorCmd())
+                .onFalse(elevator.stopMotorCmd());
 
   }
 

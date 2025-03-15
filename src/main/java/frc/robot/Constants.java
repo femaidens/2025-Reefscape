@@ -59,9 +59,11 @@ public final class Constants {
 
     //for a strange aligning to target manually idea
     //i think its a percentage?
-    public static final double GOAL_AREA = 7;
-    public static final double GOAL_X = 150; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
+    public static final double GOAL_AREA_RIGHT = 12;
+    public static final double GOAL_X_RIGHT = 110; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_AREA_LEFT = 13;
+    public static final double GOAL_X_LEFT = 220; //216; //225.75; // x position of apriltag crosshair
+    // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     public class PID {
       public static final double P = 1.1;
       public static final double I = 0;
