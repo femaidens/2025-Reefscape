@@ -51,15 +51,16 @@ public class DriveConstants {
         // CHANGE THIS FOR TALONS! 
         public static final String CANBUS = "rio"; 
 
-        public static final LinearVelocity MAX_TRANSLATION_VELOCITY = MetersPerSecond.of(0.5);
+        public static final LinearVelocity MAX_TRANSLATION_VELOCITY = MetersPerSecond.of(1);
         public static final LinearAcceleration MAX_TRANSLATION_ACCELERATION = MetersPerSecondPerSecond.of(1.0);
         
         
         public class PID {
-            public static final double P = 0.0001;
+            public static final double P = .01;
             public static final double I = 0;
             public static final double D = 0.00005;
         }
+
         public class FF {
             public static final double S = 0.064397;
             public static final double V = 2.5716;
@@ -71,7 +72,7 @@ public class DriveConstants {
         public static final double POS_CONVERSION_FACTOR = 1.0 / (Math.PI * 2); //(2*Math.PI)/(150/7);
         public static final double VEL_CONVERSION_FACTOR = (2*Math.PI)/(150/7);
         public static final int AVERAGE_DEPTH = 0;
-        public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(4.7);
+        public static final AngularVelocity MAX_ANGULAR_VELOCITY = RadiansPerSecond.of(1);
         public static final AngularAcceleration MAX_ANGULAR_ACCELERATION = RadiansPerSecondPerSecond.of(2.0);
 
         public class PID {

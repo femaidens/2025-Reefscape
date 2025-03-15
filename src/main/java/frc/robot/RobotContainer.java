@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
-import frc.robot.commands.DriveToPoseCmd;
+// import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
 import monologue.Logged;
@@ -33,32 +33,32 @@ import static edu.wpi.first.units.Units.Seconds;
  */
 public class RobotContainer implements Logged {
   // The robot's subsystems and commands are defined here...
-  private final Drive drive = new Drive();
+  // private final Drive drive = new Drive();
   private final Vision vision = new Vision();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
   private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
-  private final AlignToCenter alignToCenter;
+  // private final AlignToCenter alignToCenter;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    alignToCenter = new AlignToCenter(drive, vision, null);
+    // alignToCenter = new AlignToCenter(drive, vision, null);
     configureBindings();
     configureDefaultCmds();
   }
 
   private void configureDefaultCmds(){
-    drive.setDefaultCommand(
+    vision.setDefaultCommand(
       new RunCommand(
         () -> 
-        drive.drive(
+        vision.driveFromVision(
         () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
         () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
         () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
-        drive));
+        vision));
   }
 
   /**
@@ -72,10 +72,10 @@ public class RobotContainer implements Logged {
    */
   private void configureBindings() {
     driveJoy.rightBumper()
-    .onTrue(drive.resetGyro());
+    .onTrue(vision.resetGyroFromVision());
     
-    operJoy.a()
-    .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+    // operJoy.a()
+    // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
 
     operJoy.b()
     .onTrue(vision.printYaw())
@@ -86,11 +86,15 @@ public class RobotContainer implements Logged {
     .onFalse(vision.stopDriving());
 
     operJoy.y()
-    .onTrue(vision.funky())
+    .onTrue(vision.run(() -> vision.funky()))
     .onFalse(vision.stopDriving());
 
-    driveJoy.a()
-    .onTrue(vision.funkier())
+    operJoy.rightTrigger()
+    .onTrue(vision.funkierRight())
+    .onFalse(vision.stopDriving());
+
+    operJoy.leftTrigger()
+    .onTrue(vision.funkierLeft())
     .onFalse(vision.stopDriving());
 
   }

@@ -58,8 +58,15 @@ public final class Constants {
 
     //for a strange aligning to target manually idea
     //i think its a percentage?
-    public static final double GOAL_AREA = 30;
-    public static final double GOAL_X = 0; // x position of apriltag crosshair
-    public static final double GOAL_Y = 0; // y position of apriltag crosshair
+    public static final double GOAL_AREA = 7;
+    public static final double GOAL_X = 150; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
+    public class PID {
+      public static final double P = 1.1;
+      public static final double I = 0;
+      public static final double D = 0;
+    
+      
+    }
   }
 }
