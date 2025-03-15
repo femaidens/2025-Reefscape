@@ -60,7 +60,8 @@ public class RobotContainer {
 
 
   xboxController.rightBumper()
-    .onTrue(leds.setGreenCmd().withTimeout(3));
+    .onTrue(leds.setColorCmd());
+    //.onTrue(leds.setGreenCmd().withTimeout(3));
       //algaeIntake.runRollersCmd()
       //.andThen(leds.setGreenCmd().withTimeout(3))
     
@@ -76,16 +77,16 @@ public class RobotContainer {
     
 
     xboxController.a()
-      .whileTrue(leds.setRainbowScrollCmd()); 
+      .onTrue(leds.setContGoldPinkCmd()); 
 
     xboxController.b()
-    .whileTrue(leds.setScrollGPCmd());
+    .onTrue(leds.setScrollCrazyRainbow());
 
     xboxController.x()
     .onTrue(leds.setRainbowScrollCmd());
 
     xboxController.y()
-    .onTrue(leds.setOrangeCmd());
+    .onTrue(leds.setBreatheCmd());
 
     
 
