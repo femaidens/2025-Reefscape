@@ -82,6 +82,11 @@ public class DriveConstants {
         public static final double MAX_ROT_SPEED = Math.PI * 2; // in rad/s
         public static final double SPEED_FACTOR = 0.75;
         public static final double WHEEL_COF = 1; // not true
+        public class RotationPID {
+            public static final double P = 1.0;
+            public static final double I = 0;
+            public static final double D = 0;   
+        }
     }
 
     public static final class TalonMotorConstants {

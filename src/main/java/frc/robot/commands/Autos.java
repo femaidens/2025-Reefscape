@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
+import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 import frc.robot.subsystems.Elevator;
@@ -39,8 +40,8 @@ public final class Autos {
 
   public Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, CoralTransition transition, Elevating elevating) {
 
-    autonChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Choose Auto: ", autonChooser);
+    // autonChooser = AutoBuilder.buildAutoChooser();
+    
     config = new RobotConfig(
       Constants.PathPlannerConstants.massKg, 
       Constants.PathPlannerConstants.MOI,
@@ -59,6 +60,8 @@ public final class Autos {
     this.drivetrain = drive;
     this.transition = transition;
     this.elevating = elevating;
+
+    // autonChooser = configure();
   }
 
   public boolean isRedAlliance(){
@@ -90,7 +93,7 @@ public final class Autos {
       (s, feedforwards) -> drivetrain.setChassisSpeeds(s),
       new PPHolonomicDriveController(
         new PIDConstants(Translation.PID.P, Translation.PID.D), 
-        new PIDConstants(Turn.PID.P, Turn.PID.D)),
+        new PIDConstants(Drivetrain.RotationPID.P, Turn.PID.D)),
       config,
       () -> isRedAlliance(),
       drivetrain);
@@ -105,9 +108,9 @@ public final class Autos {
 
 
       autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
-
+     
       autonChooser.addOption("No auto", Commands.none());
-
+      SmartDashboard.putData("Choose Auto: ", autonChooser);
       return autonChooser;
   }
 }

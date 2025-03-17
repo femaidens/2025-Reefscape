@@ -78,9 +78,10 @@ public class RobotContainer {
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
-                autonChooser = new SendableChooser<>();
+                // autonChooser = new SendableChooser<>();
+                autonChooser = autos.configure();
                 
-                configureAuton();
+                // configureAuton();
 
         }
 
@@ -109,8 +110,9 @@ public class RobotContainer {
         }
 
         public void configureAuton(){
-                autonChooser.addOption("taxi", new Taxi(drivetrain));
-                SmartDashboard.putData("Choose auto: ", autonChooser);
+                // autonChooser.addOption("taxi", new Taxi(drivetrain));
+                // SmartDashboard.putData("Choose auto: ", autonChooser);
+                autonChooser = autos.configure();
         }
 
         // // // Configure AutoBuilder last
