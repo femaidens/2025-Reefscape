@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import org.littletonrobotics.urcl.URCL;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  private PhotonCamera frontLeftCam;
+  // private PhotonCamera frontLeftCam;
   //private Drive drive;
   // double forward;
   // double turn;
@@ -54,8 +55,7 @@ public class Robot extends TimedRobot implements Logged {
     boolean lazyLogging = false;
     Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
     // SignalLogger.setPath("/logsNew/");
-    SignalLogger.start();
-    frontLeftCam = new PhotonCamera("2265-ironfish");
+    // frontLeftCam = new PhotonCamera("2265-ironfish");
 
   }
 
@@ -77,7 +77,7 @@ public class Robot extends TimedRobot implements Logged {
     //isFMSConnected() deprecated
     Monologue.setFileOnly(DriverStation.isFMSAttached());
      // This method needs to be called periodically, or no logging annotations will process properly.
-     Monologue.updateAll();
+    Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -110,10 +110,11 @@ public class Robot extends TimedRobot implements Logged {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    URCL.start();
+    SignalLogger.start();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    SignalLogger.start();
   }
 
   /** This function is called periodically during operator control. */

@@ -18,8 +18,13 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.DriveConstants;
 
 /**
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
  * constants. This class should not be used for any other purpose. All constants
@@ -29,9 +34,22 @@ import edu.wpi.first.math.util.Units;
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class PathPlannerConstants {
+    public static final double massKg = Units.lbsToKilograms(120);
+    public static final double MOI = 1.0/12 * massKg * (Math.pow(DriveConstants.Drivetrain.TRACK_WIDTH, 2) + Math.pow(DriveConstants.Drivetrain.WHEEL_BASE, 2));
+    // double WHEEL_RADIUS;
+    // double MAX_DRIVE_VELOCITY_MPS;
+    // double WHEEL_COF;
+    // double DRIVE_GEARING;
+    // double DRIVE_CURRENT_LIMIT;
+    
+  }
   public static class OperatorConstants {
     public static final int DRIVER_PORT = 0;
     public static final int OPERATOR_PORT = 1;
@@ -109,5 +127,24 @@ public final class Constants {
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
     }
+  }
+  public static class IntakeConstants {
+    public static final double MOTORSPEED = 0.5;
+    public static final double VOLTAGE = 0.0;
+    public static final double VELOCITY_CONVERSION_FACTOR = 1000.0;
+    public static final double POSITION_CONVERSION_FACTOR = 1000.0;
+    public static final int CURRENT_LIMIT = 30;
+
+    public static class IntakePIDConstants {
+      public static final double kP = 0.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+    }
+  }
+  public static class OuttakeConstants {
+    public static final double MOTOR_SPEED = 0.3;
+    public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
+    public static final double VOLTAGE = 0;
+    public static final int CURRENT_LIMIT = 30;
   }
 }

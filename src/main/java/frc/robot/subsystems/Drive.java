@@ -7,9 +7,13 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.SignalLogger;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
@@ -18,11 +22,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.proto.Kinematics;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,6 +52,9 @@ public class Drive extends SubsystemBase implements Logged {
   public final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
+  
+
+  private ChassisSpeeds speeds = new ChassisSpeeds();
 
   /** Creates a new Drive. */
   public Drive() {
@@ -90,13 +97,13 @@ public class Drive extends SubsystemBase implements Logged {
 
     }
 
-  //PLEASE CHECK THE SPEED FACTOR
-  //consider changing to profiledpid control
+  // consider changing to profiledpid control
   /**
    * drivin
-   * @param xSpeed x direction (front and back)
-   * @param ySpeed y direction (right is positive, left is negative)
-   * @param rotSpeed 
+   * 
+   * @param xSpeed   x direction (front and back)
+   * @param ySpeed   y direction (right is positive, left is negative)
+   * @param rotSpeed
    * @return
    */
   public void drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
@@ -104,7 +111,7 @@ public class Drive extends SubsystemBase implements Logged {
     double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
     double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
+    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVel, yVel, rotVel, gyro.getRotation2d());
     SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
 
     // return this.run(
@@ -129,10 +136,27 @@ public class Drive extends SubsystemBase implements Logged {
     rearRight.setDesiredStateNoPID(desiredStates[3]); //rearRight.setDesiredStateNoPID(desiredStates[2]);
   }
 
-   /**
+  public void setChassisSpeeds(ChassisSpeeds  speedd){
+    // ChassisSpeeds x = ChassisSpeeds.fromFieldRelativeSpeeds(speedd, getAngle());
+    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speedd);
+    setModuleStates(moduleStates);
+  }
+
+  public ChassisSpeeds getDesiredChassisSpeeds() {
+    return speeds;
+  }
+
+  public ChassisSpeeds getCurrentChassisSpeeds(){
+    ChassisSpeeds spede= DriveConstants.Drivetrain.kDriveKinematics.toChassisSpeeds(
+      getSwerveModuleStates()[0],  getSwerveModuleStates()[1], getSwerveModuleStates()[2], getSwerveModuleStates()[3] 
+    );
+    return spede;
+  }
+
+  /**
    * x formation with wheels to prevent movement
    */
-  public Command setXCmd(){
+  public Command setXCmd() {
     return this.run(
       () -> {
         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromRadians(Math.PI/4)));
@@ -142,6 +166,7 @@ public class Drive extends SubsystemBase implements Logged {
       }
     );
   }
+
 
   /**
    * Sets wheels straight for sysid
@@ -204,7 +229,7 @@ public class Drive extends SubsystemBase implements Logged {
   /**
    * resets the odometry to the specified pose
    */
-  public void resetOdometry(Pose2d pose){
+  public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(
       Rotation2d.fromRadians(gyro.getYaw()),
       new SwerveModulePosition[]{
@@ -225,6 +250,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   /**
    * In case we'll ever need it
+   * 
    * @return new yaw angle in radians (ideally)
    */
   public double setYawOffset() {
@@ -235,7 +261,7 @@ public class Drive extends SubsystemBase implements Logged {
   /**
    * Zero the gyro heading
    */
-  public void zeroHeading(){
+  public void zeroHeading() {
     gyro.reset();
   }
 
@@ -248,17 +274,18 @@ public class Drive extends SubsystemBase implements Logged {
   /* SYSID CMDS */
   public Command driveQuasistatic(SysIdRoutine.Direction direction){
     System.out.println("RUNNING");
+    System.out.println("RUNNING");
     return driveRoutine.quasistatic(direction);
   }
-  public Command driveDynamic(SysIdRoutine.Direction direction){
+
+  public Command driveDynamic(SysIdRoutine.Direction direction) {
     return driveRoutine.dynamic(direction);
   }
-  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //if gyro is inverted, getRotation2d() --- getAngle() can be negated
+    // if gyro is inverted, getRotation2d() --- getAngle() can be negated
     odometry.update(
       gyro.getRotation2d(), 
       new SwerveModulePosition[] {
@@ -267,5 +294,6 @@ public class Drive extends SubsystemBase implements Logged {
     //SmartDashboard.getNumber("Angle", getAngle());
     SmartDashboard.putNumber("Gyro Angle", getAngle());
     SmartDashboard.updateValues();
+    SmartDashboard.putNumber("angle", getAngle());
   }
-  }
+}

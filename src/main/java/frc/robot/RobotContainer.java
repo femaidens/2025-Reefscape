@@ -6,11 +6,16 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.auto.Taxi;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
+import frc.robot.commands.CoralTransition;
+import frc.robot.commands.Elevating;
 // import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
 import monologue.Logged;
 
@@ -20,118 +25,212 @@ import java.util.function.DoubleSupplier;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static edu.wpi.first.units.Units.Seconds;
 
-
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer implements Logged {
-  // The robot's subsystems and commands are defined here...
-  // private final Drive drive = new Drive();
-  private final Vision vision = new Vision();
-  private final Elevator elevator = new Elevator();
+    // The robot's subsystems and commands are defined here...
+    // private final Drive drive = new Drive();
+    private final Vision vision;
+    private final Elevator elevator;
+    private final Intake intake;
+    private final Outtake outtake;
+    private final Elevating elevating;
+    // private final Autos autos;
+    private final CoralTransition coralTransition;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
-  private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+    // Replace with CommandPS4Controller or CommandJoystick if needed
+    private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
+    private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
-  // private final AlignToCenter alignToCenter;
+    // private final AlignToCenter alignToCenter;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    // alignToCenter = new AlignToCenter(drive, vision, null);
-    configureBindings();
-    configureDefaultCmds();
-  }
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        vision = new Vision();
+        elevator = new Elevator();
+        intake = new Intake();
+        outtake = new Outtake();
+        elevating = new Elevating(elevator, outtake, intake);
+        coralTransition = new CoralTransition(intake, outtake);
+        // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
+        // elevating);
+        // alignToCenter = new AlignToCenter(drive, vision, null);
+        configureBindings();
+        configureDefaultCmds();
+    }
 
-  private void configureDefaultCmds(){
-    vision.setDefaultCommand(
-      new RunCommand(
-        () -> 
-        vision.driveFromVision(
-        () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
-        () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
-        () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
-        vision));
-  }
+    // private SendableChooser<Command> autonChooser;
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    driveJoy.rightBumper()
-    .onTrue(vision.resetGyroFromVision());
-    
-    // operJoy.a()
-    // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+    private void configureDefaultCmds() {
+        vision.setDefaultCommand(
+                new RunCommand(
+                        () -> vision.driveFromVision(
+                                () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
+                                () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
+                                () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
+                        vision));
+    }
 
-//     operJoy.b()
-//     .onTrue(vision.printYaw())
-//     .onFalse(vision.stopDriving());
-    
-//     operJoy.x()
-//     .onTrue(vision.driveTranslational())
-//     .onFalse(vision.stopDriving());
+    /**
+     * Use this method to define your trigger->command mappings. Triggers can be
+     * created via the
+     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+     * an arbitrary
+     * predicate, or via the named factories in {@link
+     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+     * {@link
+     * CommandXboxController
+     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+     * PS4} controllers or
+     * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+     * joysticks}.
+     */
+    private void configureBindings() {
+        driveJoy.rightBumper()
+                .onTrue(vision.resetGyroFromVision());
 
-//     operJoy.y()
-//     .onTrue(vision.run(() -> vision.funky()))
-//     .onFalse(vision.stopDriving());
+        driveJoy.rightTrigger()
+                .onTrue(vision.funkierRight())
+                .onFalse(vision.stopDriving());
 
-    operJoy.rightTrigger()
-    .onTrue(vision.funkierRight())
-    .onFalse(vision.stopDriving());
+        driveJoy.leftTrigger()
+                .onTrue(vision.funkierLeft())
+                .onFalse(vision.stopDriving());
 
-    operJoy.leftTrigger()
-    .onTrue(vision.funkierLeft())
-    .onFalse(vision.stopDriving());
+        // operJoy.b()
+        //         .onTrue(
+        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint)
+        //                         .andThen(elevator.stopMotorCmd()));
+        // // .onFalse(elevator.stopMotorCmd());
 
-     operJoy.b()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
-                //.onFalse(elevator.stopMotorCmd());
+        // operJoy.y()
+        //         .onTrue(
+        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint)
+        //                         .andThen(elevator.stopMotorCmd()));
 
-                operJoy.y()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+        // operJoy.x()
+        //         .onTrue(
+        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint)
+        //                         .andThen(elevator.stopMotorCmd()));
 
-                operJoy.x()
-                .onTrue(
-                elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
-
-                operJoy.povUp()
+        operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
                 .onFalse(elevator.stopMotorCmd());
 
-                operJoy.povDown()
+        operJoy.povDown()
                 .whileTrue(elevator.forceReverseMotorCmd())
                 .onFalse(elevator.stopMotorCmd());
 
-  }
+        /**
+        * run intake manually
+        */
+        operJoy.leftTrigger()
+        .whileTrue(
+        intake.reverseMotorCmd())
+        .onFalse(
+        intake.stopMotorCmd()
+        );
 
-  
+        /**
+        * outtake
+        */
+        operJoy.rightBumper()
+        .whileTrue(outtake.runMotorCmd())
+        .onFalse(outtake.stopMotorCmd());
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
-  }
+        /**
+        * reverse outtake
+        */
+        operJoy.leftBumper()
+        .whileTrue(outtake.reverseOuttakeCmd())
+        .onFalse(outtake.stopMotorCmd());
+
+        /**
+         * coral transition
+         */
+        operJoy.rightTrigger()
+        .onTrue(coralTransition.moveCoralToOuttake());
+
+        // operJoy.rightStick()
+        // .onTrue(
+        // elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+
+        // operJoy.a()
+        // .whileTrue(elevator.forceReverseMotorCmd())
+        // .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
+
+        // operJoy.rightBumper()
+        // .whileTrue(algaeCmds.intakeAlgae())
+        // .whileFalse(algaeCmds.raiseAlgae());
+
+        // operJoy.leftBumper()
+        // .whileTrue(algaeCmds.outtakeAlgae());
+
+        // operJoy.a()
+        // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+
+        // operJoy.b()
+        // .onTrue(vision.printYaw())
+        // .onFalse(vision.stopDriving());
+
+        // operJoy.x()
+        // .onTrue(vision.driveTranslational())
+        // .onFalse(vision.stopDriving());
+
+        // operJoy.y()
+        // .onTrue(vision.run(() -> vision.funky()))
+        // .onFalse(vision.stopDriving());
+
+        // driveJoy.a()
+        // .whileTrue(
+        //         drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+
+        // driveJoy.b()
+        //         .whileTrue(
+        //                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+
+        // driveJoy.x()
+        //         .whileTrue(
+        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+
+        // driveJoy.y()
+        //         .whileTrue(
+        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+    }
+
+    // public void configureAuton(){
+    // autonChooser.addOption("taxi", new Taxi(drivetrain));
+    // SmartDashboard.putData("Choose auto: ", autonChooser);
+    // }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     * 
+     * @return the command to run in autonomous
+     */
+
+    public Command getAutonomousCommand() {
+        // An example command will be run in autonomous
+        // return autonChooser.getSelected();
+        return null;
+    }
+
 }
