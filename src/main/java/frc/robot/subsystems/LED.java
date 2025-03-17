@@ -6,8 +6,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static edu.wpi.first.units.Units.*; 
+import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.signals.Led1OffColorValue;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -26,18 +27,31 @@ public class LED extends SubsystemBase {
   private final Distance ledSpacing; 
   LEDPattern rainbow;
 
+  // Colors!!
+
+  Color gold, pink, green, purple, orange, turquoise, brown; 
+
 
   public LED() {
-     rainbow = LEDPattern.rainbow(255, 128);
+     rainbow = LEDPattern.rainbow(255, 100);
 
     led = new AddressableLED(LEDPorts.LED_PORT);
     ledBuffer = new AddressableLEDBuffer(250);
-    ledSpacing = Meters.of(1/5); 
+    ledSpacing = Meters.of(1/75); 
     led.setLength(ledBuffer.getLength());
 
     led.setData(ledBuffer);
     led.start();
 
+
+    //COLORS ARE GRB
+  gold = new Color(215, 255, 0); 
+  pink = new Color(0,255,127);
+  green = new Color(255,0,0);
+  purple = new Color(32,115,240); 
+  orange = new Color(156, 230,28); 
+  turquoise = new Color(255, 64,208);
+  brown = new Color(32,61,9);
   }
 
   public Command setDefaultCmd(Command command) {
@@ -61,6 +75,50 @@ public class LED extends SubsystemBase {
 
   public Command setRainbowCmd(){
     return this.run( () -> setRainbow()); 
+  }
+
+  public Command setContGoldPinkCmd(){
+    return this.run(() -> continuousGoldPink());
+  }
+
+  public Command setGradGPCmd(){
+    return this.run(() -> setGreenPurpleGradient()); 
+  }
+
+  public Command setScrollCrazyRainbow(){
+    return this.run(() -> scrollCrazyRainbow()); 
+  }
+
+  public Command setScrollGP(){
+    return this.run(() -> setScrollGP()); 
+  }
+
+  public Command setColorCmd(){
+    return this.run(() -> setColor(brown)); 
+  }
+
+  public Command setOrangeCmd(){
+    return this.run(() -> setOrange());
+  }
+
+  public Command setPinkCmd(){
+    return this.run(() -> setPink()); 
+  }
+
+  public Command setTurquoiseCmd(){
+    return this.run(() -> setTurquoise()); 
+  }
+
+  public Command setBlinkCmd(){
+    return this.run(() -> setBlink(orange));
+  }
+
+  public Command setProgressCmd(){
+    return this.run(() -> setProgress());
+  }
+
+  public Command setBreatheCmd(){
+    return this.run(()-> setBreathe());
   }
 
   public void setLedGreen() {
@@ -90,23 +148,95 @@ public class LED extends SubsystemBase {
   }
 
   public void setRainbowScroll(){
-    LEDPattern scrollRainbow = rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing);
+    LEDPattern rainbows = LEDPattern.rainbow(255, 100);
+    LEDPattern scrollRainbow = rainbows.scrollAtRelativeSpeed(Percent.per(Second).of(50));
     scrollRainbow.applyTo(ledBuffer);
     
     led.setData(ledBuffer); 
   }
 
+
+
   public void setGreenPurpleGradient(){
-    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, Color.kGreen, Color.kPurple); 
+    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, green, purple); 
     gradient.applyTo(ledBuffer);
     led.setData(ledBuffer);
   }
 
-  public void scrollGreenPurple(){
-    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,Color.kGreen, Color.kPurple); 
-    LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(25)); 
+  public void scrollCrazyRainbow(){
+    LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,Color.kDarkGreen,orange,gold,green,Color.kOrchid,Color.kAliceBlue,pink); 
+    LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(50)); 
     pattern.applyTo(ledBuffer);
     led.setData(ledBuffer);
+}
+
+public void scrollGP(){
+  LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, green, Color.KMediumTurquiose); 
+  LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(50)); 
+  pattern.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+}
+
+ public void continuousGoldPink(){
+  LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, gold,pink);
+  LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(50));
+  pattern.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+ }
+
+ public void setPink(){
+  LEDPattern p = LEDPattern.solid(pink); 
+  p.applyTo(ledBuffer); 
+  led.setData(ledBuffer);
+ }
+
+ public void setTurquoise(){
+  LEDPattern p = LEDPattern.solid(turquoise); 
+  p.applyTo(ledBuffer); 
+  led.setData(ledBuffer);
+ }
+
+ public void setOrange(){
+  LEDPattern p = LEDPattern.solid(orange);
+  p.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+ }
+
+public void setColor(Color x){
+  LEDPattern p = LEDPattern.solid(x); 
+  p.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+}
+
+public void setBlink(Color x){
+  LEDPattern base = LEDPattern.solid(x);
+  LEDPattern pattern = base.blink(Seconds.of(0.8));
+  pattern.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+}
+
+public void setProgress(){
+  LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,pink,purple);
+  LEDPattern mask = LEDPattern.progressMaskLayer(() -> getH()/getMaxH()); 
+  LEDPattern heightDisplay = base.mask(mask); 
+  heightDisplay.applyTo(ledBuffer);
+  led.setData(ledBuffer);
+
+}
+
+public double getH(){
+  return 0.5;
+}
+
+public double getMaxH(){
+  return 1; 
+}
+
+public void setBreathe(){
+  LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, green);
+  LEDPattern pattern = base.breathe(Seconds.of(2));
+  pattern.applyTo(ledBuffer);
+  led.setData(ledBuffer);
 }
 
 
