@@ -236,7 +236,7 @@ public class Vision extends SubsystemBase implements Logged {
       if(results.size() > 0 && results.get(0).hasTargets()){
         var result = results.get(results.size() - 1);
         for (var target : result.getTargets()) {
-          if (target.getFiducialId() == 11) {
+          if (target.getFiducialId() == 11 || target.getFiducialId() == 6 || target.getFiducialId() == 7) {
             // PhotonTrackedTarget target = result.get(0).getBestTarget();
             List<TargetCorner> targetCorners = target.getDetectedCorners();
             // corners as specified by getDetectedCorners()
@@ -334,9 +334,11 @@ public class Vision extends SubsystemBase implements Logged {
       if(results.size() > 0 && results.get(0).hasTargets()){
         var result = results.get(results.size() - 1);
         for (var target : result.getTargets()) {
-          if (target.getFiducialId() == 11) {
+          if (target.getFiducialId() == 11 || target.getFiducialId() == 6 || target.getFiducialId() == 7) {
             // PhotonTrackedTarget target = result.get(0).getBestTarget();
-            List<TargetCorner> targetCorners = target.getDetectedCorners();
+            PhotonTrackedTarget bestTarget = result.getBestTarget();
+
+            List<TargetCorner> targetCorners = bestTarget.getDetectedCorners();
             // corners as specified by getDetectedCorners()
             TargetCorner bottomLeft = targetCorners.get(0);
             TargetCorner bottomRight = targetCorners.get(1);
