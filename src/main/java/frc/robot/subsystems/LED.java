@@ -85,12 +85,12 @@ public class LED extends SubsystemBase {
     return this.run(() -> setGreenPurpleGradient()); 
   }
 
-  public Command setScrollCrazyRainbow(){
+  public Command setScrollCrazyRainbowCmd(){
     return this.run(() -> scrollCrazyRainbow()); 
   }
 
-  public Command setScrollGP(){
-    return this.run(() -> setScrollGP()); 
+  public Command setScrollGPCmd(){
+    return this.run(() -> scrollGP()); 
   }
 
   public Command setColorCmd(){
@@ -171,7 +171,7 @@ public class LED extends SubsystemBase {
 }
 
 public void scrollGP(){
-  LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, green, Color.KMediumTurquiose); 
+  LEDPattern gradient = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, green, Color.kMediumTurquoise); 
   LEDPattern pattern = gradient.scrollAtRelativeSpeed(Percent.per(Second).of(50)); 
   pattern.applyTo(ledBuffer);
   led.setData(ledBuffer);

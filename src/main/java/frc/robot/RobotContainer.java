@@ -80,7 +80,7 @@ public class RobotContainer {
       .onTrue(leds.setContGoldPinkCmd()); 
 
     xboxController.b()
-    .onTrue(leds.setScrollCrazyRainbow());
+    .onTrue(leds.setScrollCrazyRainbowCmd());
 
     xboxController.x()
     .onTrue(leds.setRainbowScrollCmd());
