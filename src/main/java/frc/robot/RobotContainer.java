@@ -5,10 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.*;
-import frc.robot.commands.Autos;
+import frc.robot.commands.Copycat;
 import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
 import frc.robot.subsystems.*;
+import monologue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +30,7 @@ import frc.robot.auto.Taxi;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Logged{
         // The robot's subsystems and commands are defined here...
         // Drive drive = new Drive();
 
@@ -41,15 +42,15 @@ public class RobotContainer {
        private final Drive drivetrain;
         private final Elevator elevator;
         private final Intake intake;
-        private final Outtake outtake;
-        private final Elevating elevating;
-        private final Autos autos;
+        //private final Outtake outtake;
+        // private final Elevating elevating;
+        private final Copycat autos;
         // private final Outtake outtake;
         // private final Elevating elevating;
         // private final AlgaeCmds algaeCmds;
         // private final AlgaeIntake algaeIntake;
         // private final AlgaePivot algaePivot;
-         private final CoralTransition coralTransition;
+        //  private final CoralTransition coralTransition;
         // private final Intake intake;
         // private RobotConfig config;
         // private final Camera camera; 
@@ -62,14 +63,13 @@ public class RobotContainer {
         public RobotContainer() {
                 // Configure the trigger bindings
                 drivetrain = new Drive();
-                // outtake = new Outtake();
                 elevator = new Elevator();
                 intake = new Intake();
-                outtake = new Outtake();
-                elevating = new Elevating(elevator, outtake, intake);
-                coralTransition = new CoralTransition(intake, outtake);
+                //outtake = new Outtake();
+                // elevating = new Elevating(elevator, outtake, intake);
+                // coralTransition = new CoralTransition(intake, outtake);
 
-                autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition, elevating);
+                autos = new Copycat (drivetrain, intake, elevator);
                 // camera = new Camera(); 
                 // algaeIntake = new AlgaeIntake();
                 // algaePivot = new AlgaePivot();
