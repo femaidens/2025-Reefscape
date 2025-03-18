@@ -51,8 +51,8 @@ public class RobotContainer {
     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
     //   );
 
-      algaePivot.setDefaultCommand(
-        algaePivot.setProcessorCmd());
+      // algaePivot.setDefaultCommand(
+      //   algaePivot.setProcessorCmd());
   }
 
   /**
@@ -65,16 +65,43 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operJoy.rightBumper()
-      .whileTrue(algaeIntake.runRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+    // operJoy.rightBumper()
+    //   .whileTrue(algaeIntake.runRollersCmd())
+    //   .onFalse(algaeIntake.stopRollersCmd());
 
-    operJoy.leftBumper()
-      .whileTrue(algaeIntake.reverseRollersCmd())
-      .onFalse(algaeIntake.stopRollersCmd());
+    // operJoy.leftBumper()
+    //   .whileTrue(algaeIntake.reverseRollersCmd())
+    //   .onFalse(algaeIntake.stopRollersCmd());
     
-    operJoy.rightTrigger()
-      .whileTrue(algaePivot.setProcessorCmd());    
+    // operJoy.rightTrigger()
+    //   .whileTrue(algaePivot.setProcessorCmd());    
+
+     operJoy.rightBumper()
+                .whileTrue(outtake.intakeAlgaeCmd())
+                .onFalse(outtake.stopMotorCmd());
+
+     operJoy.leftBumper()
+                .whileTrue(outtake.setOuttakeAlgaeCmd())
+                .onFalse(outtake.stopMotorCmd());
+
+    operJoy.x()
+                .onTrue(elevating.scoringAlgae());
+
+    operJoy.start()
+                .onTrue(elevating.algaeSecondLevelCmd());
+
+     operJoy.a()
+                .onTrue(elevating.secondLevelCmd());
+                
+    operJoy.back()
+                .onTrue(elevating.algaeThirdLevelCmd());
+
+    operJoy.b()
+                .onTrue(elevating.thirdLevelCmd());
+
+    operJoy.y()
+                .onTrue(elevating.fourthLevelCmd());
+
   }
 
  
