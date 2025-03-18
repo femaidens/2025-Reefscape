@@ -75,6 +75,7 @@ public final class Constants {
         public static final double THIRD_LVL = 0;
         public static final double ALGAE_THIRD_LVL = 0;
         public static final double FOURTH_LVL = 0;
+        public static final double BARGE_LVL = 0;
       }
   }
 
