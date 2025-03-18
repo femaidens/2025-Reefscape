@@ -36,6 +36,12 @@ public class Elevating {
     public Command thirdLevelCmd(){
         return elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL);
     }
+
+    public Command scoringAlgae(){
+        return
+        elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.BARGE_LVL)
+        .andThen(outtake.setOuttakeAlgaeCmd());
+    }
     /**
      * 
      * @return goes to the fourth level of reef
