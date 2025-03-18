@@ -85,6 +85,10 @@ public class Outtake extends SubsystemBase {
     return this.run(() -> outtakeMotor.setVoltage(0));
   }
 
+  public Command setOuttakeAlgaeCmd() {
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_ALGAE_SPEED));
+  }
+
   /**
    * 
    * @return true if coral is at the right position in outtake
