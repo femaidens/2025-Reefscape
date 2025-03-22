@@ -4,16 +4,28 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+
+import org.littletonrobotics.urcl.URCL;
+
+import com.ctre.phoenix6.SignalLogger;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import monologue.Logged;
+import monologue.Monologue;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
  * the TimedRobot documentation. If you change the name of this class or the package after creating
  * this project, you must also update the Main.java file in the project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
@@ -26,6 +38,14 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+
+    boolean fileOnly = false;
+    boolean lazyLogging = false;
+    Monologue.setupMonologue(this, "Robot", fileOnly, lazyLogging);
+    DataLogManager.start();
+    //CameraServer.startAutomaticCapture(); 
+    // PortForwarder.add(5800, "10.22.65.11", 5800);
   }
 
   /**
@@ -42,11 +62,18 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    //isFMSConnected() deprecated
+    Monologue.setFileOnly(DriverStation.isFMSAttached());
+     // This method needs to be called periodically, or no logging annotations will process properly.
+     Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    SignalLogger.stop();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -72,6 +99,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    URCL.start();
+    SignalLogger.start();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
