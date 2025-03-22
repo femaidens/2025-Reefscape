@@ -74,11 +74,7 @@ public final class Constants {
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
     public static final double ABSOLUTE_OFFSET = 0.3;
-    public static final int kDriverControllerPort = 0;
-  
-
-
-
+    public static final int CURRENT_LIMIT = 40;
 
     public static class PIDConstants {
       public static final double kP = 12;
@@ -107,6 +103,7 @@ public final class Constants {
       public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
+      public static final double BARGE_LVL = 0;
     }
   }
 
@@ -152,5 +149,6 @@ public final class Constants {
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
+    public static final double OUTTAKE_ALGAE_SPEED = 0;
   }
 }

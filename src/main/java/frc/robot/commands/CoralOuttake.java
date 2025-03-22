@@ -8,18 +8,18 @@
 
 // import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.Commands;
-// // import frc.robot.subsystems.Intake;
 // import frc.robot.subsystems.Outtake;
+// import frc.robot.subsystems.Intake;
 
-// public class CoralTransition{
-//   // private Intake intake;
+// public class CoralOuttake{
 //   private Outtake outtake;
+//   private Intake intake;
 
-//   public CoralTransition(Intake intake, Outtake outtake) {
-//     this.intake = intake;
+//   public CoralOuttake(Outtake outtake, Intake intake) {
 //     this.outtake = outtake;
+//     this.intake = intake;
 
-// }
+//   }
 
 //   public Command moveCoralToOuttake() {
 //     return intake.runMotorCmd()
@@ -27,6 +27,5 @@
 //         .until(outtake::isCoral)
 //         .andThen(outtake.stopMotorCmd())
 //         .andThen(intake.stopMotorCmd());
-        
 //   }
 // }

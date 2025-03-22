@@ -1,6 +1,6 @@
-// // Copyright (c) FIRST and other WPILib contributors.
-// // Open Source Software; you can modify and/or share it under the terms of
-// // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
 
@@ -26,16 +26,17 @@ import frc.robot.subsystems.DriveConstants.Turn;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
 
-public final class Autos {
+public final class Copycat {
 
   private final Drive drivetrain;
-  private final Outtake outtake;
-  private final Elevating elevating;
+//   private final Outtake outtake;
+//   private final Elevating elevating;
+//   private final CoralTransition transition;
   private RobotConfig config;
   private SendableChooser<Command> autonChooser;
 
 
-  public Autos(Drive drive, Outtake outtake, Elevator elevator, Elevating elevating) {
+  public Copycat(Drive drive, Elevator elevator) {
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
@@ -52,9 +53,10 @@ public final class Autos {
         DriveConstants.Drivetrain.TRACK_WIDTH);
 
 
-    this.outtake = outtake;
+    // this.outtake = outtake;
     this.drivetrain = drive;
-    this.elevating = elevating;
+    // this.transition = transition;
+    // this.elevating = elevating;
 
     // autonChooser = configure();
   }
@@ -93,13 +95,14 @@ public final class Autos {
       () -> isRedAlliance(),
       drivetrain);
 
-      // NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());
-      NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
-      //NamedCommands.registerCommand("intake", intake.runMotorCmd());
-      NamedCommands.registerCommand("elevate trough", elevating.firstLevelCmd());
-      NamedCommands.registerCommand("elevate L2", elevating.secondLevelCmd());
-      NamedCommands.registerCommand("elevate L3", elevating.thirdLevelCmd());
-      NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
+    //   NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());
+    // //   NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
+      // NamedCommands.registerCommand("intake", intake.runMotorCmd());
+    //   NamedCommands.registerCommand("elevate trough", elevating.firstLevelCmd());
+    //   NamedCommands.registerCommand("elevate L2", elevating.secondLevelCmd());
+    //   NamedCommands.registerCommand("elevate L3", elevating.thirdLevelCmd());
+    //   NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
+
 
       autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
      

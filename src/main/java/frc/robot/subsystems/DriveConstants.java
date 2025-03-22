@@ -20,8 +20,8 @@ public class DriveConstants {
 
         // modules stuff
         public static final int CURRENT_LIMIT = 40;
-        public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters;
-        public static final double VEL_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI) / GEAR_RATIO; // meters per second
+        public static final double POS_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI);// GEAR_RATIO; // meters;
+        public static final double VEL_CONVERSION_FACTOR = (WHEEL_DIAMETER * Math.PI);// * GEAR_RATIO; // meters per second
 
         public static final double FRONT_LEFT_ANGOFFSET = Math.PI; //-Math.PI / 2;
         public static final double FRONT_RIGHT_ANGOFFSET = 0;
@@ -36,7 +36,7 @@ public class DriveConstants {
         public static final String CANBUS = "rio";
 
         public class PID {
-            public static final double P = 0.0001;
+            public static final double P = 1;
             public static final double I = 0;
             public static final double D = 0.00005;
         }
@@ -82,6 +82,12 @@ public class DriveConstants {
         public static final double MAX_ROT_SPEED = Math.PI * 2; // in rad/s
         public static final double SPEED_FACTOR = 0.75;
         public static final double WHEEL_COF = 1; // not true
+
+        public class RotationPID {
+            public static final double P = 0.2;
+            public static final double I = 0;
+            public static final double D = 0;   
+        }
     }
 
     public static final class TalonMotorConstants {

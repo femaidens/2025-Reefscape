@@ -44,7 +44,7 @@ public class Drive extends SubsystemBase implements Logged {
 
   private final AHRS gyro;
 
-  @Log.NT private final SwerveDriveOdometry odometry;
+  private final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
   
@@ -113,7 +113,7 @@ public class Drive extends SubsystemBase implements Logged {
     setModuleStates(moduleStates);
   }
 
-  public void setChassisSpeeds(ChassisSpeeds  speedd){
+  public void setChassisSpeeds(ChassisSpeeds speedd){
     // ChassisSpeeds x = ChassisSpeeds.fromFieldRelativeSpeeds(speedd, getAngle());
     SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speedd);
     setModuleStates(moduleStates);
@@ -186,6 +186,7 @@ public class Drive extends SubsystemBase implements Logged {
   /**
    * @return currently-estimated pose of robot
    */
+  @Log.NT
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }

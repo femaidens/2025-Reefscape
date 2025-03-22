@@ -35,7 +35,7 @@ public class LED extends SubsystemBase {
   public LED() {
      rainbow = LEDPattern.rainbow(255, 100);
 
-    led = new AddressableLED(LEDPorts.LED_PORT);
+    led = new AddressableLED(LedPorts.LED_PORT);
     ledBuffer = new AddressableLEDBuffer(250);
     ledSpacing = Meters.of(1/75); 
     led.setLength(ledBuffer.getLength());
@@ -58,7 +58,7 @@ public class LED extends SubsystemBase {
   // public Command setDefaultCmd(Command command) {
   //   return this.run(() -> setDefault());
   // }
-  
+
   public Command setLEDBufferCmd() {
     return this.run(()-> led.setData(ledBuffer));
   }
