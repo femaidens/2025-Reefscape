@@ -38,14 +38,43 @@ public final class Constants {
     public static final int OPERATOR_PORT = 1;
   }
 
+  public static class AlgaeIntakeConstants {
+    public static double ROLLER_SPEED = 0.5;
+    public static double ROLLER_VOLTAGE = 3;
+  }
+
+  public static class AlgaePivotConstants {
+    public static final double POS_CONVERSION_FACTOR = 45.0 / (60 * 16.0) * 360.0;
+    public static final double VEL_CONVERSION_FACTOR = 360.0;
+    public static double PIVOT_VOLTAGE = 3;
+
+    public static double PROCESSOR_SETPOINT = 90;
+    public static double GROUND_SETPOINT = 53;
+
+    public class PIDConstants {
+      public static double kP = 0.07;
+      public static double kI = 0;
+      public static double kD = 0;
+
+      // public static double MAX_VELOCITY = 5;
+      // public static double MAX_ACCELERATION = 20;
+    }
+
+    public class FFConstants {
+      public static double kS = 0;
+      public static double kV = 0;
+      public static double kA = 0;
+    }
+  }
+
   public static class ElevatorConstants {
-    public static final int CURRENT_LIMIT = 40;
     public static final double MOTOR_SPEED = 0.9;
     public static final double FORCE_MOTOR_SPEED = 0.7;
     public static final double GEAR_RATIO = 1.0 / 60.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
     public static final double ABSOLUTE_OFFSET = 0.3;
+    public static final int CURRENT_LIMIT = 40;
 
     public static class PIDConstants {
       public static final double kP = 12;
@@ -74,7 +103,15 @@ public final class Constants {
       public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
+      public static final double BARGE_LVL = 0;
     }
+  }
+
+  public static class ClimbConstants {
+    public static final double CLIMB_SPEED = 0.5;
+    public static final double TICKS_PER_REVOLUTION = 1000;
+    public static final double MAX_ROTATION = 90.0;
+    public static final double MIN_ROTATION = -90.0; // subject to change, need to change to rotation??
   }
 
   public static class IntakeConstants {
@@ -112,41 +149,6 @@ public final class Constants {
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
+    public static final double OUTTAKE_ALGAE_SPEED = 0;
   }
-
-  // public static class AlgaeIntakeConstants {
-  //   public static double ROLLER_SPEED = 0.5;
-  //   public static double ROLLER_VOLTAGE = 3;
-  // }
-
-  // public static class AlgaePivotConstants {
-  //   public static final double POS_CONVERSION_FACTOR = 45.0 / (60 * 16.0) * 360.0;
-  //   public static final double VEL_CONVERSION_FACTOR = 360.0;
-  //   public static double PIVOT_VOLTAGE = 3;
-
-  //   public static double PROCESSOR_SETPOINT = 90;
-  //   public static double GROUND_SETPOINT = 53;
-
-  //   public class PIDConstants {
-  //     public static double kP = 0.07;
-  //     public static double kI = 0;
-  //     public static double kD = 0;
-
-  //     // public static double MAX_VELOCITY = 5;
-  //     // public static double MAX_ACCELERATION = 20;
-  //   }
-
-  //   public class FFConstants {
-  //     public static double kS = 0;
-  //     public static double kV = 0;
-  //     public static double kA = 0;
-  //   }
-  // }
-
-  // public static class ClimbConstants {
-  //   public static final double CLIMB_SPEED = 0.5;
-  //   public static final double TICKS_PER_REVOLUTION = 1000;
-  //   public static final double MAX_ROTATION = 90.0;
-  //   public static final double MIN_ROTATION = -90.0; // subject to change, need to change to rotation??
-  // }
 }

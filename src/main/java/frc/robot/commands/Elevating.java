@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
-import frc.robot.subsystems.Intake;
 
 
 
@@ -17,18 +16,22 @@ public class Elevating {
 
     private Elevator elevator;
     private Outtake outtake;
-    private Intake intake;
 
-    public Elevating(Elevator elevator, Outtake outtake, Intake intake){
+    public Elevating(Elevator elevator, Outtake outtake){
         this.elevator = elevator;
         this.outtake = outtake;
-        this.intake = intake;
     }
 
     /**
      * @return goes to first level of reef and then outtakes
      */
-    public Command firstLevelCmd(){
+    public Command scoringAlgaeBargeCmd(){
+        return 
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.BARGE_LVL)
+            .andThen(outtake.setOuttakeCoralSpeedCmd());
+    }
+    
+     public Command firstLevelCmd(){
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             .andThen(outtake.setOuttakeCoralSpeedCmd());
@@ -90,9 +93,6 @@ public class Elevating {
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             .andThen(elevator.stopMotorCmd())
-            .andThen(intake.stopMotorCmd())
             .andThen(outtake.stopMotorCmd());
-        
-            
     }
 }

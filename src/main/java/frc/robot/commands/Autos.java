@@ -24,21 +24,18 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 
 public final class Autos {
 
   private final Drive drivetrain;
   private final Outtake outtake;
-  private final Intake intake;
   private final Elevating elevating;
-  private final CoralTransition transition;
   private RobotConfig config;
   private SendableChooser<Command> autonChooser;
 
 
-  public Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, CoralTransition transition, Elevating elevating) {
+  public Autos(Drive drive, Outtake outtake, Elevator elevator, Elevating elevating) {
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
@@ -55,10 +52,8 @@ public final class Autos {
         DriveConstants.Drivetrain.TRACK_WIDTH);
 
 
-    this.intake = intake;
     this.outtake = outtake;
     this.drivetrain = drive;
-    this.transition = transition;
     this.elevating = elevating;
 
     // autonChooser = configure();
@@ -98,14 +93,13 @@ public final class Autos {
       () -> isRedAlliance(),
       drivetrain);
 
-      NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());
+      // NamedCommands.registerCommand("Intake to outtake", transition.moveCoralToOuttake());
       NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
-      NamedCommands.registerCommand("intake", intake.runMotorCmd());
+      //NamedCommands.registerCommand("intake", intake.runMotorCmd());
       NamedCommands.registerCommand("elevate trough", elevating.firstLevelCmd());
       NamedCommands.registerCommand("elevate L2", elevating.secondLevelCmd());
       NamedCommands.registerCommand("elevate L3", elevating.thirdLevelCmd());
       NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
-
 
       autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
      

@@ -24,9 +24,9 @@ public class Outtake extends SubsystemBase implements Logged{
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
-  private final DigitalInput frontReceiver;
- private final DigitalInput middleReceiver;
-
+  private final DigitalInput outtakeFrontReceiver;
+  private final DigitalInput outtakeMiddleReceiver;
+  private final DigitalInput intakeBeamBreak;
 
 
   /** Creates a new Outtake. */
@@ -41,12 +41,10 @@ public class Outtake extends SubsystemBase implements Logged{
     outtakeMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
     // front reciever is the one farthest away from intake
-    frontReceiver = new DigitalInput(Ports.OuttakePorts.FRONT_RECEIVER);
+    outtakeFrontReceiver = new DigitalInput(Ports.OuttakePorts.OUTTAKE_FRONT_RECEIVER);
     // back reciever is the one located in outtake
-    middleReceiver = new DigitalInput(Ports.OuttakePorts.MIDDLE_RECEIVER);
-
-
-
+    outtakeMiddleReceiver = new DigitalInput(Ports.OuttakePorts.OUTTAKE_MIDDLE_RECEIVER);
+    intakeBeamBreak = new DigitalInput(Ports.IntakePorts.INTAKE_BEAM_BREAK);
   }
 
   /* Commands */
@@ -106,19 +104,29 @@ public class Outtake extends SubsystemBase implements Logged{
     return this.runOnce(() -> outtakeMotor.setVoltage(0));
   }
 
+  public Command setOuttakeAlgaeCmd() {
+    return this.run(() -> outtakeMotor.set(OuttakeConstants.OUTTAKE_ALGAE_SPEED));
+  }
+  
   /**
    * 
    * @return true if coral is at the right position in outtake
    */
 
   @Log.NT
-  public boolean isBeamBrokenFront() {
-    return !frontReceiver.get();
+  public boolean isOuttakeBeamBrokenFront() {
+    return !outtakeFrontReceiver.get();
   }
 
   @Log.NT
-  public boolean isBeamBrokenBack() {
-    return !middleReceiver.get();
+  public boolean isOuttakeBeamBrokenBack() {
+    return !outtakeMiddleReceiver.get();
+  }
+
+  @Log.NT
+  public boolean isIntakeBeamBroken() {
+    // System.out.println("intake");
+    return !intakeBeamBreak.get();
   }
 
    /*
@@ -126,15 +134,15 @@ public class Outtake extends SubsystemBase implements Logged{
    * i think this needs editing, need to look at both intake beam break and
    * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
    */
-  public boolean isCoral() {
-    return !isBeamBrokenBack() && isBeamBrokenFront();
+  public boolean isCoralOuttake() {
+    return !isOuttakeBeamBrokenBack() && isOuttakeBeamBrokenFront();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
-    SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
-    SmartDashboard.putBoolean("IS CORAL", isCoral());
+    SmartDashboard.putBoolean("OUT BB front", isOuttakeBeamBrokenFront());
+    SmartDashboard.putBoolean("OUT BB middle", isOuttakeBeamBrokenBack());
+    SmartDashboard.putBoolean("IS CORAL", isCoralOuttake());
 
   }
 }

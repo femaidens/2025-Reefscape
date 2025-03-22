@@ -27,14 +27,12 @@ public class Ports {
         public static int BOT_SWITCH = 7;
     }
     public class IntakePorts {
-        public static int INTAKE_MOTOR = 3;
-        public static int BEAM_BREAK = 9;
-        public static int PIVOT_MOTOR = 29;
+        public static int INTAKE_BEAM_BREAK = 9;
       }
       public class OuttakePorts {
         public static int OUTTAKE_MOTOR = 12 ; 
-        public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
-        public static int MIDDLE_RECEIVER = 1;
+        public static int OUTTAKE_FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
+        public static int OUTTAKE_MIDDLE_RECEIVER = 1;
       }
       public class BeamBreakPorts { // for outtake
          // back reciever is the one closest to
