@@ -44,6 +44,7 @@ public class RobotContainer {
         private final Outtake outtake;
         private final Elevating elevating;
         private final Autos autos;
+        private final LED led; 
         // private final Outtake outtake;
         // private final Elevating elevating;
         // private final AlgaeCmds algaeCmds;
@@ -68,7 +69,7 @@ public class RobotContainer {
                 outtake = new Outtake();
                 elevating = new Elevating(elevator, outtake, intake);
                 coralTransition = new CoralTransition(intake, outtake);
-
+                led = new LED(); 
                 autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition, elevating);
                 // camera = new Camera(); 
                 // algaeIntake = new AlgaeIntake();
@@ -98,7 +99,9 @@ public class RobotContainer {
                                 () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)), drivetrain));
 
-        
+                led.setDefaultCommand(
+                        led.setScrollGPCmd() 
+                );
                 
 
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
@@ -164,21 +167,21 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-                driveJoy.a()
-                        .whileTrue(
-                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+                // driveJoy.a()
+                //         .whileTrue(
+                //                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
 
-                driveJoy.b()
-                        .whileTrue(
-                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+                // driveJoy.b()
+                //         .whileTrue(
+                //                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
 
-                driveJoy.x()
-                        .whileTrue(
-                                drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+                // driveJoy.x()
+                //         .whileTrue(
+                //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
 
-                 driveJoy.y()
-                         .whileTrue(
-                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+                //  driveJoy.y()
+                //          .whileTrue(
+                //                  drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
                 
                 /* 
            
@@ -201,39 +204,39 @@ public class RobotContainer {
                 
                 
 
-                driveJoy.leftBumper()
-                     .whileTrue(
-                         drivetrain.setXCmd());
+                // driveJoy.leftBumper()
+                //      .whileTrue(
+                //          drivetrain.setXCmd());
 
-                driveJoy.rightBumper()
-                     .whileTrue(
-                         drivetrain.resetGyro());
+                // driveJoy.rightBumper()
+                //      .whileTrue(
+                //          drivetrain.resetGyro());
 
-                driveJoy.leftTrigger()
-                     .whileTrue(
-                      drivetrain.setStraightCmd());
+                // driveJoy.leftTrigger()
+                //      .whileTrue(
+                //       drivetrain.setStraightCmd());
 
-                // // driveJoy.rightTrigger()
-                // //    .whileTrue(
-                // //      drivetrain.driveStraightCmd());
+                // // // driveJoy.rightTrigger()
+                // // //    .whileTrue(
+                // // //      drivetrain.driveStraightCmd());
 
-                // // operJoy.leftStick()
-                // //   .whileTrue(
-                // //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                // // // operJoy.leftStick()
+                // // //   .whileTrue(
+                // // //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                // // /**
+                // //  * manual elevator up
+                // //  */
+                // operJoy.povUp()
+                //     .whileTrue(
+                //         elevator.runMotorCmd())
+                //         .onFalse(elevator.stopMotorCmd()); 
                 // /**
-                //  * manual elevator up
+                //  * manual elevator down
                 //  */
-                operJoy.povUp()
-                    .whileTrue(
-                        elevator.runMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
-                /**
-                 * manual elevator down
-                 */
-                operJoy.povDown()
-                    .whileTrue(
-                        elevator.reverseMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
+                // operJoy.povDown()
+                //     .whileTrue(
+                //         elevator.reverseMotorCmd())
+                //         .onFalse(elevator.stopMotorCmd()); 
 
                 // // operJoy.rightTrigger()
                 // // .whileTrue(
@@ -250,6 +253,15 @@ public class RobotContainer {
                 // .onFalse(
                 //         intake.stopMotorCmd()
                 // );
+
+                // LED TESTING!!!! 
+
+                operJoy.a()
+                        .onTrue(led.setPinkCmd()); 
+                operJoy.b()
+                        .onTrue(led.setOrangeCmd());
+                operJoy.x()
+                        .onTrue(led.setRedBlinkCmd()); 
 
 
 

@@ -29,7 +29,7 @@ public class LED extends SubsystemBase {
 
   // Colors!!
 
-  Color gold, pink, green, purple, orange, turquoise, brown; 
+  Color gold, pink, green, purple, orange, turquoise, brown,red; 
 
 
   public LED() {
@@ -52,11 +52,13 @@ public class LED extends SubsystemBase {
   orange = new Color(156, 230,28); 
   turquoise = new Color(255, 64,208);
   brown = new Color(32,61,9);
+  red = new Color(0,255,0); 
   }
 
-  public Command setDefaultCmd(Command command) {
-    return this.run(() -> setDefault());
-  }
+  // public Command setDefaultCmd(Command command) {
+  //   return this.run(() -> setDefault());
+  // }
+  
   public Command setLEDBufferCmd() {
     return this.run(()-> led.setData(ledBuffer));
   }
@@ -97,8 +99,8 @@ public class LED extends SubsystemBase {
     return this.run(() -> setColor(brown)); 
   }
 
-  public Command setOrangeCmd(){
-    return this.run(() -> setOrange());
+  public Command setRedBlinkCmd(){
+    return this.run(() -> setRed());
   }
 
   public Command setPinkCmd(){
@@ -119,6 +121,10 @@ public class LED extends SubsystemBase {
 
   public Command setBreatheCmd(){
     return this.run(()-> setBreathe());
+  }
+
+  public Command setOrangeCmd(){
+    return this.run(() -> setColor(orange));
   }
 
   public void setLedGreen() {
@@ -154,6 +160,7 @@ public class LED extends SubsystemBase {
     
     led.setData(ledBuffer); 
   }
+  
 
 
 
@@ -196,8 +203,8 @@ public void scrollGP(){
   led.setData(ledBuffer);
  }
 
- public void setOrange(){
-  LEDPattern p = LEDPattern.solid(orange);
+ public void setRed(){
+  LEDPattern p = LEDPattern.solid(red);
   p.applyTo(ledBuffer);
   led.setData(ledBuffer);
  }
@@ -223,6 +230,8 @@ public void setProgress(){
   led.setData(ledBuffer);
 
 }
+
+
 
 public double getH(){
   return 0.5;
