@@ -62,7 +62,14 @@ public class DriveConstants {
             public static final double A = 0.15861; 
         }
     }
+    public class DriveSimConstants {
+        public static final double DRIVE_FORWARD_VOLTAGE = 5;
+        public static final double TURNING_PID_POSITION_TOL = 5;
+        public static final double TURNING_PID_VELOCITY_TOL = 5;
+        public static final double DRIVE_PID_POSITION_TOL = 5;
+        public static final double DRIVE_PID_VELOCITY_TOL = 5;
 
+    }
     public class Turn {
         public static final int CURRENT_LIMIT = 35;
         public static final double POS_CONVERSION_FACTOR = 1.0 / (Math.PI * 2); //(2*Math.PI)/(150/7);

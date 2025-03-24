@@ -32,5 +32,9 @@ public class CoralTransition{
   return outtake.runMotorCmd()
         .until(outtake::isCoral)
         .andThen(outtake.stopMotorCmd());
+    // return outtake.runMotorCmd()
+    //     .until(outtake::isCoral)
+    //     .andThen(outtake.stopMotorCmd())
+    //     .andThen(intake.stopMotorCmd());
   }
 }

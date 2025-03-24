@@ -37,6 +37,7 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
+  private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
@@ -59,10 +60,11 @@ public class Elevator extends SubsystemBase {
       volts -> setVoltage(volts.in(Volts)), null, this)); 
    
   public Elevator() {
-    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
-
+    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.LEADER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless );
+    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.FOLLOWER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
+    
     botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH);
-
+    
     elevatorEncoder = elevatorMotorLeader.getEncoder();
     absoluteEncoder = elevatorMotorLeader.getAbsoluteEncoder();
 
@@ -81,14 +83,24 @@ public class Elevator extends SubsystemBase {
       ElevatorConstants.FeedForwardConstants.kA
     );
 
-      SparkMaxConfig config = new SparkMaxConfig();
-
-        config
+      SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        leaderConfig
         .inverted(false)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
 
-        config.encoder
+        leaderConfig.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+
+      SparkMaxConfig followerConfig = new SparkMaxConfig();
+        followerConfig
+        .inverted(true)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT)
+        .follow(elevatorMotorLeader);
+
+        followerConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
@@ -99,8 +111,10 @@ public class Elevator extends SubsystemBase {
         // config.absoluteEncoder
         // .zeroOffset(0.49);
 
-        elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
+
 
         // underBotSwitch = true;
         // currentSwitchTriggered = botLimitSwitch.get();
@@ -200,6 +214,7 @@ public class Elevator extends SubsystemBase {
           // if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
           if(hitBotLimit()){
             elevatorMotorLeader.stopMotor();
+            elevatorMotorFollower.stopMotor();
             elevatorEncoder.setPosition(0);
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {

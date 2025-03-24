@@ -28,6 +28,12 @@ public class Elevating {
     /**
      * @return goes to first level of reef and then outtakes
      */
+    public Command scoringAlgaeBargeCmd(){
+        return 
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.BARGE_LVL)
+            .andThen(outtake.setOuttakeCoralSpeedCmd());
+    }
+    
     public Command firstLevelCmd(){
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)

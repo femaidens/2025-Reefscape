@@ -13,6 +13,7 @@ import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
 // import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
@@ -51,6 +52,7 @@ public class RobotContainer implements Logged {
     private final Intake intake;
     private final Outtake outtake;
     private final Elevating elevating;
+    //private final DriveSim driveSim;
     // private final Autos autos;
     private final CoralTransition coralTransition;
 
@@ -70,6 +72,7 @@ public class RobotContainer implements Logged {
         outtake = new Outtake();
         elevating = new Elevating(elevator, outtake, intake);
         coralTransition = new CoralTransition(intake, outtake);
+        //driveSim = new DriveSim();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
@@ -87,6 +90,9 @@ public class RobotContainer implements Logged {
                                 () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
                         vision));
+
+//                         driveSim.setDefaultCommand(
+//       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
     }
 
     /**
