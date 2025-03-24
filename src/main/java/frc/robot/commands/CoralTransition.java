@@ -22,11 +22,9 @@ public class CoralTransition{
   }
 
   public Command moveCoralToOuttake() {
-    return intake.runMotorCmd()
-        .alongWith(outtake.runMotorCmd())
+    return outtake.runMotorCmd()
         .until(outtake::isCoral)
         .andThen(outtake.stopMotorCmd())
         .andThen(intake.stopMotorCmd());
-        
   }
 }

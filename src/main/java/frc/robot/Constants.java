@@ -92,11 +92,11 @@ public final class Constants {
   }
   public static class ElevatorConstants {
     public static final int CURRENT_LIMIT = 40;
-    public static final double MOTOR_SPEED = 0.9;
+    public static final double MOTOR_SPEED = 0.3;
     public static final double FORCE_MOTOR_SPEED = 0.7;
-    public static final double GEAR_RATIO = 1.0 / 60.0;
+    public static final double GEAR_RATIO = 1.0 / 40.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
-    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 40;
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
@@ -126,6 +126,7 @@ public final class Constants {
       public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
+    public static final double BARGE_LVL = 0;
     }
   }
   public static class IntakeConstants {
