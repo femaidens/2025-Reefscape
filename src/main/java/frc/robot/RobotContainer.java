@@ -33,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import static edu.wpi.first.units.Units.Seconds;
 
 /**
@@ -189,37 +191,40 @@ public class RobotContainer implements Logged {
 
         // operJoy.leftBumper()
         // .whileTrue(algaeCmds.outtakeAlgae());
+        operJoy.x()
+        .onTrue(elevating.scoringAlgaeBargeCmd())
+        .onFalse(outtake.stopMotorCmd());
 
-        // operJoy.a()
-        // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+operJoy.start()
+        .onTrue(elevating.algaeSecondLevelCmd());
 
-        // operJoy.b()
-        // .onTrue(vision.printYaw())
-        // .onFalse(vision.stopDriving());
+operJoy.a()
+        .onTrue(elevating.secondLevelCmd());
+        
+operJoy.back()
+        .onTrue(elevating.algaeThirdLevelCmd());
 
-        // operJoy.x()
-        // .onTrue(vision.driveTranslational())
-        // .onFalse(vision.stopDriving());
+operJoy.b()
+        .onTrue(elevating.thirdLevelCmd());
 
-        // operJoy.y()
-        // .onTrue(vision.run(() -> vision.funky()))
-        // .onFalse(vision.stopDriving());
+operJoy.y()
+        .onTrue(elevating.fourthLevelCmd());
 
-        // driveJoy.a()
-        // .whileTrue(
-        //         drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+        driveJoy.a()
+        .whileTrue(
+                elevator.quasiCmd(SysIdRoutine.Direction.kForward));
 
-        // driveJoy.b()
-        //         .whileTrue(
-        //                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+        driveJoy.b()
+                .whileTrue(
+                        elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
 
-        // driveJoy.x()
-        //         .whileTrue(
-        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+        driveJoy.x()
+                .whileTrue(
+                        elevator.dynaCmd(SysIdRoutine.Direction.kForward));
 
-        // driveJoy.y()
-        //         .whileTrue(
-        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+        driveJoy.y()
+                .whileTrue(
+                        elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
     // public void configureAuton(){

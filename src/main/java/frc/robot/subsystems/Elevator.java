@@ -217,7 +217,7 @@ public class Elevator extends SubsystemBase {
             elevatorEncoder.setPosition(0);
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
-            elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
+            elevatorMotorLeader.set(-Constants.ElevatorConstants.REVERSE_MOTOR_SPEED);
             System.out.println("reverseeeeeeee");
           }
         }

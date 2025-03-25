@@ -36,8 +36,9 @@ public class Elevating {
     
     public Command firstLevelCmd(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL).withTimeout(2)
+            .andThen(elevator.stopMotorCmd())
+            .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
@@ -46,8 +47,9 @@ public class Elevating {
      */
     public Command secondLevelCmd(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL);//.withTimeout(2)
+            // .andThen(elevator.stopMotorCmd())
+            // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
@@ -56,8 +58,9 @@ public class Elevating {
      */
     public Command thirdLevelCmd(){
         return
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.THIRD_LVL);//.withTimeout(2)
+            // .andThen(elevator.stopMotorCmd())
+            // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
@@ -66,8 +69,9 @@ public class Elevating {
      */
     public Command fourthLevelCmd(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL);//.withTimeout(2)
+            // .andThen(elevator.stopMotorCmd())
+            // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
@@ -75,8 +79,9 @@ public class Elevating {
      */
     public Command algaeSecondLevelCmd(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.ALGAE_SECOND_LVL);//.withTimeout(2)
+            // .andThen(elevator.stopMotorCmd())
+            // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
@@ -85,8 +90,9 @@ public class Elevating {
      */
     public Command algaeThirdLevelCmd(){
         return 
-        elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL)
-        .andThen(outtake.setOuttakeCoralSpeedCmd());
+        elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.ALGAE_THIRD_LVL).withTimeout(2)
+        .andThen(elevator.stopMotorCmd())
+        .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
     /**
