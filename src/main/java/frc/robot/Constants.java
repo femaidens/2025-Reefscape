@@ -68,16 +68,16 @@ public final class Constants {
   }
 
   public static class ElevatorConstants {
-    public static final double MOTOR_SPEED = 0.3;//before two motor elevator + force springs 0.9
+    public static final double MOTOR_SPEED = 0.15;//before two motor elevator + force springs 0.9
     public static final double FORCE_MOTOR_SPEED = 0.7;
-    public static final double GEAR_RATIO = 40.0; // Unsure whether its actually 40:1 or 1:40 in code...n
+    public static final double GEAR_RATIO = 1.0/20.0; // Unsure whether its actually 40:1 or 1:40 in code...n
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
-    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / GEAR_RATIO;
+    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 20;
     public static final double ABSOLUTE_OFFSET = 0.3;
     public static final int CURRENT_LIMIT = 40;
 
     public static class PIDConstants {
-      public static final double kP = 12;
+      public static final double kP = 5;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kMaxVelocity = 7;
@@ -95,7 +95,7 @@ public final class Constants {
 
     public static class SetpointConstants {
       public static final double FIRST_LVL = 1.3; //2.5;
-      public static final double SECOND_LVL = 3.59;
+      public static final double SECOND_LVL = 2.7; //3.59;
       public static final double ALGAE_SECOND_LVL = 0;
       public static final double THIRD_LVL = 5.40; //6.28;
       public static final double ALGAE_THIRD_LVL = 0;

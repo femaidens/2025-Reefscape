@@ -139,6 +139,15 @@ public class RobotContainer {
 
     operJoy.y()
                 .onTrue(elevating.fourthLevelCmd());
+        
+          
+    operJoy.povUp()            
+    .whileTrue(elevator.runMotorCmd())
+        .onFalse(elevator.stopMotorCmd());
+
+        operJoy.povDown()
+                .whileTrue(elevator.forceReverseMotorCmd())
+                .onFalse(elevator.stopMotorCmd());
 
   }
 

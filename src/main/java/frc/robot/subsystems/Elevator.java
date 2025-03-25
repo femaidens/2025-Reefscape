@@ -95,10 +95,10 @@ public class Elevator extends SubsystemBase {
 
       SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig
-        .inverted(true)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT)
-        .follow(elevatorMotorLeader);
+        .follow(elevatorMotorLeader, true);
+        // .inverted(true);
 
         followerConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
@@ -155,12 +155,12 @@ public class Elevator extends SubsystemBase {
 //  */
     public void elevatorPIDw(double setpoint){
     double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
-    // if(hitBotLimit()){
-    //   elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
+    // // if(hitBotLimit()){
+    // //   elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
     //     // not sure if this is correct
     //     // elevatorMotorFollower.resumeFollowerMode();
     // } else {
-    //   elevatorMotorLeader.setVoltage(voltage);
+      elevatorMotorLeader.setVoltage(voltage);
     }
      
 

@@ -44,7 +44,9 @@ public class Elevating {
     public Command secondLevelCmd(){
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.SECOND_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            .withTimeout(3)
+            .andThen(outtake.setOuttakeCoralSpeedCmd())
+            .withTimeout(2);
     }
 
     /**

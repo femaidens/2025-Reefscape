@@ -24,7 +24,7 @@ public class Ports {
     }
     public class ElevatorPorts {
         public static int LEADER_ELEVATOR_MOTOR = 15;
-        public static int FOLLOWER_ELEVATOR_MOTOR = 0;
+        public static int FOLLOWER_ELEVATOR_MOTOR = 3;
         public static int BOT_SWITCH = 7;
     }
     public class IntakePorts {
