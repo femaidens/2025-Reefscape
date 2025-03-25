@@ -11,7 +11,7 @@ import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+//import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

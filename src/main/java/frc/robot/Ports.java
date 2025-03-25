@@ -23,13 +23,13 @@ public class Ports {
         public static final int REAR_RIGHT_CANCODER = 1;
     }
     public class ElevatorPorts {
-        public static final int LEADER_ELEVATOR_MOTOR = 0;
+        public static final int LEADER_ELEVATOR_MOTOR = 15;
         public static final int FOLLOWER_ELEVATOR_MOTOR = 3;
         public static int MOTOR_PORT = 15;
         public static int BOT_SWITCH = 7;
     }
     public class IntakePorts {
-        public static int INTAKE_MOTOR = 3;
+        //public static int INTAKE_MOTOR = 3;
         public static int BEAM_BREAK = 9;
         public static int PIVOT_MOTOR = 29;
       }

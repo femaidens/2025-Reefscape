@@ -8,15 +8,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.Intake;
+//import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 
 public class CoralTransition{
-  private Intake intake;
+  // Intake intake;
   private Outtake outtake;
 
-  public CoralTransition(Intake intake, Outtake outtake) {
-    this.intake = intake;
+  public CoralTransition(Outtake outtake) {
+   // this.intake = intake;
     this.outtake = outtake;
 
   }

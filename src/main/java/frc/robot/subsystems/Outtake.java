@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,8 @@ public class Outtake extends SubsystemBase implements Logged{
   private final SparkMaxConfig motorConfig;
   private final DigitalInput frontReceiver;
  private final DigitalInput middleReceiver;
+ private final DigitalInput beambreak;
+ 
 
 
 
@@ -44,6 +47,8 @@ public class Outtake extends SubsystemBase implements Logged{
     frontReceiver = new DigitalInput(Ports.OuttakePorts.FRONT_RECEIVER);
     // back reciever is the one located in outtake
     middleReceiver = new DigitalInput(Ports.OuttakePorts.MIDDLE_RECEIVER);
+
+    beambreak = new DigitalInput(Ports.IntakePorts.BEAM_BREAK);
 
 
 
@@ -91,7 +96,7 @@ public class Outtake extends SubsystemBase implements Logged{
    * @return
    */
   public Command reverseOuttakeCmd(){
-    return this.run(() -> outtakeMotor.set(OuttakeConstants.MOTOR_SPEED));
+    return this.run(() -> outtakeMotor.set(-OuttakeConstants.BARGE_MOTOR_SPEED));
   }
 
   public Command removeAlgaeCmd() {
@@ -105,6 +110,13 @@ public class Outtake extends SubsystemBase implements Logged{
   public Command stopMotorCmd() {
     return this.runOnce(() -> outtakeMotor.setVoltage(0));
   }
+
+
+  public boolean isBeamBroken() {
+    // System.out.println("intake");
+    return !beambreak.get();
+  }
+  
 
   /**
    * 
@@ -135,6 +147,6 @@ public class Outtake extends SubsystemBase implements Logged{
     SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
     SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
     SmartDashboard.putBoolean("IS CORAL", isCoral());
-
-  }
+    SmartDashboard.putBoolean("IntakeBB", isBeamBroken());
+  }   
 }

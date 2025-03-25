@@ -60,7 +60,7 @@ public class Elevator extends SubsystemBase {
       volts -> setVoltage(volts.in(Volts)), null, this)); 
    
   public Elevator() {
-    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.LEADER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless );
+    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.LEADER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
     elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.FOLLOWER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
     
     botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH);
@@ -95,10 +95,9 @@ public class Elevator extends SubsystemBase {
 
       SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig
-        .inverted(true)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT)
-        .follow(elevatorMotorLeader);
+        .follow(elevatorMotorLeader, true);
 
         followerConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
@@ -214,12 +213,12 @@ public class Elevator extends SubsystemBase {
           // if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
           if(hitBotLimit()){
             elevatorMotorLeader.stopMotor();
-            elevatorMotorFollower.stopMotor();
+            //elevatorMotorFollower.stopMotor();
             elevatorEncoder.setPosition(0);
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
             elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
-            // System.out.println("reverseeeeeeee");
+            System.out.println("reverseeeeeeee");
           }
         }
       );

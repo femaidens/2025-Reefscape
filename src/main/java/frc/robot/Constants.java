@@ -94,9 +94,9 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 40;
     public static final double MOTOR_SPEED = 0.3;
     public static final double FORCE_MOTOR_SPEED = 0.7;
-    public static final double GEAR_RATIO = 1.0 / 40.0;
+    public static final double GEAR_RATIO = 1.0 / 20.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
-    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 40;
+    public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
@@ -118,7 +118,7 @@ public final class Constants {
 
     public static class SetpointConstants {
       public static final double FIRST_LVL = 1.3; //2.5;
-      public static final double SECOND_LVL = 3.59;
+      public static final double SECOND_LVL = 1.33; //3.59;
       public static final double ALGAE_SECOND_LVL = 0;
       public static final double THIRD_LVL = 5.40; //6.28;
       public static final double ALGAE_THIRD_LVL = 0;
@@ -144,6 +144,7 @@ public final class Constants {
   }
   public static class OuttakeConstants {
     public static final double MOTOR_SPEED = 0.3;
+    public static final double BARGE_MOTOR_SPEED = 0.7;
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;

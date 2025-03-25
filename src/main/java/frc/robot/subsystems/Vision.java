@@ -228,7 +228,7 @@ public class Vision extends SubsystemBase implements Logged {
   public Command funkierLeft(){
     return this.run(() -> {
       var results = frontRightCam.getAllUnreadResults();
-      int[] reefIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+      // int[] reefIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
       // boolean hasTargets = result.get(0).hasTargets();
       // double xSpeed = 0; //forward
       // double ySpeed = 0; //strafe
@@ -237,8 +237,8 @@ public class Vision extends SubsystemBase implements Logged {
       if(results.size() > 0 && results.get(0).hasTargets()){
         var result = results.get(results.size() - 1);
         for (var target : result.getTargets()) {
-          for(int i = 0; i < reefIDs.length; i++){
-          if (target.getFiducialId() == reefIDs[i]) {
+          // for(int i = 0; i < reefIDs.length; i++){
+          if (target.getFiducialId() == 11 || target.getFiducialId() == 6) {
             // PhotonTrackedTarget target = result.get(0).getBestTarget();
             List<TargetCorner> targetCorners = target.getDetectedCorners();
             // corners as specified by getDetectedCorners()
@@ -273,7 +273,7 @@ public class Vision extends SubsystemBase implements Logged {
             System.out.println("Tag location: " + targetX);
       }
     }
-    }}
+    }
       drive.drive(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
     });
   }

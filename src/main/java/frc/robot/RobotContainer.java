@@ -15,7 +15,7 @@ import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+// import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
 import monologue.Logged;
@@ -49,7 +49,7 @@ public class RobotContainer implements Logged {
     // private final Drive drive = new Drive();
     private final Vision vision;
     private final Elevator elevator;
-    private final Intake intake;
+    //private final Intake intake;
     private final Outtake outtake;
     private final Elevating elevating;
     //private final DriveSim driveSim;
@@ -68,10 +68,10 @@ public class RobotContainer implements Logged {
     public RobotContainer() {
         vision = new Vision();
         elevator = new Elevator();
-        intake = new Intake();
+        // intake = new Intake();
         outtake = new Outtake();
-        elevating = new Elevating(elevator, outtake, intake);
-        coralTransition = new CoralTransition(intake, outtake);
+        elevating = new Elevating(elevator, outtake);
+        coralTransition = new CoralTransition(outtake);
         //driveSim = new DriveSim();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
@@ -142,18 +142,18 @@ public class RobotContainer implements Logged {
                 .onFalse(elevator.stopMotorCmd());
 
         operJoy.povDown()
-                .whileTrue(elevator.forceReverseMotorCmd())
+                .whileTrue(elevator.reverseMotorCmd())
                 .onFalse(elevator.stopMotorCmd());
 
         /**
         * run intake manually
         */
-        operJoy.leftTrigger()
-        .whileTrue(
-        intake.reverseMotorCmd())
-        .onFalse(
-        intake.stopMotorCmd()
-        );
+        // operJoy.leftTrigger()
+        // .whileTrue(
+        // intake.reverseMotorCmd())
+        // .onFalse(
+        // intake.stopMotorCmd()
+        // );
 
         /**
         * outtake

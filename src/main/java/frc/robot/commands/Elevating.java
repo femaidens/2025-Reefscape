@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
-import frc.robot.subsystems.Intake;
+//import frc.robot.subsystems.Intake;
 
 
 
@@ -17,12 +17,12 @@ public class Elevating {
 
     private Elevator elevator;
     private Outtake outtake;
-    private Intake intake;
+    //private Intake intake;
 
-    public Elevating(Elevator elevator, Outtake outtake, Intake intake){
+    public Elevating(Elevator elevator, Outtake outtake){
         this.elevator = elevator;
         this.outtake = outtake;
-        this.intake = intake;
+        //this.intake = intake;
     }
 
     /**
@@ -96,7 +96,6 @@ public class Elevating {
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
             .andThen(elevator.stopMotorCmd())
-            .andThen(intake.stopMotorCmd())
             .andThen(outtake.stopMotorCmd());
         
             
