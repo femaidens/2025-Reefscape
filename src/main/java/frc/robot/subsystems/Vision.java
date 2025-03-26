@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -228,7 +229,7 @@ public class Vision extends SubsystemBase implements Logged {
   public Command funkierLeft(){
     return this.run(() -> {
       var results = frontRightCam.getAllUnreadResults();
-      // int[] reefIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
       // boolean hasTargets = result.get(0).hasTargets();
       // double xSpeed = 0; //forward
       // double ySpeed = 0; //strafe
@@ -238,7 +239,7 @@ public class Vision extends SubsystemBase implements Logged {
         var result = results.get(results.size() - 1);
         for (var target : result.getTargets()) {
           // for(int i = 0; i < reefIDs.length; i++){
-          if (target.getFiducialId() == 11 || target.getFiducialId() == 6) {
+          if (reefIds.contains(target.getFiducialId())) {
             // PhotonTrackedTarget target = result.get(0).getBestTarget();
             List<TargetCorner> targetCorners = target.getDetectedCorners();
             // corners as specified by getDetectedCorners()
