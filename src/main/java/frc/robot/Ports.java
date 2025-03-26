@@ -35,7 +35,7 @@ public class Ports {
       }
       public class OuttakePorts {
         public static int OUTTAKE_MOTOR = 12 ; 
-        public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
-        public static int MIDDLE_RECEIVER = 1;
+        public static int FRONT_RECEIVER = 1; // front reciever is the one farthest away from intake
+        public static int MIDDLE_RECEIVER = 0;
       }
 }

@@ -69,14 +69,15 @@ public class Vision extends SubsystemBase implements Logged {
 
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
   private Drive drive;
+  // private double currentTargetArea;
 
   public Vision() {
     turn = 0.0;
     forward = 0.0;
     targetRange = 0.0;
-    frontLeftCam = new PhotonCamera("2265-greenfish");
+    frontLeftCam = new PhotonCamera("2265-ironfish");
     drive = new Drive();
-    frontRightCam = new PhotonCamera("2265-ironfish");
+    frontRightCam = new PhotonCamera("2265-greenfish");
     // rearLeftCam = new PhotonCamera("LeftRear");
     // rearRightCam = new PhotonCamera("RightRear");
 
@@ -105,6 +106,7 @@ public class Vision extends SubsystemBase implements Logged {
     // frontRightEstimator.setFieldTags(fieldLayout);
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
+    // currentTargetArea = VisionConstants.
   }
   @Log.NT
   public Pose2d getCurrentPose(){
@@ -125,6 +127,66 @@ public class Vision extends SubsystemBase implements Logged {
     return botPose;
   }
 
+  public Command printRightTargetArea() {
+    return this.run(() -> {
+      var results = frontRightCam.getAllUnreadResults();
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+      // boolean hasTargets = result.get(0).hasTargets();
+      // double xSpeed = 0; //forward
+      // double ySpeed = 0; //strafe
+      // double thetaSpeed = 0;
+      double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
+      if(results.size() > 0 && results.get(0).hasTargets()){
+        var result = results.get(results.size() - 1);
+        for (var target : result.getTargets()) {
+          // for(int i = 0; i < reefIDs.length; i++){
+          if (reefIds.contains(target.getFiducialId())) {
+            // PhotonTrackedTarget target = result.get(0).getBestTarget();
+            List<TargetCorner> targetCorners = target.getDetectedCorners();
+            // corners as specified by getDetectedCorners()
+            TargetCorner bottomLeft = targetCorners.get(0);
+            TargetCorner bottomRight = targetCorners.get(1);
+            TargetCorner topRight = targetCorners.get(2);
+            TargetCorner topLeft = targetCorners.get(3);
+        
+            double rightTargetArea = target.area;
+            System.out.println("right target area: " + rightTargetArea);
+          }
+        }
+      }
+    });
+  }
+
+    public Command printLeftTargetArea() {
+    return this.run(() -> {
+      var results = frontLeftCam.getAllUnreadResults();
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+      // boolean hasTargets = result.get(0).hasTargets();
+      // double xSpeed = 0; //forward
+      // double ySpeed = 0; //strafe
+      // double thetaSpeed = 0;
+      double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
+      if(results.size() > 0 && results.get(0).hasTargets()){
+        var result = results.get(results.size() - 1);
+        for (var target : result.getTargets()) {
+          // for(int i = 0; i < reefIDs.length; i++){
+          if (reefIds.contains(target.getFiducialId())) {
+            // PhotonTrackedTarget target = result.get(0).getBestTarget();
+            List<TargetCorner> targetCorners = target.getDetectedCorners();
+            // corners as specified by getDetectedCorners()
+            TargetCorner bottomLeft = targetCorners.get(0);
+            TargetCorner bottomRight = targetCorners.get(1);
+            TargetCorner topRight = targetCorners.get(2);
+            TargetCorner topLeft = targetCorners.get(3);
+        
+            double leftTargetArea = target.area;
+            System.out.println("left target area: " + leftTargetArea);
+          }
+        }
+      }
+    });
+  }
+  
   public Command printYaw(){
     return this.run(() -> {
       var result = frontLeftCam.getAllUnreadResults();
@@ -334,7 +396,7 @@ public class Vision extends SubsystemBase implements Logged {
 
       // boolean hasTargets = result.get(0).hasTargets();
       // double xSpeed = 0; //forward
-      // double ySpeed = 0; //strafe
+      // double ySpeed = 0; //strafe  
       // double thetaSpeed = 0;
       double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
       if(results.size() > 0 && results.get(0).hasTargets()){
@@ -470,7 +532,9 @@ public class Vision extends SubsystemBase implements Logged {
   // }
   @Override
   public void periodic(){
-    // printYaw();
+    printRightTargetArea();
+    printLeftTargetArea();
+    //printYaw();
     // SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
     // SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
     // funkierPrint();

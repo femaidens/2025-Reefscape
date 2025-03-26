@@ -150,7 +150,9 @@ public class RobotContainer implements Logged {
         /**
         * run intake manually
         */
-        // operJoy.leftTrigger()
+        operJoy.leftTrigger()
+        .onTrue(outtake.stopMotorCmd()
+        .andThen(elevating.resetDefault()));
         // .whileTrue(
         // intake.reverseMotorCmd())
         // .onFalse(

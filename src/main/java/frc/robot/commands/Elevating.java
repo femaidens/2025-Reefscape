@@ -100,9 +100,9 @@ public class Elevating {
      */
     public Command resetDefault(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL)
-            .andThen(elevator.stopMotorCmd())
-            .andThen(outtake.stopMotorCmd());
+            elevator.setLevelWithLimit(Constants.ElevatorConstants.SetpointConstants.DEFAULT_LVL);
+            // .andThen(elevator.stopMotorCmd())
+            // .andThen(outtake.stopMotorCmd());
         
             
     }
