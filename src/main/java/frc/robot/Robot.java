@@ -24,8 +24,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.DriveConstants;
 import frc.robot.subsystems.VisionSim;
+import frc.robot.subsystems.DriveConstants;
+import frc.robot.subsystems.DriveSim;
 import monologue.Logged;
 import monologue.Monologue;
 
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot implements Logged {
 
   private final RobotContainer m_robotContainer;
   private VisionSim visionSim;
+  //private DriveSim driveSim;
   private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
   // private PhotonCamera frontLeftCam;
   //private Drive drive;
@@ -56,6 +58,7 @@ public class Robot extends TimedRobot implements Logged {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     visionSim = new VisionSim();
+    //driveSim = new DriveSim();
     //drive = new Drive();
 
     boolean fileOnly = false;
@@ -85,6 +88,7 @@ public class Robot extends TimedRobot implements Logged {
     Monologue.setFileOnly(DriverStation.isFMSAttached());
      // This method needs to be called periodically, or no logging annotations will process properly.
     Monologue.updateAll();
+    //Pose2d robotPose1 = driveSim.getPose();
     visionSim.simulationPeriodic(robotPose);
   }
 

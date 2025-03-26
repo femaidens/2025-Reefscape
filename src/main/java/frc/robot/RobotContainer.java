@@ -18,6 +18,7 @@ import frc.robot.subsystems.Elevator;
 // import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.VisionSim;
 import monologue.Logged;
 
 import java.lang.reflect.Field;
@@ -51,6 +52,7 @@ public class RobotContainer implements Logged {
     // private final Drive drive = new Drive();
     private final Vision vision;
     private final Elevator elevator;
+    private final VisionSim visionSim1;
     //private final Intake intake;
     private final Outtake outtake;
     private final Elevating elevating;
@@ -69,6 +71,7 @@ public class RobotContainer implements Logged {
      */
     public RobotContainer() {
         vision = new Vision();
+        visionSim1 = new VisionSim();
         elevator = new Elevator();
         // intake = new Intake();
         outtake = new Outtake();
@@ -93,8 +96,8 @@ public class RobotContainer implements Logged {
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
                         vision));
 
-//                         driveSim.setDefaultCommand(
-//       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
+                         //driveSim.setDefaultCommand(
+       //driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
     }
 
     /**
