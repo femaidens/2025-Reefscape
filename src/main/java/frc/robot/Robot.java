@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
-//import frc.robot.subsystems.VisionSim;
+import frc.robot.subsystems.VisionSim;
 import monologue.Logged;
 import monologue.Monologue;
 
@@ -38,7 +38,7 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  //private VisionSim visionSim;
+  private VisionSim visionSim;
   private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
   // private PhotonCamera frontLeftCam;
   //private Drive drive;
@@ -55,7 +55,7 @@ public class Robot extends TimedRobot implements Logged {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-   // visionSim = new VisionSim();
+    visionSim = new VisionSim();
     //drive = new Drive();
 
     boolean fileOnly = false;
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot implements Logged {
     Monologue.setFileOnly(DriverStation.isFMSAttached());
      // This method needs to be called periodically, or no logging annotations will process properly.
     Monologue.updateAll();
-    //visionSim.simulationPeriodic(robotPose);
+    visionSim.simulationPeriodic(robotPose);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
