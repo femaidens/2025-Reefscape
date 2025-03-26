@@ -330,6 +330,8 @@ public class Vision extends SubsystemBase implements Logged {
   public Command funkierRight(){
     return this.run(() -> {
       var results = frontLeftCam.getAllUnreadResults();
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+
       // boolean hasTargets = result.get(0).hasTargets();
       // double xSpeed = 0; //forward
       // double ySpeed = 0; //strafe
@@ -338,7 +340,7 @@ public class Vision extends SubsystemBase implements Logged {
       if(results.size() > 0 && results.get(0).hasTargets()){
         var result = results.get(results.size() - 1);
         for (var target : result.getTargets()) {
-          if (target.getFiducialId() == 11 || target.getFiducialId() == 6 || target.getFiducialId() == 7) {
+          if (reefIds.contains(target.getFiducialId())) {
             // PhotonTrackedTarget target = result.get(0).getBestTarget();
             PhotonTrackedTarget bestTarget = result.getBestTarget();
 
