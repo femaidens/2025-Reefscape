@@ -9,22 +9,21 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Outtake;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TaxiTrough extends SequentialCommandGroup {
-  /** Creates a new TaxiTrough. */
-  public TaxiTrough(Drive drivetrain, Elevating elevating, Outtake outtake) {
+public class TaxiL4 extends SequentialCommandGroup {
+  /** Creates a new TaxiL4. */
+  public TaxiL4(Drive drivetrain, Elevating elevating, Outtake outtake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> drivetrain.zeroHeading()),
         new RunCommand(() -> drivetrain.drive(() -> -0.2, () -> 0.0, () -> 0.0), drivetrain)
           .withTimeout(2),
-        elevating.firstLevelCmd().until(elevating.elevator::atSetpoint).withTimeout(3),
+        elevating.fourthLevelCmd().until(elevating.elevator::atSetpoint).withTimeout(3),
         outtake.runMotorCmd().withTimeout(3)
     );
   }

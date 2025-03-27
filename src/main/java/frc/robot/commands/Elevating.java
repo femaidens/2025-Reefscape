@@ -15,8 +15,8 @@ import frc.robot.subsystems.Outtake;
 /** Add your docs here. */
 public class Elevating {
 
-    private Elevator elevator;
-    private Outtake outtake;
+    public Elevator elevator;
+    public Outtake outtake;
     //private Intake intake;
 
     public Elevating(Elevator elevator, Outtake outtake){

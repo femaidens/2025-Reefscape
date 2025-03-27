@@ -7,6 +7,10 @@ package frc.robot;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.auto.Taxi;
+import frc.robot.auto.TaxiL2;
+import frc.robot.auto.TaxiL3;
+import frc.robot.auto.TaxiL4;
+import frc.robot.auto.TaxiTrough;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
@@ -70,19 +74,18 @@ public class RobotContainer implements Logged {
     public RobotContainer() {
         vision = new Vision();
         elevator = new Elevator();
-        // intake = new Intake();
         outtake = new Outtake();
         elevating = new Elevating(elevator, outtake);
         coralTransition = new CoralTransition(outtake);
-        //driveSim = new DriveSim();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
         configureBindings();
         configureDefaultCmds();
+        configureAuton();
     }
 
-    // private SendableChooser<Command> autonChooser;
+    private SendableChooser<Command> autonChooser;
 
     private void configureDefaultCmds() {
         vision.setDefaultCommand(
@@ -229,10 +232,14 @@ operJoy.y()
                         elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
-    // public void configureAuton(){
-    // autonChooser.addOption("taxi", new Taxi(drivetrain));
-    // SmartDashboard.putData("Choose auto: ", autonChooser);
-    // }
+    public void configureAuton(){
+        autonChooser.addOption("taxi", new Taxi(vision.drive));
+        autonChooser.addOption("taxi L1", new TaxiTrough(vision.drive, elevating, outtake));
+        autonChooser.addOption("taxi L2", new TaxiL2(vision.drive, elevating, outtake));
+        autonChooser.addOption("taxi L3", new TaxiL3(vision.drive, elevating, outtake));
+        autonChooser.addOption("taxi L4", new TaxiL4(vision.drive, elevating, outtake));
+        SmartDashboard.putData("Choose auto: ", autonChooser);
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -242,8 +249,7 @@ operJoy.y()
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        // return autonChooser.getSelected();
-        return null;
+        return autonChooser.getSelected();
     }
 
 }

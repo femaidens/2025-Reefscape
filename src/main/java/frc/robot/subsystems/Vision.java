@@ -68,7 +68,7 @@ public class Vision extends SubsystemBase implements Logged {
 
 
   Optional<EstimatedRobotPose> frontLeftUpdate; //, frontRightUpdate, rearLeftUpdate, rearRightUpdate;
-  private Drive drive;
+  public Drive drive;
   // private double currentTargetArea;
 
   public Vision() {
