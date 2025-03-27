@@ -30,8 +30,8 @@ public class Elevating {
      */
     public Command scoringAlgaeBargeCmd(){
         return 
-            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.BARGE_LVL)
-            .andThen(outtake.setOuttakeCoralSpeedCmd());
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.BARGE_LVL);
+            // .andThen(outtake.setOuttakeCoralSpeedCmd());
     }
     
     public Command firstLevelCmd(){

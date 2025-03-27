@@ -81,7 +81,7 @@ public class RobotContainer implements Logged {
         // alignToCenter = new AlignToCenter(drive, vision, null);
         configureBindings();
         configureDefaultCmds();
-        configureAuton();
+        // configureAuton();
     }
 
     private SendableChooser<Command> autonChooser;
@@ -152,9 +152,7 @@ public class RobotContainer implements Logged {
         /**
         * run intake manually
         */
-        operJoy.leftTrigger()
-        .onTrue(outtake.stopMotorCmd()
-        .andThen(elevating.resetDefault()));
+        
         // .whileTrue(
         // intake.reverseMotorCmd())
         // .onFalse(
@@ -180,6 +178,10 @@ public class RobotContainer implements Logged {
          */
         operJoy.rightTrigger()
         .onTrue(coralTransition.moveCoralToOuttake());
+
+        operJoy.leftTrigger()
+        .onTrue(outtake.stopMotorCmd()
+        .andThen(elevating.resetDefault()));
 
         // operJoy.rightStick()
         // .onTrue(
@@ -214,30 +216,30 @@ operJoy.b()
 operJoy.y()
         .onTrue(elevating.fourthLevelCmd());
 
-        driveJoy.a()
-        .whileTrue(
-                elevator.quasiCmd(SysIdRoutine.Direction.kForward));
+        // driveJoy.a()
+        // .whileTrue(
+        //         elevator.quasiCmd(SysIdRoutine.Direction.kForward));
 
-        driveJoy.b()
-                .whileTrue(
-                        elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
+        // driveJoy.b()
+        //         .whileTrue(
+        //                 elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
 
-        driveJoy.x()
-                .whileTrue(
-                        elevator.dynaCmd(SysIdRoutine.Direction.kForward));
+        // driveJoy.x()
+        //         .whileTrue(
+        //                 elevator.dynaCmd(SysIdRoutine.Direction.kForward));
 
-        driveJoy.y()
-                .whileTrue(
-                        elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
+        // driveJoy.y()
+        //         .whileTrue(
+        //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
-    public void configureAuton(){
-        autonChooser.addOption("taxi", new Taxi(vision));
-        autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
-        SmartDashboard.putData("Choose auto: ", autonChooser);
-    }
+//     public void configureAuton(){
+//         autonChooser.addOption("taxi", new Taxi(vision));
+//         autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
+//         autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
+//         autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
+//         SmartDashboard.putData("Choose auto: ", autonChooser);
+//     }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
