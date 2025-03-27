@@ -108,6 +108,14 @@ public class Vision extends SubsystemBase implements Logged {
     // rearRightEstimator.setFieldTags(fieldLayout);
     // currentTargetArea = VisionConstants.
   }
+
+    /**
+   * Zero the gyro heading
+   */
+  public void visionZeroHeading() {
+    drive.zeroHeading();
+  }
+
   @Log.NT
   public Pose2d getCurrentPose(){
     var result = frontLeftCam.getAllUnreadResults();

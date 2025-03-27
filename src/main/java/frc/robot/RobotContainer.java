@@ -10,7 +10,6 @@ import frc.robot.auto.Taxi;
 import frc.robot.auto.TaxiL2;
 import frc.robot.auto.TaxiL3;
 import frc.robot.auto.TaxiL4;
-import frc.robot.auto.TaxiTrough;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
@@ -233,11 +232,10 @@ operJoy.y()
     }
 
     public void configureAuton(){
-        autonChooser.addOption("taxi", new Taxi(vision.drive));
-        autonChooser.addOption("taxi L1", new TaxiTrough(vision.drive, elevating, outtake));
-        autonChooser.addOption("taxi L2", new TaxiL2(vision.drive, elevating, outtake));
-        autonChooser.addOption("taxi L3", new TaxiL3(vision.drive, elevating, outtake));
-        autonChooser.addOption("taxi L4", new TaxiL4(vision.drive, elevating, outtake));
+        autonChooser.addOption("taxi", new Taxi(vision));
+        autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
         SmartDashboard.putData("Choose auto: ", autonChooser);
     }
 
