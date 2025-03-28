@@ -175,7 +175,8 @@ public class RobotContainer implements Logged {
             .onTrue(elevating.thirdLevelCmd());
             
         operJoy.y()
-            .onTrue(elevating.fourthLevelCmd());
+            .onTrue(elevating.possibleFourthLevelCmd());
+            //.onTrue(elevating.fourthLevelCmd());
 
         operJoy.x()
             .onTrue(elevating.scoringAlgaeBargeCmd());

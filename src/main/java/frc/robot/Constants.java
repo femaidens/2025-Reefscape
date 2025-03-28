@@ -129,7 +129,9 @@ public final class Constants {
       // public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
-    public static final double BARGE_LVL = 7.4;
+      public static final double BARGE_LVL = 7.4;
+
+      public static final double POSSIBLE_FOURTH_LVL  = 7.2;
     }
   }
   public static class IntakeConstants {

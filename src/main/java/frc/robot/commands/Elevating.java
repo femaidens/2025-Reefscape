@@ -74,6 +74,21 @@ public class Elevating {
             // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
+        /**
+     * 
+     * @return possibly goes to the fourth level of reef and then outtakes and moves up
+     */
+    public Command possibleFourthLevelCmd(){
+        return 
+            elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
+            .until(elevator::atSetpoint)
+             .andThen(outtake.runMotorCmd())
+             .withTimeout(1.05)
+             .andThen(elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.POSSIBLE_FOURTH_LVL))
+             .alongWith(outtake.runMotorCmd());
+            // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
+    }
+
     /**
      * @return goes to algae removal level 2 and then removes
      */
