@@ -78,6 +78,7 @@ public class RobotContainer implements Logged {
         outtake = new Outtake();
         elevating = new Elevating(elevator, outtake);
         coralTransition = new CoralTransition(outtake);
+        autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
@@ -175,8 +176,8 @@ public class RobotContainer implements Logged {
             .onTrue(elevating.thirdLevelCmd());
             
         operJoy.y()
-            .onTrue(elevating.possibleFourthLevelCmd());
-            //.onTrue(elevating.fourthLevelCmd());
+            // .onTrue(elevating.possibleFourthLevelCmd());
+            .onTrue(elevating.fourthLevelCmd());
 
         operJoy.x()
             .onTrue(elevating.scoringAlgaeBargeCmd());

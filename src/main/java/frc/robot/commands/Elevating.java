@@ -82,10 +82,9 @@ public class Elevating {
         return 
             elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FOURTH_LVL)
             .until(elevator::atSetpoint)
-             .andThen(outtake.runMotorCmd())
-             .withTimeout(1.05)
-             .andThen(elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.POSSIBLE_FOURTH_LVL))
-             .alongWith(outtake.runMotorCmd());
+            .andThen(outtake.runMotorCmd()).withTimeout(1.05)
+            .andThen(elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.POSSIBLE_FOURTH_LVL))
+            .alongWith(outtake.runMotorCmd());
             // .andThen(outtake.setOuttakeCoralSpeedCmd()).withTimeout(2);
     }
 
