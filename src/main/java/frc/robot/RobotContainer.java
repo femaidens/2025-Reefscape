@@ -65,6 +65,8 @@ public class RobotContainer implements Logged {
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
+    private SendableChooser<Command> autonChooser;
+
     // private final AlignToCenter alignToCenter;
 
     /**
@@ -79,12 +81,13 @@ public class RobotContainer implements Logged {
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
+        
         configureBindings();
         configureDefaultCmds();
-        // configureAuton();
+        configureAuton();
     }
 
-    private SendableChooser<Command> autonChooser;
+    
 
     private void configureDefaultCmds() {
         vision.setDefaultCommand(
@@ -125,22 +128,6 @@ public class RobotContainer implements Logged {
                 .onTrue(vision.funkierLeft())
                 .onFalse(vision.stopDriving());
 
-        // operJoy.b()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-        // // .onFalse(elevator.stopMotorCmd());
-
-        // operJoy.y()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-
-        // operJoy.x()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-
         operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
                 .onFalse(elevator.stopMotorCmd());
@@ -150,72 +137,51 @@ public class RobotContainer implements Logged {
                 .onFalse(elevator.stopMotorCmd());
 
         /**
-        * run intake manually
-        */
-        
-        // .whileTrue(
-        // intake.reverseMotorCmd())
-        // .onFalse(
-        // intake.stopMotorCmd()
-        // );
-
-        /**
         * outtake
         */
         operJoy.rightBumper()
-        .whileTrue(outtake.runMotorCmd())
-        .onFalse(outtake.stopMotorCmd());
+            .whileTrue(outtake.runMotorCmd())
+            .onFalse(outtake.stopMotorCmd());
 
         /**
         * reverse outtake
         */
         operJoy.leftBumper()
-        .whileTrue(outtake.reverseOuttakeCmd())
-        .onFalse(outtake.stopMotorCmd());
+            .whileTrue(outtake.reverseOuttakeCmd())
+            .onFalse(outtake.stopMotorCmd());
 
         /**
          * coral transition
          */
         operJoy.rightTrigger()
-        .onTrue(coralTransition.moveCoralToOuttake());
+            .onTrue(coralTransition.moveCoralToOuttake());
 
         operJoy.leftTrigger()
-        .onTrue(outtake.stopMotorCmd()
-        .andThen(elevating.resetDefault()));
+            .onTrue(outtake.stopMotorCmd()
+            .andThen(elevating.resetDefault()));
 
-        // operJoy.rightStick()
-        // .onTrue(
-        // elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+        operJoy.a()
+            .onTrue(elevating.secondLevelCmd());
 
-        // operJoy.a()
-        // .whileTrue(elevator.forceReverseMotorCmd())
-        // .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
+        operJoy.b()
+            .onTrue(elevating.thirdLevelCmd());
+            
+        operJoy.y()
+            .onTrue(elevating.fourthLevelCmd());
 
-        // operJoy.rightBumper()
-        // .whileTrue(algaeCmds.intakeAlgae())
-        // .whileFalse(algaeCmds.raiseAlgae());
-
-        // operJoy.leftBumper()
-        // .whileTrue(algaeCmds.outtakeAlgae());
         operJoy.x()
-        .onTrue(elevating.scoringAlgaeBargeCmd())
-        .onFalse(outtake.stopMotorCmd());
+            .onTrue(elevating.scoringAlgaeBargeCmd());
+            // .onFalse(outtake.stopMotorCmd());
 
-operJoy.start()
-        .onTrue(elevating.algaeSecondLevelCmd());
+        operJoy.start()
+            .onTrue(elevating.algaeSecondLevelCmd());
+            
+        operJoy.back()
+            .onTrue(elevating.algaeThirdLevelCmd());
 
-operJoy.a()
-        .onTrue(elevating.secondLevelCmd());
-        
-operJoy.back()
-        .onTrue(elevating.algaeThirdLevelCmd());
-
-operJoy.b()
-        .onTrue(elevating.thirdLevelCmd());
-
-operJoy.y()
-        .onTrue(elevating.fourthLevelCmd());
-
+        /**
+         * elevator sysid
+         */
         // driveJoy.a()
         // .whileTrue(
         //         elevator.quasiCmd(SysIdRoutine.Direction.kForward));
@@ -233,13 +199,13 @@ operJoy.y()
         //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
-//     public void configureAuton(){
-//         autonChooser.addOption("taxi", new Taxi(vision));
-//         autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
-//         autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
-//         autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
-//         SmartDashboard.putData("Choose auto: ", autonChooser);
-//     }
+    public void configureAuton(){
+        autonChooser.addOption("taxi", new Taxi(vision));
+        autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
+        SmartDashboard.putData("Choose auto: ", autonChooser);
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
