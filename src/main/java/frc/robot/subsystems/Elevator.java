@@ -43,11 +43,8 @@ public class Elevator extends SubsystemBase {
   private static RelativeEncoder elevatorEncoder;
   private static AbsoluteEncoder absoluteEncoder;
   private static ElevatorFeedforward ff;
+  private static double lastSetpoint;
   // private double initialOffset = 0;
-  // private boolean underBotSwitch; //in case we need it, threw it in commented sections. Might be needed because limit switch is not at the very
-  //                                 // bottom of the elevator
-  // private boolean previousSwitchTriggered;
-  // private boolean currentSwitchTriggered;
 
   private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(2).per(Seconds),  // we don't know what seconds does but it works (if there's errors then it may be because of this)
   Volts.of(10),
@@ -114,11 +111,7 @@ public class Elevator extends SubsystemBase {
         elevatorMotorFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
 
-
-        // underBotSwitch = true;
-        // currentSwitchTriggered = botLimitSwitch.get();
-        // previousSwitchTriggered = currentSwitchTriggered;
-        // initialOffset = absoluteEncoder.getPosition() - 0.39;
+        lastSetpoint = elevatorEncoder.getPosition();
     }
     
     public boolean atSetpoint(){
@@ -153,7 +146,7 @@ public class Elevator extends SubsystemBase {
  * @return
 //  */
     public void elevatorPIDw(double setpoint){
-    double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
+        double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
     // if(hitBotLimit()){
     //   elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
     //     // not sure if this is correct
@@ -286,6 +279,14 @@ public class Elevator extends SubsystemBase {
       );
     }
 
+    /**
+     * Runs PID to stay at the last setpoint, which can be set using setCurrentSetpoint()
+     * @return Run command
+     */
+    public Command stayAtLevel(){
+        return setLevel(lastSetpoint);
+    }
+
 
     public void setVoltage(double volts){
       elevatorMotorLeader.setVoltage(volts);
@@ -293,6 +294,10 @@ public class Elevator extends SubsystemBase {
 
     public double getCurrentPosition(){
       return elevatorEncoder.getPosition(); 
+    }
+
+    public Command setCurrentSetpoint(double setpoint){
+        return this.runOnce(() -> lastSetpoint = setpoint);
     }
 
     public boolean atMinimum(){

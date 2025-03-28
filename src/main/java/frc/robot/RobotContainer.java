@@ -98,6 +98,10 @@ public class RobotContainer implements Logged {
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
                         vision));
 
+        // elevator.setDefaultCommand(
+        //     elevator.stayAtLevel()
+        // );
+
 //                         driveSim.setDefaultCommand(
 //       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
     }
@@ -130,11 +134,15 @@ public class RobotContainer implements Logged {
 
         operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
-                .onFalse(elevator.stopMotorCmd());
+                .onFalse(elevator.stopMotorCmd()
+                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+                );
 
         operJoy.povDown()
                 .whileTrue(elevator.reverseMotorCmd())
-                .onFalse(elevator.stopMotorCmd());
+                .onFalse(elevator.stopMotorCmd()
+                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+                );
 
         /**
         * outtake
