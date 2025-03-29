@@ -27,7 +27,7 @@ public class TaxiL2 extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> vision.visionZeroHeading()),
         vision.funkierRight().alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
-        elevating.secondLevelCmd().until(elevating.elevator::atSetpoint),
+        elevating.secondLevelCmd(),//until(elevating.elevator::atSetpoint),
         outtake.runMotorCmd().withTimeout(3).alongWith(elevating.secondLevelCmd())
     );
   }

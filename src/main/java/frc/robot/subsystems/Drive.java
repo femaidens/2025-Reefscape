@@ -123,6 +123,24 @@ public class Drive extends SubsystemBase implements Logged {
     // );
     setModuleStates(moduleStates);
   }
+
+  public void driveRobotRelative(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotSpeed){
+    double xVel = xSpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
+    double yVel = ySpeed.getAsDouble() * Drivetrain.MAX_SPEED * Drivetrain.SPEED_FACTOR;
+    double rotVel = rotSpeed.getAsDouble() * Drivetrain.MAX_ROT_SPEED * Drivetrain.SPEED_FACTOR;
+
+    speeds = new ChassisSpeeds(xVel, yVel, rotVel);
+    SwerveModuleState[] moduleStates = Drivetrain.kDriveKinematics.toSwerveModuleStates(speeds);
+
+    // return this.run(
+    //   () -> {
+    //     for(int i = 0; i < modules.size(); i++){
+    //       modules.get(i).setDesiredState(moduleStates[i]);
+    //     }
+    //   }
+    // );
+    setModuleStates(moduleStates);
+  }
   
   /**
    * sets the swerve ModuleStates

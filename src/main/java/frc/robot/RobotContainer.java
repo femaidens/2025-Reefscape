@@ -102,6 +102,7 @@ public class RobotContainer implements Logged {
         // elevator.setDefaultCommand(
         //     elevator.stayAtLevel()
         // );
+        
 
 //                         driveSim.setDefaultCommand(
 //       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
@@ -131,6 +132,10 @@ public class RobotContainer implements Logged {
 
         driveJoy.leftTrigger()
                 .onTrue(vision.funkierLeft())
+                .onFalse(vision.stopDriving());
+
+        driveJoy.y()
+                .onTrue(vision.funkierMiddle())
                 .onFalse(vision.stopDriving());
 
         operJoy.povUp()

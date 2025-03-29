@@ -116,7 +116,7 @@ public class Vision extends SubsystemBase implements Logged {
     drive.zeroHeading();
   }
 
-  @Log.NT
+  // @Log.NT
   public Pose2d getCurrentPose(){
     var result = frontLeftCam.getAllUnreadResults();
     boolean check = false;
@@ -337,7 +337,7 @@ public class Vision extends SubsystemBase implements Logged {
             if(tilt > 1.02) { // left side of id is longer than right
               speeds[2] = -(tilt-1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
             } else if(tilt < 0.97) { // left side is shorter than right
-              speeds[2] = (tilt - 1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+              speeds[2] = -(tilt - 1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
             } else {
               speeds[2] = 0;
             }
@@ -345,7 +345,7 @@ public class Vision extends SubsystemBase implements Logged {
       }
     }
     }
-      drive.drive(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
+      drive.driveRobotRelative(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
     });
   }
 /**
@@ -438,7 +438,7 @@ public class Vision extends SubsystemBase implements Logged {
             
             tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
             if(tilt > 1.02) { // left side of id is longer than right
-              speeds[2] = (tilt-1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+              speeds[2] = -(tilt-1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
             } else if(tilt < 0.97) { // left side is shorter than right
               speeds[2] = -(tilt - 1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
             } else {
@@ -447,7 +447,64 @@ public class Vision extends SubsystemBase implements Logged {
             System.out.println("Tag location: " + targetX);
       }
     }}
-      drive.drive(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
+      drive.driveRobotRelative(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
+    });
+  }
+
+    /**
+   * Uses the target corners of the photontrackedtarget, yaw, and pitch to align (without pose estimation)
+   * @return
+   */
+  public Command funkierMiddle(){
+    return this.run(() -> {
+      var results = frontLeftCam.getAllUnreadResults();
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+      // boolean hasTargets = result.get(0).hasTargets();
+      // double xSpeed = 0; //forward
+      // double ySpeed = 0; //strafe
+      // double thetaSpeed = 0;
+      double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
+      if(results.size() > 0 && results.get(0).hasTargets()){
+        var result = results.get(results.size() - 1);
+        for (var target : result.getTargets()) {
+          // for(int i = 0; i < reefIDs.length; i++){
+          if (reefIds.contains(target.getFiducialId())) {
+            // PhotonTrackedTarget target = result.get(0).getBestTarget();
+            List<TargetCorner> targetCorners = target.getDetectedCorners();
+            // corners as specified by getDetectedCorners()
+            TargetCorner bottomLeft = targetCorners.get(0);
+            TargetCorner bottomRight = targetCorners.get(1);
+            TargetCorner topRight = targetCorners.get(2);
+            TargetCorner topLeft = targetCorners.get(3);
+        
+            double targetArea = target.area; // area in percentage?
+            if(targetArea > VisionConstants.GOAL_AREA_MIDDLE){
+              speeds[0] = -(targetArea-VisionConstants.GOAL_AREA_MIDDLE) * 0.01 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            } else if(targetArea < VisionConstants.GOAL_AREA_MIDDLE){
+              speeds[0] = (targetArea-VisionConstants.GOAL_AREA_MIDDLE) * 0.01 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            }
+
+            double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair\
+            targetXe = targetX;
+            if(Math.abs(targetX - VisionConstants.GOAL_X_MIDDLE) > 20){ // current tag is farther right than desired
+              speeds[1] = (targetX-VisionConstants.GOAL_X_MIDDLE) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            // }else if(targetX < VisionConstants.GOAL_X){
+            //   speeds[1] = -(targetX-VisionConstants.GOAL_X) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            }
+            
+            tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
+            if(tilt > 1.02) { // left side of id is longer than right
+              speeds[2] = -(tilt-1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+            } else if(tilt < 0.97) { // left side is shorter than right
+              speeds[2] = -(tilt - 1) * VisionConstants.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+            } else {
+              speeds[2] = 0;
+            }
+            System.out.println("Tag location: " + targetX);
+      }
+    }
+    }
+      drive.driveRobotRelative(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
     });
   }
 
