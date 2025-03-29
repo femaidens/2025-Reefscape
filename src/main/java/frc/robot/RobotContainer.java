@@ -7,6 +7,9 @@ package frc.robot;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.auto.Taxi;
+import frc.robot.auto.TaxiL2;
+import frc.robot.auto.TaxiL3;
+import frc.robot.auto.TaxiL4;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
@@ -15,7 +18,7 @@ import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+// import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
 import monologue.Logged;
@@ -33,6 +36,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import static edu.wpi.first.units.Units.Seconds;
 
 /**
@@ -49,7 +54,7 @@ public class RobotContainer implements Logged {
     // private final Drive drive = new Drive();
     private final Vision vision;
     private final Elevator elevator;
-    private final Intake intake;
+    //private final Intake intake;
     private final Outtake outtake;
     private final Elevating elevating;
     //private final DriveSim driveSim;
@@ -60,6 +65,8 @@ public class RobotContainer implements Logged {
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
 
+    private SendableChooser<Command> autonChooser;
+
     // private final AlignToCenter alignToCenter;
 
     /**
@@ -68,19 +75,20 @@ public class RobotContainer implements Logged {
     public RobotContainer() {
         vision = new Vision();
         elevator = new Elevator();
-        intake = new Intake();
         outtake = new Outtake();
-        elevating = new Elevating(elevator, outtake, intake);
-        coralTransition = new CoralTransition(intake, outtake);
-        //driveSim = new DriveSim();
+        elevating = new Elevating(elevator, outtake);
+        coralTransition = new CoralTransition(outtake);
+        autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
+        
         configureBindings();
         configureDefaultCmds();
+        configureAuton();
     }
 
-    // private SendableChooser<Command> autonChooser;
+    
 
     private void configureDefaultCmds() {
         vision.setDefaultCommand(
@@ -90,6 +98,10 @@ public class RobotContainer implements Logged {
                                 () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
                                 () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
                         vision));
+
+        // elevator.setDefaultCommand(
+        //     elevator.stayAtLevel()
+        // );
 
 //                         driveSim.setDefaultCommand(
 //       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
@@ -121,111 +133,89 @@ public class RobotContainer implements Logged {
                 .onTrue(vision.funkierLeft())
                 .onFalse(vision.stopDriving());
 
-        // operJoy.b()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.SECOND_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-        // // .onFalse(elevator.stopMotorCmd());
-
-        // operJoy.y()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.THIRD_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-
-        // operJoy.x()
-        //         .onTrue(
-        //                 elevator.setLevel(ElevatorConstants.SetpointConstants.FOURTH_LVL).until(elevator::atSetpoint)
-        //                         .andThen(elevator.stopMotorCmd()));
-
         operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
-                .onFalse(elevator.stopMotorCmd());
+                .onFalse(elevator.stopMotorCmd()
+                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+                );
 
         operJoy.povDown()
-                .whileTrue(elevator.forceReverseMotorCmd())
-                .onFalse(elevator.stopMotorCmd());
-
-        /**
-        * run intake manually
-        */
-        operJoy.leftTrigger()
-        .whileTrue(
-        intake.reverseMotorCmd())
-        .onFalse(
-        intake.stopMotorCmd()
-        );
+                .whileTrue(elevator.reverseMotorCmd())
+                .onFalse(elevator.stopMotorCmd()
+                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+                );
 
         /**
         * outtake
         */
         operJoy.rightBumper()
-        .whileTrue(outtake.runMotorCmd())
-        .onFalse(outtake.stopMotorCmd());
+            .whileTrue(outtake.runMotorCmd())
+            .onFalse(outtake.stopMotorCmd());
 
         /**
         * reverse outtake
         */
         operJoy.leftBumper()
-        .whileTrue(outtake.reverseOuttakeCmd())
-        .onFalse(outtake.stopMotorCmd());
+            .whileTrue(outtake.reverseOuttakeCmd())
+            .onFalse(outtake.stopMotorCmd());
 
         /**
          * coral transition
          */
         operJoy.rightTrigger()
-        .onTrue(coralTransition.moveCoralToOuttake());
+            .onTrue(coralTransition.moveCoralToOuttake());
 
-        // operJoy.rightStick()
-        // .onTrue(
-        // elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
+        operJoy.leftTrigger()
+            .onTrue(outtake.stopMotorCmd()
+            .andThen(elevating.resetDefault()));
 
-        // operJoy.a()
-        // .whileTrue(elevator.forceReverseMotorCmd())
-        // .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
+        operJoy.a()
+            .onTrue(elevating.secondLevelCmd());
 
-        // operJoy.rightBumper()
-        // .whileTrue(algaeCmds.intakeAlgae())
-        // .whileFalse(algaeCmds.raiseAlgae());
+        operJoy.b()
+            .onTrue(elevating.thirdLevelCmd());
+            
+        operJoy.y()
+            // .onTrue(elevating.possibleFourthLevelCmd());
+            .onTrue(elevating.fourthLevelCmd());
 
-        // operJoy.leftBumper()
-        // .whileTrue(algaeCmds.outtakeAlgae());
+        operJoy.x()
+            .onTrue(elevating.scoringAlgaeBargeCmd());
+            // .onFalse(outtake.stopMotorCmd());
 
-        // operJoy.a()
-        // .onTrue(new DriveToPoseCmd(drive, vision::getCurrentPose));
+        operJoy.start()
+            .onTrue(elevating.algaeSecondLevelCmd());
+            
+        operJoy.back()
+            .onTrue(elevating.algaeThirdLevelCmd());
 
-        // operJoy.b()
-        // .onTrue(vision.printYaw())
-        // .onFalse(vision.stopDriving());
-
-        // operJoy.x()
-        // .onTrue(vision.driveTranslational())
-        // .onFalse(vision.stopDriving());
-
-        // operJoy.y()
-        // .onTrue(vision.run(() -> vision.funky()))
-        // .onFalse(vision.stopDriving());
-
+        /**
+         * elevator sysid
+         */
         // driveJoy.a()
         // .whileTrue(
-        //         drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
+        //         elevator.quasiCmd(SysIdRoutine.Direction.kForward));
 
         // driveJoy.b()
         //         .whileTrue(
-        //                 drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+        //                 elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
 
         // driveJoy.x()
         //         .whileTrue(
-        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
+        //                 elevator.dynaCmd(SysIdRoutine.Direction.kForward));
 
         // driveJoy.y()
         //         .whileTrue(
-        //                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+        //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
-    // public void configureAuton(){
-    // autonChooser.addOption("taxi", new Taxi(drivetrain));
-    // SmartDashboard.putData("Choose auto: ", autonChooser);
-    // }
+    public void configureAuton(){
+        autonChooser.addOption("taxi", new Taxi(vision));
+        autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
+        SmartDashboard.putData("Choose auto: ", autonChooser);
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -235,8 +225,7 @@ public class RobotContainer implements Logged {
 
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        // return autonChooser.getSelected();
-        return null;
+        return autonChooser.getSelected();
     }
 
 }

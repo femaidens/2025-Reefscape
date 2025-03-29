@@ -36,4 +36,7 @@ public class Ports {
         public static int FRONT_RECEIVER = 0; // front reciever is the one farthest away from intake
         public static int MIDDLE_RECEIVER = 1;
       }
+      public class LEDPorts{
+        public static int LED_PORT = 0; 
+      }
 }

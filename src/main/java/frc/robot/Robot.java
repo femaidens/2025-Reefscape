@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
-import frc.robot.subsystems.VisionSim;
+//import frc.robot.subsystems.VisionSim;
 import monologue.Logged;
 import monologue.Monologue;
 
@@ -38,7 +38,7 @@ public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
 
   private final RobotContainer m_robotContainer;
-  private VisionSim visionSim;
+  //private VisionSim visionSim;
   private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
   // private PhotonCamera frontLeftCam;
   //private Drive drive;
@@ -55,7 +55,7 @@ public class Robot extends TimedRobot implements Logged {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    visionSim = new VisionSim();
+   // visionSim = new VisionSim();
     //drive = new Drive();
 
     boolean fileOnly = false;
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot implements Logged {
     Monologue.setFileOnly(DriverStation.isFMSAttached());
      // This method needs to be called periodically, or no logging annotations will process properly.
     Monologue.updateAll();
-    visionSim.simulationPeriodic(robotPose);
+    //visionSim.simulationPeriodic(robotPose);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -128,46 +128,7 @@ public class Robot extends TimedRobot implements Logged {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
-    // double range = 0.0;
-    // boolean targetVisible = false;
-    //     double targetYaw = 0.0;
-    //     double targetRange = 0.0;
-    //     var results = frontLeftCam.getAllUnreadResults();
-    //     if (!results.isEmpty()) {
-    //         // Camera processed a new frame since last
-    //         // Get the last one in the list.
-    //         var result = results.get(results.size() - 1);
-    //         if (result.hasTargets()) {
-    //             // At least one AprilTag was seen by the camera
-    //             for (var target : result.getTargets()) {
-    //                 if (target.getFiducialId() == 7) {
-    //                     // Found Tag 7, record its information
-    //                     targetYaw = target.getYaw();
-    //                     targetRange =
-    //                             PhotonUtils.calculateDistanceToTargetMeters(
-    //                                     0.5, // Measured with a tape measure, or in CAD.
-    //                                     1.435, // From 2024 game manual for ID 7
-    //                                     Units.degreesToRadians(-30.0), // Measured with a protractor, or in CAD.
-    //                                     Units.degreesToRadians(target.getPitch()));
-
-    //                     targetVisible = true;
-
-    //                     if (targetVisible) {
-    //                       // Driver wants auto-alignment to tag 7
-    //                       // And, tag 7 is in sight, so we can turn toward it.
-    //                       // Override the driver's turn and fwd/rev command with an automatic one
-    //                       // That turns toward the tag, and gets the range right.
-    //                       turn =
-    //                               (-targetYaw) * DriveConstants.Translation.PID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
-    //                       forward =
-    //                               (range - targetRange) * DriveConstants.Translation.PID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
-    //                   }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     drive.drive(() -> forward, () -> .1, () -> turn);
+    
   }
 
   @Override

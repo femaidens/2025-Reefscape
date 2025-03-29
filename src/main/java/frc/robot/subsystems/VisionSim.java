@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveConstants.Drivetrain;
@@ -22,17 +23,17 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class VisionSim {
+public class VisionSim extends SubsystemBase{
     private PhotonCameraSim simCam;
     private PhotonCamera realCam;
     private VisionSystemSim simVision;
-    private Drive drivetrain;
+    private DriveSim drivetrain;
     private Transform3d cameraTrans;
 
     public VisionSim() {
-        if (Robot.isSimulation()) {
+        // if (Robot.isSimulation()) {
             simVision = new VisionSystemSim("main");
-            drivetrain = new Drive();
+            drivetrain = new DriveSim();
             realCam = new PhotonCamera("real camera");
 
             simVision.addAprilTags(Constants.VisionConstants.kTagLayout);
@@ -54,14 +55,14 @@ public class VisionSim {
             cameraTrans = new Transform3d(
             new Translation3d(0.0, 0, camHeightOffGround), new Rotation3d(0, camPitch, 0));
             simVision.addCamera(simCam, cameraTrans);
-        }
+     //   }
     }
     
     public void simulationPeriodic(Pose2d robotSimPose) {
         simVision.update(robotSimPose);
         Pose2d currentPose = drivetrain.getPose();
         Pose3d current3d = new Pose3d(currentPose);
-        simVision.update(currentPose);
+        // simVision.update(currentPose);
         var results = realCam.getLatestResult();
         if (results.hasTargets()) {
             ArrayList<Pose3d> targets = new ArrayList<Pose3d>();

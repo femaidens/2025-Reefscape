@@ -31,10 +31,10 @@ import frc.robot.subsystems.DriveConstants.Drivetrain;
 import frc.robot.subsystems.DriveConstants.Translation;
 import frc.robot.subsystems.DriveConstants.Turn;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.config.PIDConstants;
+// import com.pathplanner.lib.config.RobotConfig;
+// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 // import monologue.Annotations.Log; 
 // import monologue.Logged;
 
@@ -51,9 +51,9 @@ public class DriveSim extends SubsystemBase {
   private final ModuleSim frontRight;
   private final ModuleSim rearLeft;
   private final ModuleSim rearRight;
-  public PPHolonomicDriveController holonomicDriveController;
-  private PIDConstants translationPID;
-  private PIDConstants rotationPID;
+//   public PPHolonomicDriveController holonomicDriveController;
+//   private PIDConstants translationPID;
+//   private PIDConstants rotationPID;
   // private Pose2d poseA;
   // private Pose2d poseB;
   // private Pose3d poseA3d;
@@ -67,7 +67,7 @@ public class DriveSim extends SubsystemBase {
   private StructArrayPublisher<SwerveModuleState> desiredPublisher;
 
   private List<ModuleSim> modules;
-  private RobotConfig config;
+//   private RobotConfig config;
 
   // private Trajectory m_trajectory;
 
@@ -88,9 +88,9 @@ public class DriveSim extends SubsystemBase {
     
     dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
     gyro = new AHRS(NavXComType.kI2C);
-    translationPID = new PIDConstants(Translation.PID.P,Translation.PID.I, Translation.PID.D );
-    rotationPID = new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D);
-    holonomicDriveController = new PPHolonomicDriveController(translationPID, rotationPID);
+    // translationPID = new PIDConstants(Translation.PID.P,Translation.PID.I, Translation.PID.D );
+    // rotationPID = new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D);
+    // holonomicDriveController = new PPHolonomicDriveController(translationPID, rotationPID);
     //angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
     
     m_field = new Field2d();
@@ -105,36 +105,36 @@ public class DriveSim extends SubsystemBase {
         });
 
         
-        try{
-          config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-          // Handle exception as needed
-          e.printStackTrace();
-        }
+        // try{
+        //   config = RobotConfig.fromGUISettings();
+        // } catch (Exception e) {
+        //   // Handle exception as needed
+        //   e.printStackTrace();
+        // }
 
-          AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getRobotRelativeChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //       AutoBuilder.configure(
+    //         this::getPose, // Robot pose supplier
+    //         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+    //         this::getRobotRelativeChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //         (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+    //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+    //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+    //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+    //         ),
+    //         config, // The robot configuration
+    //         () -> {
+    //           // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //           // This will flip the path being followed to the red side of the field.
+    //           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
-    );
+    //           var alliance = DriverStation.getAlliance();
+    //           if (alliance.isPresent()) {
+    //             return alliance.get() == DriverStation.Alliance.Red;
+    //           }
+    //           return false;
+    //         },
+    //         this // Reference to this subsystem to set requirements
+    // );
   }
 
   
