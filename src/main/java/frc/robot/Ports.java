@@ -39,6 +39,6 @@ public class Ports {
         public static int MIDDLE_RECEIVER = 0;
       }
       public class LEDPorts{
-        public static int LED_PORT = 0; 
+        public static int LED_PORT = 9; 
       }
 }
