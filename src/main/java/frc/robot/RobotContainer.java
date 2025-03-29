@@ -57,6 +57,8 @@ public class RobotContainer implements Logged {
     private final Elevator elevator;
     //private final Intake intake;
     private final Outtake outtake;
+    private final LED led; 
+
     private final Elevating elevating;
     //private final DriveSim driveSim;
     // private final Autos autos;
@@ -65,7 +67,6 @@ public class RobotContainer implements Logged {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
-    private final LED led; 
     private SendableChooser<Command> autonChooser;
 
     // private final AlignToCenter alignToCenter;
@@ -77,13 +78,13 @@ public class RobotContainer implements Logged {
         vision = new Vision();
         elevator = new Elevator();
         outtake = new Outtake();
+        led = new LED(); 
         elevating = new Elevating(elevator, outtake);
-        coralTransition = new CoralTransition(outtake);
+        coralTransition = new CoralTransition(outtake,led);
         autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
-        led = new LED(); 
         configureBindings();
         configureDefaultCmds();
         configureAuton();
@@ -154,7 +155,7 @@ public class RobotContainer implements Logged {
         * outtake
         */
         operJoy.rightBumper()
-            .whileTrue(outtake.runMotorCmd())
+            .whileTrue(outtake.runMotorCmd().alongWith(led.setPinkCmd()))
             .onFalse(outtake.stopMotorCmd());
 
         /**
