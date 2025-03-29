@@ -44,6 +44,7 @@ public class Elevator extends SubsystemBase {
   private static AbsoluteEncoder absoluteEncoder;
   private static ElevatorFeedforward ff;
   private static double lastSetpoint;
+  private final LED led; 
   // private double initialOffset = 0;
 
   private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(2).per(Seconds),  // we don't know what seconds does but it works (if there's errors then it may be because of this)
@@ -57,6 +58,7 @@ public class Elevator extends SubsystemBase {
       volts -> setVoltage(volts.in(Volts)), null, this)); 
    
   public Elevator() {
+    led = new LED(); 
     elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.LEADER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
     elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.FOLLOWER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
     
@@ -257,7 +259,7 @@ public class Elevator extends SubsystemBase {
         elevatorPID(elevatorEncoder.getPosition(), setpoint);
         // System.out.println(elevatorEncoder.getPosition());
         }
-      );
+      ).alongWith(led.setProgressCmd());
     }
 
     /**
