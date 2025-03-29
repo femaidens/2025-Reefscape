@@ -18,6 +18,7 @@ import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LED;
 // import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
@@ -56,6 +57,8 @@ public class RobotContainer implements Logged {
     private final Elevator elevator;
     //private final Intake intake;
     private final Outtake outtake;
+    private final LED led; 
+
     private final Elevating elevating;
     //private final DriveSim driveSim;
     // private final Autos autos;
@@ -64,7 +67,6 @@ public class RobotContainer implements Logged {
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
-
     private SendableChooser<Command> autonChooser;
 
     // private final AlignToCenter alignToCenter;
@@ -76,13 +78,13 @@ public class RobotContainer implements Logged {
         vision = new Vision();
         elevator = new Elevator();
         outtake = new Outtake();
+        led = new LED(); 
         elevating = new Elevating(elevator, outtake);
-        coralTransition = new CoralTransition(outtake);
+        coralTransition = new CoralTransition(outtake,led);
         autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
-        
         configureBindings();
         configureDefaultCmds();
         configureAuton();
@@ -106,6 +108,10 @@ public class RobotContainer implements Logged {
 
 //                         driveSim.setDefaultCommand(
 //       driveSim.drive(()-> -driveJoy.getLeftY(), ()-> -driveJoy.getLeftX(), () ->-driveJoy.getRightX()));
+
+        // led.setDefaultCommand(
+        //     led.setScrollGPCmd() 
+        // );
     }
 
     /**
@@ -154,7 +160,7 @@ public class RobotContainer implements Logged {
         * outtake
         */
         operJoy.rightBumper()
-            .whileTrue(outtake.runMotorCmd())
+            .whileTrue(outtake.runMotorCmd().alongWith(led.setPinkCmd()))
             .onFalse(outtake.stopMotorCmd());
 
         /**
