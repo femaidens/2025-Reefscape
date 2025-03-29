@@ -77,11 +77,12 @@ public final class Constants {
 
     //for a strange aligning to target manually idea
     //i think its a percentage?
-    public static final double GOAL_AREA_RIGHT = 12;
-    public static final double GOAL_X_RIGHT = 120; //106; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_AREA_LEFT = 13;
-    public static final double GOAL_X_LEFT = 190; //195 //216; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_AREA_RIGHT = 9;
+    public static final double GOAL_X_RIGHT = 110; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_AREA_LEFT = 9;
+    public static final double GOAL_X_LEFT = 200; //195 //216; //225.75; // x position of apriltag crosshair
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
+    
     public class PID {
       public static final double P = 1.1;
       public static final double I = 0;
@@ -92,15 +93,16 @@ public final class Constants {
   }
   public static class ElevatorConstants {
     public static final int CURRENT_LIMIT = 40;
-    public static final double MOTOR_SPEED = 0.9;
-    public static final double FORCE_MOTOR_SPEED = 0.7;
-    public static final double GEAR_RATIO = 1.0 / 60.0;
+    public static final double MOTOR_SPEED = 0.65;
+    public static final double REVERSE_MOTOR_SPEED = 0.3;
+    public static final double FORCE_MOTOR_SPEED = 0.1;
+    public static final double GEAR_RATIO = 1.0 / 20.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
-      public static final double kP = 12;
+      public static final double kP = 7;
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kMaxVelocity = 7;
@@ -117,15 +119,19 @@ public final class Constants {
     }
 
     public static class SetpointConstants {
+      public static final double DEFAULT_LVL = 0;
       public static final double FIRST_LVL = 1.3; //2.5;
-      public static final double SECOND_LVL = 3.59;
-      public static final double ALGAE_SECOND_LVL = 0;
-      public static final double THIRD_LVL = 5.40; //6.28;
+      public static final double SECOND_LVL = 1.6; //3.59;
+      public static final double ALGAE_SECOND_LVL = 1.42;
+      public static final double THIRD_LVL = 3.4; //6.28;
       public static final double ALGAE_THIRD_LVL = 0;
-      public static final double FOURTH_LVL = 7.8; 
-      public static final double DEFAULT_LVL = 1.54; //1.83;
+      public static final double FOURTH_LVL = 6.3; 
+      // public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;
+      public static final double BARGE_LVL = 7.4;
+
+      public static final double POSSIBLE_FOURTH_LVL  = 7.2;
     }
   }
   public static class IntakeConstants {
@@ -143,6 +149,7 @@ public final class Constants {
   }
   public static class OuttakeConstants {
     public static final double MOTOR_SPEED = 0.3;
+    public static final double BARGE_MOTOR_SPEED = 0.7;
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;

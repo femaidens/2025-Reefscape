@@ -37,16 +37,14 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
 
   private static SparkMax elevatorMotorLeader;
+  private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
   private static RelativeEncoder elevatorEncoder;
   private static AbsoluteEncoder absoluteEncoder;
   private static ElevatorFeedforward ff;
+  private static double lastSetpoint;
   // private double initialOffset = 0;
-  // private boolean underBotSwitch; //in case we need it, threw it in commented sections. Might be needed because limit switch is not at the very
-  //                                 // bottom of the elevator
-  // private boolean previousSwitchTriggered;
-  // private boolean currentSwitchTriggered;
 
   private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(2).per(Seconds),  // we don't know what seconds does but it works (if there's errors then it may be because of this)
   Volts.of(10),
@@ -59,10 +57,11 @@ public class Elevator extends SubsystemBase {
       volts -> setVoltage(volts.in(Volts)), null, this)); 
    
   public Elevator() {
-    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.MOTOR_PORT, SparkLowLevel.MotorType.kBrushless );
-
+    elevatorMotorLeader = new SparkMax(Ports.ElevatorPorts.LEADER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
+    elevatorMotorFollower = new SparkMax(Ports.ElevatorPorts.FOLLOWER_ELEVATOR_MOTOR, SparkLowLevel.MotorType.kBrushless);
+    
     botLimitSwitch = new DigitalInput(Ports.ElevatorPorts.BOT_SWITCH);
-
+    
     elevatorEncoder = elevatorMotorLeader.getEncoder();
     absoluteEncoder = elevatorMotorLeader.getAbsoluteEncoder();
 
@@ -81,14 +80,23 @@ public class Elevator extends SubsystemBase {
       ElevatorConstants.FeedForwardConstants.kA
     );
 
-      SparkMaxConfig config = new SparkMaxConfig();
-
-        config
+      SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        leaderConfig
         .inverted(false)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT);
 
-        config.encoder
+        leaderConfig.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+
+      SparkMaxConfig followerConfig = new SparkMaxConfig();
+        followerConfig
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(ElevatorConstants.CURRENT_LIMIT)
+        .follow(elevatorMotorLeader, true);
+
+        followerConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
@@ -99,17 +107,15 @@ public class Elevator extends SubsystemBase {
         // config.absoluteEncoder
         // .zeroOffset(0.49);
 
-        elevatorMotorLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotorFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
 
-        // underBotSwitch = true;
-        // currentSwitchTriggered = botLimitSwitch.get();
-        // previousSwitchTriggered = currentSwitchTriggered;
-        // initialOffset = absoluteEncoder.getPosition() - 0.39;
+        lastSetpoint = elevatorEncoder.getPosition();
     }
     
     public boolean atSetpoint(){
-      System.out.println(elevatorPID.atSetpoint());
+      // System.out.println(elevatorPID.atSetpoint());
       return elevatorPID.atSetpoint();
     }
   
@@ -140,7 +146,7 @@ public class Elevator extends SubsystemBase {
  * @return
 //  */
     public void elevatorPIDw(double setpoint){
-    double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
+        double voltage = elevatorPID.calculate(elevatorEncoder.getPosition() ) + ff.calculate( elevatorPID.calculate(elevatorEncoder.getPosition()));
     // if(hitBotLimit()){
     //   elevatorMotorLeader.setVoltage(MathUtil.clamp(voltage, 0, 12));
     //     // not sure if this is correct
@@ -200,10 +206,11 @@ public class Elevator extends SubsystemBase {
           // if(elevatorEncoder.getPosition() < ElevatorConstants.SetpointConstants.MINIMUM_LVL){
           if(hitBotLimit()){
             elevatorMotorLeader.stopMotor();
+            //elevatorMotorFollower.stopMotor();
             elevatorEncoder.setPosition(0);
             System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
           } else {
-            elevatorMotorLeader.set(-Constants.ElevatorConstants.MOTOR_SPEED);
+            elevatorMotorLeader.set(-Constants.ElevatorConstants.REVERSE_MOTOR_SPEED);
             // System.out.println("reverseeeeeeee");
           }
         }
@@ -248,8 +255,36 @@ public class Elevator extends SubsystemBase {
     public Command setLevel(double setpoint) {
       return this.run(() -> {
         elevatorPID(elevatorEncoder.getPosition(), setpoint);
-        System.out.println(elevatorEncoder.getPosition());}
+        // System.out.println(elevatorEncoder.getPosition());
+        }
       );
+    }
+
+    /**
+     * 
+     * @param setpoint
+     * @return lifts elevator to specified setpoint
+     */
+    public Command setLevelWithLimit(double setpoint) {
+      return this.run(() -> {
+        if(hitBotLimit()){
+          elevatorMotorLeader.stopMotor();
+          //elevatorMotorFollower.stopMotor();
+          elevatorEncoder.setPosition(0);
+          System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
+        }  else {
+            elevatorPID(elevatorEncoder.getPosition(), setpoint);
+            // System.out.println(elevatorEncoder.getPosition());
+        }}
+      );
+    }
+
+    /**
+     * Runs PID to stay at the last setpoint, which can be set using setCurrentSetpoint()
+     * @return Run command
+     */
+    public Command stayAtLevel(){
+        return setLevel(lastSetpoint);
     }
 
 
@@ -259,6 +294,10 @@ public class Elevator extends SubsystemBase {
 
     public double getCurrentPosition(){
       return elevatorEncoder.getPosition(); 
+    }
+
+    public Command setCurrentSetpoint(double setpoint){
+        return this.runOnce(() -> lastSetpoint = setpoint);
     }
 
     public boolean atMinimum(){
