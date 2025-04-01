@@ -26,7 +26,7 @@ public class LED extends SubsystemBase {
   private final AddressableLEDBuffer ledBuffer;
   private int rainbowFirstPixelHue;
   private final Distance ledSpacing; 
-  private final Elevator elevator;
+  // private final Elevator elevator;
   LEDPattern rainbow;
 
   // Colors!!
@@ -35,7 +35,7 @@ public class LED extends SubsystemBase {
 
 
   public LED() {
-    elevator = new Elevator();
+    // elevator = new Elevator();
      rainbow = LEDPattern.rainbow(255, 100);
 
     led = new AddressableLED(LEDPorts.LED_PORT);
@@ -58,9 +58,9 @@ public class LED extends SubsystemBase {
   red = new Color(0,255,0); 
   }
 
-  // public Command setDefaultCmd(Command command) {
-  //   return this.run(() -> setDefault());
-  // }
+  public Command setDefaultCmd(Command command) {
+    return this.run(() -> setDefault());
+  }
 
   public Command setLEDBufferCmd() {
     return this.run(()-> led.setData(ledBuffer));
@@ -118,9 +118,9 @@ public class LED extends SubsystemBase {
     return this.run(() -> setBlink(orange));
   }
 
-  public Command setProgressCmd(){
-    return this.run(() -> setProgress());
-  }
+  // public Command setProgressCmd(){
+  //   return this.run(() -> setProgress());
+  // }
 
   public Command setBreatheCmd(){
     return this.run(()-> setBreathe());
@@ -225,14 +225,14 @@ public void setBlink(Color x){
   led.setData(ledBuffer);
 }
 
-public void setProgress(){
-  LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,pink,purple);
-  LEDPattern mask = LEDPattern.progressMaskLayer(() -> elevator.getCurrentPosition()/Constants.ElevatorConstants.SetpointConstants.MAXIMUM_LVL); 
-  LEDPattern heightDisplay = base.mask(mask); 
-  heightDisplay.applyTo(ledBuffer);
-  led.setData(ledBuffer);
+// public void setProgress(){
+//   LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous,pink,purple);
+//   LEDPattern mask = LEDPattern.progressMaskLayer(() -> elevator.getCurrentPosition()/Constants.ElevatorConstants.SetpointConstants.MAXIMUM_LVL); 
+//   LEDPattern heightDisplay = base.mask(mask); 
+//   heightDisplay.applyTo(ledBuffer);
+//   led.setData(ledBuffer);
 
-}
+// }
 
 
 

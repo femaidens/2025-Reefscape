@@ -17,7 +17,7 @@ public class CoralTransition{
   private Outtake outtake;
   private LED led; 
 
-  public CoralTransition(Outtake outtake,LED led) {
+  public CoralTransition(Outtake outtake, LED led) {
    // this.intake = intake;
     this.outtake = outtake;
     this.led = led; 
@@ -32,9 +32,13 @@ public class CoralTransition{
   //       .andThen(intake.stopMotorCmd());
         
   // }
-  return outtake.runMotorCmd().alongWith(led.setOrangeCmd())
+  // if(outtake.isBeamBrokenIntake()){
+    return outtake.runMotorCmd()//.alongWith(led.setOrangeCmd())
         .until(outtake::isCoral)
-        .andThen(outtake.stopMotorCmd()).alongWith(led.setRainbowCmd());
+        .andThen(outtake.stopMotorCmd());//.alongWith(led.setRainbowCmd());
+  // } else {
+  //   return outtake.stopMotorCmd();
+  // }
     // return outtake.runMotorCmd()
     //     .until(outtake::isCoral)
     //     .andThen(outtake.stopMotorCmd())

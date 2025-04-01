@@ -23,9 +23,10 @@ public class TaxiL4 extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> vision.visionZeroHeading()),
-        new RunCommand(() -> vision.funkierRight()).alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
-        elevating.fourthLevelCmd().until(elevating.elevator::atSetpoint),
-        outtake.runMotorCmd().withTimeout(3)
+        vision.funkierRight().withTimeout(5),//.alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
+        elevating.fourthLevelCmd().withTimeout(4).alongWith(vision.stopDriving()),
+        outtake.runMotorCmd().withTimeout(.6),
+        elevating.scoringAlgaeBargeCmd().withTimeout(1)
     );
   }
 }

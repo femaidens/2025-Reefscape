@@ -68,6 +68,7 @@ public class RobotContainer implements Logged {
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
     private SendableChooser<Command> autonChooser;
+    private Trigger autoIntake;
 
     // private final AlignToCenter alignToCenter;
 
@@ -85,9 +86,11 @@ public class RobotContainer implements Logged {
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
+        autoIntake = new Trigger(()->outtake.isBeamBrokenBack());
         configureBindings();
         configureDefaultCmds();
         configureAuton();
+
     }
 
     
@@ -104,6 +107,8 @@ public class RobotContainer implements Logged {
         // elevator.setDefaultCommand(
         //     elevator.stayAtLevel()
         // );
+        // outtake.setDefaultCommand(coralTransition.moveCoralToOuttake());
+        led.setDefaultCommand(led.setGradGPCmd());
         
 
 //                         driveSim.setDefaultCommand(
@@ -129,6 +134,8 @@ public class RobotContainer implements Logged {
      * joysticks}.
      */
     private void configureBindings() {
+
+        autoIntake.onTrue(coralTransition.moveCoralToOuttake());
         driveJoy.rightBumper()
                 .onTrue(vision.resetGyroFromVision());
 
@@ -178,7 +185,8 @@ public class RobotContainer implements Logged {
 
         operJoy.leftTrigger()
             .onTrue(outtake.stopMotorCmd()
-            .andThen(elevating.resetDefault()));
+            .andThen(elevating.resetDefault())
+            .andThen(led.setGreenCmd()));
 
         operJoy.a()
             .onTrue(elevating.secondLevelCmd());

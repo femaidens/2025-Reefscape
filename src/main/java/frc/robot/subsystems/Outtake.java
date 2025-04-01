@@ -25,9 +25,9 @@ public class Outtake extends SubsystemBase implements Logged{
 
   private final SparkMax outtakeMotor;
   private final SparkMaxConfig motorConfig;
-  private final DigitalInput frontReceiver;
- private final DigitalInput middleReceiver;
- private final DigitalInput beambreak;
+  private final DigitalInput frontReceiver; //outtake bea bawk
+ private final DigitalInput middleReceiver; //outtake brea bake
+ private final DigitalInput backReceiver; //intake bream bake
  
 
 
@@ -48,10 +48,7 @@ public class Outtake extends SubsystemBase implements Logged{
     // back reciever is the one located in outtake
     middleReceiver = new DigitalInput(Ports.OuttakePorts.MIDDLE_RECEIVER);
 
-    beambreak = new DigitalInput(Ports.IntakePorts.BEAM_BREAK);
-
-
-
+    backReceiver = new DigitalInput(Ports.IntakePorts.BEAM_BREAK);
   }
 
   /* Commands */
@@ -112,9 +109,9 @@ public class Outtake extends SubsystemBase implements Logged{
   }
 
 
-  public boolean isBeamBroken() {
+  public boolean isBeamBrokenIntake() {
     // System.out.println("intake");
-    return !beambreak.get();
+    return !backReceiver.get();
   }
   
 
@@ -147,6 +144,6 @@ public class Outtake extends SubsystemBase implements Logged{
     SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
     SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
     SmartDashboard.putBoolean("IS CORAL", isCoral());
-    SmartDashboard.putBoolean("Intake BB", isBeamBroken());
+    SmartDashboard.putBoolean("Intake BB", isBeamBrokenIntake());
   }   
 }
