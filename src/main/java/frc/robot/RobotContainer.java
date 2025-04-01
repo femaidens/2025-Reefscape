@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.autos.TaxiL2;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveConstants;
@@ -84,7 +85,9 @@ public class RobotContainer {
         //       return false;
         //     },
         // driveSim);
-    autoChooser = AutoBuilder.buildAutoChooser();
+    
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = new SendableChooser<>();
 
     // boolean isCompetition = true;
 
@@ -96,8 +99,8 @@ public class RobotContainer {
     //     ? stream.filter(auto -> auto.getName().startsWith("Start"))
     //     : stream
     // );
-
-    SmartDashboard.putData("Choose Auto: ", autoChooser);
+    // SmartDashboard.putData("Choose Auto: ", autoChooser);
+    configureAuto();
   }
 
   private void configureDefaultCmds(){
@@ -112,27 +115,32 @@ public class RobotContainer {
     
   }
 
-   public void configureAuton() {
-    ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
-    RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
-    
-    // AutoBuilder autoBuilder = new AutoBuilder();
-        AutoBuilder.configure(
-        driveSim::getPose, 
-        driveSim::resetOdometry, 
-        driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
-        driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
-        driveSim.holonomicDriveController, 
-        config,  
+  public void configureAuto(){
+    autoChooser.addOption("taxi l2", new TaxiL2(driveSim));
+    SmartDashboard.putData("Choose Auto", autoChooser);
+  }
 
-        () -> {
-        var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-        driveSim);
+   public void configureAuton() {
+    // ModuleConfig moduleConfig = new ModuleConfig(0.5, 15, 0.1, DCMotor.getKrakenX60(1), DriveConstants.Translation.CURRENT_LIMIT, 1);
+    // RobotConfig config = new RobotConfig(60, 1.0/6*60*Drivetrain.TRACK_WIDTH, moduleConfig, Drivetrain.TRACK_WIDTH);
+    
+    // // AutoBuilder autoBuilder = new AutoBuilder();
+    //     AutoBuilder.configure(
+    //     driveSim::getPose, 
+    //     driveSim::resetOdometry, 
+    //     driveSim::getRobotRelativeChassisSpeeds, //chassis speed supplier must be robot relative
+    //     driveSim::setChassisSpeeds, //method that will drive the robot based on robot relative chassis speed
+    //     driveSim.holonomicDriveController, 
+    //     config,  
+
+    //     () -> {
+    //     var alliance = DriverStation.getAlliance();
+    //           if (alliance.isPresent()) {
+    //             return alliance.get() == DriverStation.Alliance.Red;
+    //           }
+    //           return false;
+    //         },
+    //     driveSim);
 // new HolonomicPathFollowerConfig(
         //     new PIDConstants(Translation.PID.P, Translation.PID.I, Translation.PID.D), // Translation PID constants
         //     new PIDConstants(Turn.PID.P, Turn.PID.I, Turn.PID.D), // Rotation PID constants
@@ -168,16 +176,18 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return autoChooser.getSelected();
-    try{
-        // Load the path you want to follow using its name in the GUI
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Start center");
-        System.out.println("Path set!");
+    // try{
+    //     // Load the path you want to follow using its name in the GUI
+    //     PathPlannerPath path = PathPlannerPath.fromPathFile("Start center");
+    //     System.out.println("Path set!");
 
-        // Create a path following command using AutoBuilder. This will also trigger event markers.
-        return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }
+    //     // Create a path following command using AutoBuilder. This will also trigger event markers.
+    //     return AutoBuilder.followPath(path);
+    // } catch (Exception e) {
+    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    //     return Commands.none();
+    // }
+    System.out.println("autonomous run!!!");
+    return autoChooser.getSelected();
   }
 }

@@ -100,35 +100,36 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
-  //@Override
-  // public void teleopPeriodic() {
+  @Override
+  public void teleopPeriodic() {
     
-  //   // if (m_joystick.getTrigger()) {
-  //   //   // Here, we set the constant setpoint of 0.75 meters.
-  //   //   bobot.driveForward();
+    // if (m_joystick.getTrigger()) {
+    //   // Here, we set the constant setpoint of 0.75 meters.
+    //   bobot.driveForward();
 
-  //   // } else {
-  //   //   // Otherwise, we update the setpoint to 0.
-  //   //   bobot.close();
+    // } else {
+    //   // Otherwise, we update the setpoint to 0.
+    //   bobot.close();
 
-  //   // }
-  // }
+    // }
+  }
 
-  //@Override
-  // public void testInit() {
-  //   // Cancels all running commands at the start of test mode.
-  //   CommandScheduler.getInstance().cancelAll();
-  // }
+  @Override
+  public void testInit() {
+    // Cancels all running commands at the start of test mode.
+    CommandScheduler.getInstance().cancelAll();
+  }
 
-  // /** This function is called periodically during test mode. */
-  // @Override
-  // public void testPeriodic() {}
+  /** This function is called periodically during test mode. */
+  @Override
+  public void testPeriodic() {}
 
-  // /** This function is called once when the robot is first started up. */
-  // @Override
-  // public void simulationInit() {}
+  /** This function is called once when the robot is first started up. */
+  @Override
+  public void simulationInit() {}
 
-  // /** This function is called periodically whilst in simulation. */
-  // @Override
-  // public void simulationPeriodic() {}
+  /** This function is called periodically whilst in simulation. */
+  @Override
+  public void simulationPeriodic() {}
+
 }
