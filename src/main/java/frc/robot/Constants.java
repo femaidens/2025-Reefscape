@@ -85,18 +85,23 @@ public final class Constants {
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
-    public class PID {
-      public static final double P = 4.0;
+    public class RotationPID {
+      public static final double P = 10.0;
       public static final double I = 0;
       public static final double D = 0;
-    
-      
+    }
+
+    public class TranslationPID {
+      public static final double AREA_P = 0.01;
+      public static final double YAW_P = 0.003;
+      public static final double I = 0;
+      public static final double D = 0;
     }
   }
   public static class ElevatorConstants {
     public static final int CURRENT_LIMIT = 40;
     public static final double MOTOR_SPEED = 0.65;
-    public static final double REVERSE_MOTOR_SPEED = 0.3;
+    public static final double REVERSE_MOTOR_SPEED = 0.4;
     public static final double FORCE_MOTOR_SPEED = 0.1;
     public static final double GEAR_RATIO = 1.0 / 20.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
