@@ -221,6 +221,7 @@ public class DriveSim extends SubsystemBase {
 
     m_field.setRobotPose(odometry.getPoseMeters().getX(), odometry.getPoseMeters().getY(), new Rotation2d(Units.degreesToRadians(angle1 )));
     SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putNumber("Gyro angle", angle1);
   }
 
   public Pose2d getPose(){
