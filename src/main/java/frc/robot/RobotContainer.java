@@ -202,10 +202,10 @@ public class RobotContainer implements Logged {
             .onTrue(elevating.scoringAlgaeBargeCmd());
             // .onFalse(outtake.stopMotorCmd());
 
-        operJoy.start()
+        operJoy.back()
             .onTrue(elevating.algaeSecondLevelCmd());
             
-        operJoy.back()
+        operJoy.start()
             .onTrue(elevating.algaeThirdLevelCmd());
 
         /**

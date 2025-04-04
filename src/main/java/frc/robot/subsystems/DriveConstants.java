@@ -103,7 +103,7 @@ public class DriveConstants {
             new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), //rl
             new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) //rr
         );
-        public static final double MAX_SPEED = 5.5; //in meters
+        public static final double MAX_SPEED = 6.5; //in meters
         public static final double MAX_ROT_SPEED = Math.PI * 2; //in rad/s
         public static final double SPEED_FACTOR = 1.0;
         public static final double WHEEL_COF = 1; // not true

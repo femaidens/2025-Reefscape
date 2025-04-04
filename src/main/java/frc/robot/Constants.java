@@ -77,22 +77,22 @@ public final class Constants {
 
     //for a strange aligning to target manually idea
     //i think its a percentage?
-    public static final double GOAL_AREA_RIGHT = 9;
-    public static final double GOAL_X_RIGHT = 110; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_AREA_RIGHT = 10;
+    public static final double GOAL_X_RIGHT = 120; //100; //106; //225.75; // x position of apriltag crosshair
     public static final double GOAL_AREA_LEFT = 9;
     public static final double GOAL_X_LEFT = 200; //195 //216; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_X_MIDDLE = 250;
+    public static final double GOAL_X_MIDDLE = 265;
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
     public class RotationPID {
-      public static final double P = 10.0;
+      public static final double P = 3.0; //10
       public static final double I = 0;
       public static final double D = 0;
     }
 
     public class TranslationPID {
-      public static final double AREA_P = 0.01;
+      public static final double AREA_P = 0.015;
       public static final double YAW_P = 0.003;
       public static final double I = 0;
       public static final double D = 0;
@@ -109,13 +109,19 @@ public final class Constants {
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
-      public static final double kP = 7;
+      public static final double kP = 7.4;//7.0
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kMaxVelocity = 7;
       public static final double kMaxAcceleration = 10;
       public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity,
           kMaxAcceleration);
+    }
+
+    public static class ReversePIDConstants {
+      public static final double kP = 1.9;//1.5
+      public static final double kI = 0;
+      public static final double kD = 0;
     }
 
     public static class FeedForwardConstants {
@@ -128,11 +134,11 @@ public final class Constants {
     public static class SetpointConstants {
       public static final double DEFAULT_LVL = 0;
       public static final double FIRST_LVL = 1.3; //2.5;
-      public static final double SECOND_LVL = 1.6; //3.59;
+      public static final double SECOND_LVL = 1.65; //1.6; //3.59;
       public static final double ALGAE_SECOND_LVL = 1.42;
-      public static final double THIRD_LVL = 3.4; //6.28;
-      public static final double ALGAE_THIRD_LVL = 0;
-      public static final double FOURTH_LVL = 6.5; 
+      public static final double THIRD_LVL = 3.45; //3.4; //6.28;
+      public static final double ALGAE_THIRD_LVL = 3.0;
+      public static final double FOURTH_LVL = 6.55; //6.5; 
       // public static final double DEFAULT_LVL = 1.54; //1.83;
       public static final double MINIMUM_LVL = 0;
       public static final double MAXIMUM_LVL = 7.8;

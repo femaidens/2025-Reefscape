@@ -145,5 +145,9 @@ public class Outtake extends SubsystemBase implements Logged{
     SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
     SmartDashboard.putBoolean("IS CORAL", isCoral());
     SmartDashboard.putBoolean("Intake BB", isBeamBrokenIntake());
+    SmartDashboard.putData(this);
+
+    SmartDashboard.updateValues();
+
   }   
 }

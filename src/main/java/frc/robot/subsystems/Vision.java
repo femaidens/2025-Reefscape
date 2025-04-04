@@ -334,9 +334,9 @@ public class Vision extends SubsystemBase implements Logged {
             }
             
             tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
-            if(tilt > 1.02) { // left side of id is longer than right
+            if(tilt > 1.01) { // left side of id is longer than right, 1.02
               speeds[2] = -(tilt-1) * VisionConstants.RotationPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
-            } else if(tilt < 0.97) { // left side is shorter than right
+            } else if(tilt < 0.99) { // left side is shorter than right, 0.97
               speeds[2] = -(tilt - 1) * VisionConstants.RotationPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
             } else {
               speeds[2] = 0;
@@ -598,7 +598,29 @@ public double distanceToTarget(PhotonTrackedTarget target){
   // }
 
   @Log.NT
-  public double[] getTagInStream(){
+  public double[] getTagInRightStream(){
+    // modify for left or right cam here
+    double[] data = new double[2]; // data[0] is target X, data[1] is target area
+    var results = frontRightCam.getAllUnreadResults();
+    if(results.size() > 0 && results.get(0).hasTargets()){
+      var result = results.get(results.size() - 1);
+      var target = result.getTargets().get(0); //or getBestTarget()
+      List<TargetCorner> targetCorners = target.getDetectedCorners(); 
+            // corners as specified by getDetectedCorners()
+            TargetCorner bottomLeft = targetCorners.get(0);
+            TargetCorner bottomRight = targetCorners.get(1);
+            TargetCorner topRight = targetCorners.get(2);
+            TargetCorner topLeft = targetCorners.get(3);
+
+            double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4;
+            data[0] = targetX;
+            data[1] = target.area;
+    }
+    return data;
+  }
+
+  @Log.NT
+  public double[] getTagInLeftStream(){
     // modify for left or right cam here
     double[] data = new double[2]; // data[0] is target X, data[1] is target area
     var results = frontLeftCam.getAllUnreadResults();
