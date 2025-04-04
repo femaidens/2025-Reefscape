@@ -139,9 +139,9 @@ public class RobotContainer implements Logged {
         driveJoy.rightBumper()
                 .onTrue(vision.resetGyroFromVision());
 
-        // driveJoy.rightTrigger()
-        //         .onTrue(vision.funkierRight())
-        //         .onFalse(vision.stopDriving());
+         driveJoy.rightTrigger()
+                .onTrue(vision.funkierRight())
+                 .onFalse(vision.stopDriving());
 
         driveJoy.leftTrigger()
                 .onTrue(vision.funkierLeft())

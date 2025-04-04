@@ -19,10 +19,10 @@ public class TaxiL3 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(() -> vision.visionZeroHeading())
-        // new RunCommand(() -> vision.funkierRight()).alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
-        // elevating.thirdLevelCmd().until(elevating.elevator::atSetpoint),
-        // outtake.runMotorCmd().withTimeout(3)
+        new InstantCommand(() -> vision.visionZeroHeading()),
+        new RunCommand(() -> vision.funkierRight()).alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
+        elevating.thirdLevelCmd().until(elevating.elevator::atSetpoint),
+        outtake.runMotorCmd().withTimeout(3)
     );
   }
 }

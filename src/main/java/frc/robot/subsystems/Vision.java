@@ -369,59 +369,59 @@ public class Vision extends SubsystemBase implements Logged {
     });
   }
 
-  // public Command funkierRight(){
-  //   return this.run(() -> {
-  //     var results = frontLeftCam.getAllUnreadResults();
-  //     ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
+  public Command funkierRight(){
+    return this.run(() -> {
+      var results = frontLeftCam.getAllUnreadResults();
+      ArrayList<Integer> reefIds = new ArrayList<>(Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22));
 
-  //     // boolean hasTargets = result.get(0).hasTargets();
-  //     // double xSpeed = 0; //forward
-  //     // double ySpeed = 0; //strafe  
-  //     // double thetaSpeed = 0;
-  //     double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
-  //     if(results.size() > 0 && results.get(0).hasTargets()){
-  //       var result = results.get(results.size() - 1);
-  //       for (var target : result.getTargets()) {
-  //         if (reefIds.contains(target.getFiducialId())) {
-  //           // PhotonTrackedTarget target = result.get(0).getBestTarget();
-  //           PhotonTrackedTarget bestTarget = result.getBestTarget();
+      // boolean hasTargets = result.get(0).hasTargets();
+      // double xSpeed = 0; //forward
+      // double ySpeed = 0; //strafe  
+      // double thetaSpeed = 0;
+      double[] speeds = {0, 0, 0}; // order: forward (xspeed), strafe (yspeed), theta (thetaspeed)
+      if(results.size() > 0 && results.get(0).hasTargets()){
+        var result = results.get(results.size() - 1);
+        for (var target : result.getTargets()) {
+          if (reefIds.contains(target.getFiducialId())) {
+            // PhotonTrackedTarget target = result.get(0).getBestTarget();
+            PhotonTrackedTarget bestTarget = result.getBestTarget();
 
-  //           List<TargetCorner> targetCorners = bestTarget.getDetectedCorners();
-  //           // corners as specified by getDetectedCorners()
-  //           TargetCorner bottomLeft = targetCorners.get(0);
-  //           TargetCorner bottomRight = targetCorners.get(1);
-  //           TargetCorner topRight = targetCorners.get(2);
-  //           TargetCorner topLeft = targetCorners.get(3);
+            List<TargetCorner> targetCorners = bestTarget.getDetectedCorners();
+            // corners as specified by getDetectedCorners()
+            TargetCorner bottomLeft = targetCorners.get(0);
+            TargetCorner bottomRight = targetCorners.get(1);
+            TargetCorner topRight = targetCorners.get(2);
+            TargetCorner topLeft = targetCorners.get(3);
         
-  //           double targetArea = target.area; // area in percentage?
-  //           if(targetArea > VisionConstants.GOAL_AREA_LEFT){
-  //             speeds[0] = -(targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.TranslationPID.AREA_P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
-  //           } else if(targetArea < VisionConstants.GOAL_AREA_LEFT){
-  //             speeds[0] = (targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.TranslationPID.AREA_P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
-  //           }
+            double targetArea = target.area; // area in percentage?
+            if(targetArea > VisionConstants.GOAL_AREA_LEFT){
+              speeds[0] = -(targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            } else if(targetArea < VisionConstants.GOAL_AREA_LEFT){
+              speeds[0] = (targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            }
 
-  //           double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair\
-  //           targetXe = targetX;
-  //           if(Math.abs(targetX - VisionConstants.GOAL_X_LEFT) > 3){ // current tag is farther right than desired
-  //             speeds[1] = (targetX-VisionConstants.GOAL_X_LEFT) * VisionConstants.TranslationPID.YAW_P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
-  //           // }else if(targetX < VisionConstants.GOAL_X){
-  //           //   speeds[1] = -(targetX-VisionConstants.GOAL_X) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
-  //           }
+            double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair\
+            targetXe = targetX;
+            if(Math.abs(targetX - VisionConstants.GOAL_X_LEFT) > 3){ // current tag is farther right than desired
+              speeds[1] = (targetX-VisionConstants.GOAL_X_LEFT) * VisionConstants.YawPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            // }else if(targetX < VisionConstants.GOAL_X){
+            //   speeds[1] = -(targetX-VisionConstants.GOAL_X) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+            }
             
-  //           tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
-  //           if(tilt > 1.02) { // left side of id is longer than right
-  //             speeds[2] = -(tilt-1) * VisionConstants.RotationPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
-  //           } else if(tilt < 0.97) { // left side is shorter than right
-  //             speeds[2] = -(tilt - 1) * VisionConstants.RotationPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
-  //           } else {
-  //             speeds[2] = 0;
-  //           }
-  //           System.out.println("Tag location: " + targetX);
-  //     }
-  //   }}
-  //     drive.driveRobotRelative(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
-  //   });
-  // }
+            tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
+            if(tilt > 1.02) { // left side of id is longer than right
+              speeds[2] = -(tilt-1) * VisionConstants.TiltPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+            } else if(tilt < 0.97) { // left side is shorter than right
+              speeds[2] = -(tilt - 1) * VisionConstants.TiltPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
+            } else {
+              speeds[2] = 0;
+            }
+            System.out.println("Tag location: " + targetX);
+      }
+    }}
+      drive.driveRobotRelative(() -> speeds[0], () -> speeds[1], () -> speeds[2]); //lowkey crazy workaround for local variables issue with lambda
+    });
+  }
 
 
 
