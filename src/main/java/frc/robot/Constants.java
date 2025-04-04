@@ -78,25 +78,31 @@ public final class Constants {
     //for a strange aligning to target manually idea
     //i think its a percentage?
     public static final double GOAL_AREA_RIGHT = 10;
-    public static final double GOAL_X_RIGHT = 120; //100; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_X_RIGHT = 150; //100; //106; //225.75; // x position of apriltag crosshair
     public static final double GOAL_AREA_LEFT = 9;
     public static final double GOAL_X_LEFT = 200; //195 //216; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_X_MIDDLE = 265;
+    public static final double GOAL_X_MIDDLE = 72;
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
-    public class RotationPID {
+    public class TiltPID {
       public static final double P = 3.0; //10
       public static final double I = 0;
       public static final double D = 0;
     }
 
-    public class TranslationPID {
-      public static final double AREA_P = 0.015;
-      public static final double YAW_P = 0.003;
+    public class YawPID {
+      public static final double P = 0.0015;
       public static final double I = 0;
       public static final double D = 0;
     }
+
+    public class AreaPID {
+      public static final double P = 0.01;
+      public static final double I = 0;
+      public static final double D = 0;
+    }
+
   }
   public static class ElevatorConstants {
     public static final int CURRENT_LIMIT = 40;
@@ -119,7 +125,7 @@ public final class Constants {
     }
 
     public static class ReversePIDConstants {
-      public static final double kP = 1.9;//1.5
+      public static final double kP =  4; //3 //2.3; //1.9 //1.5
       public static final double kI = 0;
       public static final double kD = 0;
     }
