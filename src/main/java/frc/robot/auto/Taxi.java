@@ -25,7 +25,7 @@ public class Taxi extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> vision.visionZeroHeading()),
       new RunCommand(() -> vision.driveFromVision(() -> -.2, () -> 0.0, () -> 0.0))
-        .withTimeout(2)
+        .withTimeout(10)
     );
   }
 }

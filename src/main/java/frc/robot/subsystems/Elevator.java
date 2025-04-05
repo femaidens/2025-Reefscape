@@ -40,6 +40,7 @@ public class Elevator extends SubsystemBase {
   private static SparkMax elevatorMotorFollower;
   private static DigitalInput botLimitSwitch;
   private static PIDController elevatorPID;
+  private static PIDController reverseElevatorPID;
   private static RelativeEncoder elevatorEncoder;
   private static AbsoluteEncoder absoluteEncoder;
   private static ElevatorFeedforward ff;
@@ -72,6 +73,12 @@ public class Elevator extends SubsystemBase {
       ElevatorConstants.PIDConstants.kI,
       ElevatorConstants.PIDConstants.kD
     );
+    reverseElevatorPID = new PIDController(
+      ElevatorConstants.ReversePIDConstants.kP,
+      ElevatorConstants.ReversePIDConstants.kI,
+      ElevatorConstants.ReversePIDConstants.kD
+    );
+
 
     elevatorPID.setTolerance(0.05);
   
@@ -111,7 +118,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorMotorLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         elevatorMotorFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
+        // elevatorEncoder.setPosition(absoluteEncoder.getPosition() - ElevatorConstants.ABSOLUTE_OFFSET);
 
         lastSetpoint = elevatorEncoder.getPosition();
     }
@@ -136,6 +143,10 @@ public class Elevator extends SubsystemBase {
           // elevatorMotorFollower.resumeFollowerMode();
       // }
        
+    }
+    public void reverseElevatorPID(double current, double setpoint){
+      elevatorMotorLeader.setVoltage(
+      reverseElevatorPID.calculate(current, setpoint));
     }
     // public void elevatorFF(double setpoint){
     //     elevatorMotorLeader.setVoltage(
@@ -275,7 +286,7 @@ public class Elevator extends SubsystemBase {
           elevatorEncoder.setPosition(0);
           System.out.println("ELEVATOR MOTOR STOPPED - BELOW LIMIT");
         }  else {
-            elevatorPID(elevatorEncoder.getPosition(), setpoint);
+            reverseElevatorPID(elevatorEncoder.getPosition(), setpoint);
             // System.out.println(elevatorEncoder.getPosition());
         }}
       );
@@ -329,6 +340,7 @@ public class Elevator extends SubsystemBase {
    SmartDashboard.putNumber("encoder", elevatorEncoder.getPosition());
    SmartDashboard.putNumber("absolute encoder", absoluteEncoder.getPosition());
    SmartDashboard.putNumber("current position", getCurrentPosition());
+   
   //  SmartDashboard.putBoolean("Under limit switch", underBotSwitch);
   //  botSwitchStatus();
    SmartDashboard.updateValues();
