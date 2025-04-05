@@ -7,7 +7,6 @@ package frc.robot.auto;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
@@ -28,7 +27,10 @@ public class TaxiL4 extends SequentialCommandGroup {
         outtake.runMotorCmd().withTimeout(.6),
         elevating.scoringAlgaeBargeCmd().withTimeout(1),
         outtake.stopMotorCmd(), 
-        elevating.resetDefault()
+        elevating.resetDefault(),
+       new RunCommand(() -> vision.driveFromVision(() -> 0.0, () -> 0.0, () -> 2.0))
+        .withTimeout(3),
+        new InstantCommand(() -> vision.visionZeroHeading())
     );
   }
 }

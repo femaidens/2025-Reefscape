@@ -270,7 +270,7 @@ public class Elevator extends SubsystemBase {
         elevatorPID(elevatorEncoder.getPosition(), setpoint);
         // System.out.println(elevatorEncoder.getPosition());
         }
-      ).alongWith(led.setProgressCmd());
+      );//.alongWith(led.setProgressCmd());
     }
 
     /**
