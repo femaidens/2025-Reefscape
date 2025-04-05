@@ -17,20 +17,24 @@ import frc.robot.commands.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TaxiL4 extends SequentialCommandGroup {
   /** Creates a new TaxiL4. */
-  public TaxiL4(Elevating elevating, Outtake outtake, Vision vision, CoralTransition coralTransition) {
+  public TaxiL4(Elevating elevating, Outtake outtake, Vision vision, CoralTransition coralTransition, Drive drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> vision.visionZeroHeading()),
-         vision.funkierRight().withTimeout(5),//.alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4),
-        elevating.fourthLevelCmd().withTimeout(3).alongWith(vision.stopDriving()),
-        outtake.runMotorCmd().withTimeout(.6),
+         
+        vision.funkierLeft().withTimeout(3), // .alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4)
+        drive.setStraightCmd().withTimeout(0.5),
+        elevating.fourthLevelCmd().alongWith(vision.stopDriving()).withTimeout(3),
+        elevating.fourthLevelCmd().alongWith(outtake.runMotorCmd()).withTimeout(.6),
         elevating.scoringAlgaeBargeCmd().withTimeout(1),
-        outtake.stopMotorCmd(), 
-        elevating.resetDefault(),
-       new RunCommand(() -> vision.driveFromVision(() -> 0.0, () -> 0.0, () -> 2.0))
-        .withTimeout(3),
-        new InstantCommand(() -> vision.visionZeroHeading())
-    );
+        outtake.stopMotorCmd(),
+        elevating.resetDefault().withTimeout(2),
+        new RunCommand(() -> vision.driveFromVision(() -> 0,() -> 0,() -> 0.2), vision).withTimeout(2.85),
+       new InstantCommand(() -> vision.visionZeroHeading())
+        // new RunCommand(() -> vision.drive.drive(() -> 0.0, () -> 0.0, () -> 0.2))// vision.driveFromVision(() -> 0.0, ()   // -> 0.0, () -> 0.2))
+        // .withTimeout(3),
+        // new InstantCommand(() -> vision.visionZeroHeading()));
+        );
   }
 }

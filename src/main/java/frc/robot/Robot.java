@@ -39,7 +39,7 @@ public class Robot extends TimedRobot implements Logged {
 
   private final RobotContainer m_robotContainer;
   //private VisionSim visionSim;
-  private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
+  // private Pose2d robotPose = new Pose2d(new Translation2d(0,0), new Rotation2d(Math.PI/2));
   // private PhotonCamera frontLeftCam;
   //private Drive drive;
   // double forward;

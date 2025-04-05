@@ -78,7 +78,7 @@ public final class Constants {
     //for a strange aligning to target manually idea
     //i think its a percentage?
     public static final double GOAL_AREA_RIGHT = 10;
-    public static final double GOAL_X_RIGHT = 150; //100; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_X_RIGHT = 140; //150; //100; //106; //225.75; // x position of apriltag crosshair
     public static final double GOAL_AREA_LEFT = 9;
     public static final double GOAL_X_LEFT = 200; //195 //216; //225.75; // x position of apriltag crosshair
     public static final double GOAL_X_MIDDLE = 72;
@@ -98,9 +98,9 @@ public final class Constants {
     }
 
     public class AreaPID {
-      public static final double P = 0.01;
+      public static final double P = 0.02;
       public static final double I = 0;
-      public static final double D = 0;
+      public static final double D = 0.0;
     }
 
   }
@@ -115,7 +115,7 @@ public final class Constants {
     public static final double ABSOLUTE_OFFSET = 0.3;
 
     public static class PIDConstants {
-      public static final double kP = 7.4;//7.0
+      public static final double kP = 7.7;//7.0
       public static final double kI = 0;
       public static final double kD = 0;
       public static final double kMaxVelocity = 7;

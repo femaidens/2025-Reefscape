@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.auto.Spin;
 import frc.robot.auto.Taxi;
 import frc.robot.auto.TaxiL2;
 import frc.robot.auto.TaxiL3;
@@ -18,7 +19,7 @@ import frc.robot.commands.Elevating;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LED;
+// import frc.robot.subsystems.LED;
 // import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Vision;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -52,12 +54,12 @@ import static edu.wpi.first.units.Units.Seconds;
  */
 public class RobotContainer implements Logged {
     // The robot's subsystems and commands are defined here...
-    // private final Drive drive = new Drive();
+    private final Drive drive = new Drive();
     private final Vision vision;
     private final Elevator elevator;
     //private final Intake intake;
     private final Outtake outtake;
-    private final LED led; 
+    // private final LED led; 
 
     private final Elevating elevating;
     //private final DriveSim driveSim;
@@ -79,9 +81,9 @@ public class RobotContainer implements Logged {
         vision = new Vision();
         elevator = new Elevator();
         outtake = new Outtake();
-        led = new LED(); 
+        // led = new LED(); 
         elevating = new Elevating(elevator, outtake);
-        coralTransition = new CoralTransition(outtake,led);
+        coralTransition = new CoralTransition(outtake);
         autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
@@ -108,7 +110,7 @@ public class RobotContainer implements Logged {
         //     elevator.stayAtLevel()
         // );
         // outtake.setDefaultCommand(coralTransition.moveCoralToOuttake());
-        led.setDefaultCommand(led.setGradGPCmd());
+        // led.setDefaultCommand(led.setGradGPCmd());
         
 
 //                         driveSim.setDefaultCommand(
@@ -135,7 +137,8 @@ public class RobotContainer implements Logged {
      */
     private void configureBindings() {
 
-        autoIntake.onTrue(coralTransition.moveCoralToOuttake());
+        RobotModeTriggers.teleop().and(autoIntake.onTrue(coralTransition.moveCoralToOuttake()));
+        // autoIntake.onTrue(coralTransition.moveCoralToOuttake());
         driveJoy.rightBumper()
                 .onTrue(vision.resetGyroFromVision());
 
@@ -147,9 +150,9 @@ public class RobotContainer implements Logged {
                 .onTrue(vision.funkierLeft())
                 .onFalse(vision.stopDriving());
 
-        // driveJoy.y()
-        //         .onTrue(vision.funkierMiddle())
-        //         .onFalse(vision.stopDriving());
+        driveJoy.y()
+                .onTrue(vision.funkierMiddle())
+                .onFalse(vision.stopDriving());
 
         operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
@@ -167,7 +170,7 @@ public class RobotContainer implements Logged {
         * outtake
         */
         operJoy.rightBumper()
-            .whileTrue(outtake.runMotorCmd().alongWith(led.setPinkCmd()))
+            .whileTrue(outtake.runMotorCmd())
             .onFalse(outtake.stopMotorCmd());
 
         /**
@@ -185,8 +188,8 @@ public class RobotContainer implements Logged {
 
         operJoy.leftTrigger()
             .onTrue(outtake.stopMotorCmd()
-            .andThen(elevating.resetDefault())
-            .andThen(led.setGreenCmd()));
+            .andThen(elevating.resetDefault()));
+            // .andThen(led.setGreenCmd()));
 
         operJoy.a()
             .onTrue(elevating.secondLevelCmd());
@@ -232,7 +235,8 @@ public class RobotContainer implements Logged {
         autonChooser.addOption("taxi", new Taxi(vision));
         autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
         autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition));
+        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition, drive));
+        autonChooser.addOption("spin", new Spin(vision));
         SmartDashboard.putData("Choose auto: ", autonChooser);
     }
 
@@ -245,6 +249,10 @@ public class RobotContainer implements Logged {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         return autonChooser.getSelected();
+        // return
+        // elevating.fourthLevelCmd().withTimeout(1)
+        // .andThen(elevating.resetDefault());
+
     }
 
 }
