@@ -401,7 +401,7 @@ public class Vision extends SubsystemBase implements Logged {
         
             double targetArea = target.area; // area in percentage?
             if(targetArea > VisionConstants.GOAL_AREA_LEFT){
-              speeds[0] = -(targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+              speeds[0] = (targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             } else if(targetArea < VisionConstants.GOAL_AREA_LEFT){
               speeds[0] = (targetArea-VisionConstants.GOAL_AREA_LEFT) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             }
@@ -463,7 +463,7 @@ public class Vision extends SubsystemBase implements Logged {
         
             double targetArea = target.area; // area in percentage?
             if(targetArea > VisionConstants.GOAL_AREA_MIDDLE){
-              speeds[0] = -(targetArea-VisionConstants.GOAL_AREA_MIDDLE) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
+              speeds[0] = (targetArea-VisionConstants.GOAL_AREA_MIDDLE) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             } else if(targetArea < VisionConstants.GOAL_AREA_MIDDLE){
               speeds[0] = (targetArea-VisionConstants.GOAL_AREA_MIDDLE) * VisionConstants.AreaPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             }

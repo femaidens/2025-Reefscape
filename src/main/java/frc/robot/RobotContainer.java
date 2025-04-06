@@ -137,7 +137,7 @@ public class RobotContainer implements Logged {
      */
     private void configureBindings() {
 
-        RobotModeTriggers.teleop().and(autoIntake.onTrue(coralTransition.moveCoralToOuttake()));
+        // RobotModeTriggers.teleop().and(autoIntake.onTrue(coralTransition.moveCoralToOuttake()));
         // autoIntake.onTrue(coralTransition.moveCoralToOuttake());
         driveJoy.rightBumper()
                 .onTrue(vision.resetGyroFromVision());

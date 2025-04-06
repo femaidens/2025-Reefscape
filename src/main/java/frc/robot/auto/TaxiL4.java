@@ -23,15 +23,15 @@ public class TaxiL4 extends SequentialCommandGroup {
     addCommands(
         new InstantCommand(() -> vision.visionZeroHeading()),
          
-        vision.funkierLeft().withTimeout(3), // .alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4)
+        vision.funkierRight().withTimeout(3), // .alongWith(coralTransition.moveCoralToOuttake()).withTimeout(4)
         drive.setStraightCmd().withTimeout(0.5),
-        elevating.fourthLevelCmd().alongWith(vision.stopDriving()).withTimeout(3),
-        elevating.fourthLevelCmd().alongWith(outtake.runMotorCmd()).withTimeout(.6),
-        elevating.scoringAlgaeBargeCmd().withTimeout(1),
+        elevating.fourthLevelCmd().alongWith(vision.stopDriving()).withTimeout(2.7),
+        elevating.fourthLevelCmd().alongWith(outtake.runMotorCmd()).withTimeout(.65),
+        elevating.scoringAlgaeBargeCmd().withTimeout(.7),
         outtake.stopMotorCmd(),
         elevating.resetDefault().withTimeout(2),
-        new RunCommand(() -> vision.driveFromVision(() -> 0,() -> 0,() -> 0.2), vision).withTimeout(2.85),
-       new InstantCommand(() -> vision.visionZeroHeading())
+        new RunCommand(() -> vision.driveFromVision(() -> 0,() -> 0,() -> 0.2), vision).withTimeout(2.65)
+        .andThen(new InstantCommand(() -> vision.visionZeroHeading()))
         // new RunCommand(() -> vision.drive.drive(() -> 0.0, () -> 0.0, () -> 0.2))// vision.driveFromVision(() -> 0.0, ()   // -> 0.0, () -> 0.2))
         // .withTimeout(3),
         // new InstantCommand(() -> vision.visionZeroHeading()));
