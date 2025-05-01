@@ -9,16 +9,19 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +59,8 @@ public class Vision extends SubsystemBase implements Logged {
   private PIDController visionAreaPIDController;
   private PIDController visionYawPIDController;
   private PIDController visionTiltPIDController;
+
+  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
   @Log.NT
   double forward;
@@ -118,6 +123,9 @@ public class Vision extends SubsystemBase implements Logged {
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
     // currentTargetArea = VisionConstants.
+
+    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(DriveConstants.Drivetrain.kDriveKinematics, new Rotation2d(Units.degreesToRadians(drive.getAngle())), drive.getSwerveModulePosition(), drive.getPose());
+  
   }
 
     /**
@@ -675,6 +683,8 @@ public double distanceToTarget(PhotonTrackedTarget target){
   
   @Override
   public void periodic(){
+    swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
+    swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
     printRightTargetArea();
     printLeftTargetArea();
 

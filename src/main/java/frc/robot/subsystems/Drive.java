@@ -52,7 +52,6 @@ public class Drive extends SubsystemBase implements Logged {
   public final SwerveDriveOdometry odometry;
 
   private final SysIdRoutine driveRoutine;
-  
 
   private ChassisSpeeds speeds = new ChassisSpeeds();
 
@@ -70,6 +69,7 @@ public class Drive extends SubsystemBase implements Logged {
     modules = List.of(frontLeft, frontRight, rearLeft, rearRight);
 
     // totally not sure, would need to check
+    
     gyro = new AHRS(NavXComType.kMXP_SPI);
 
     odometry = new SwerveDriveOdometry(
@@ -171,6 +171,11 @@ public class Drive extends SubsystemBase implements Logged {
     return spede;
   }
 
+  public SwerveModulePosition[] getSwerveModulePosition(){
+     SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[] {frontLeft.getSwerveModulePosition(), frontRight.getSwerveModulePosition(), rearLeft.getSwerveModulePosition(), rearRight.getSwerveModulePosition()};
+     return swerveModulePositions;
+  }
+
   /**
    * x formation with wheels to prevent movement
    */
@@ -219,8 +224,6 @@ public class Drive extends SubsystemBase implements Logged {
   public Pose2d getPose(){
     return odometry.getPoseMeters();
   }
-
-  
 
   @Log.NT
   public SwerveModuleState[] getSwerveModuleStates(){
