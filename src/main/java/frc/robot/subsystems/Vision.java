@@ -684,7 +684,7 @@ public double distanceToTarget(PhotonTrackedTarget target){
   @Override
   public void periodic(){
     swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
-    swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
+   // swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
     //printRightTargetArea();
    // printLeftTargetArea();
 
