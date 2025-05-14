@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.Led1OffColorValue;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.util.Color;
@@ -53,7 +54,7 @@ public class LED extends SubsystemBase {
   turquoise = new Color(255, 64,208);
   brown = new Color(32,61,9);
   red = new Color(0,255,0); 
-  fuscia = new Color(43, 159, 96)
+  fuscia = new Color(43, 159, 96);
   }
 
   // public Command setDefaultCmd(Command command) {
@@ -164,15 +165,30 @@ public class LED extends SubsystemBase {
 
   public void discontinousOffset () {
     // Create an LED pattern that displays a red-to-blue gradient, offset 40 pixels forward.
-    LEDPattern base = LEDPattern.discontinuousGradient(Color.brown, Color.fuscia);
+    LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, brown, fuscia);
     LEDPattern pattern = base.offsetBy(40);
     LEDPattern negative = base.offsetBy(-20); // Equivalent to the above when applied to a 60-LED buffer
 
 // Apply the LED pattern to the data buffer
-    pattern.applyTo(m_ledBuffer);
+    pattern.applyTo(ledBuffer);
 
 // Write the data to the LED strip
-    m_led.setData(m_ledBuffer);
+    led.setData(ledBuffer);
+
+  }
+
+  public void ball () {
+    LEDPattern base = LEDPattern.solid(red);
+    AddressableLEDBufferView ball = ledBuffer.createView (2,6);
+
+    base.applyTo(ball);
+
+    LEDPattern background = LEDPattern.solid(turquoise);
+    background.applyTo(ledBuffer);
+
+    LEDPattern scrollBall = base.scrollAtRelativeSpeed(Percent.per(Second).of(50));
+
+    led.setData(ledBuffer);
 
   }
   
