@@ -113,7 +113,7 @@ public class ModuleKraken implements Logged {
      */
     public static void configureDriveTalon(TalonFX motor, int currentLimit) {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
+        // config.Feedback.SensorToMechanismRatio = 1 / Translation.POS_CONVERSION_FACTOR;
         config.CurrentLimits.SupplyCurrentLimit = currentLimit;
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 

@@ -59,8 +59,11 @@ public class Vision extends SubsystemBase implements Logged {
   private PIDController visionAreaPIDController;
   private PIDController visionYawPIDController;
   private PIDController visionTiltPIDController;
-
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+
+  
+  
+ 
 
   @Log.NT
   double forward;
@@ -125,8 +128,12 @@ public class Vision extends SubsystemBase implements Logged {
     // currentTargetArea = VisionConstants.
 
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(DriveConstants.Drivetrain.kDriveKinematics, new Rotation2d(Units.degreesToRadians(drive.getAngle())), drive.getSwerveModulePosition(), drive.getPose());
-  
   }
+
+  @Log.NT
+    public Pose2d getPoseEstimator() {
+    return swerveDrivePoseEstimator.getEstimatedPosition();
+    }
 
     /**
    * Zero the gyro heading
