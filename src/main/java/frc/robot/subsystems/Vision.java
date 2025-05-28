@@ -142,22 +142,23 @@ public class Vision extends SubsystemBase implements Logged {
     drive.zeroHeading();
   }
 
-  // @Log.NT
+  @Log.NT
   public Pose2d getCurrentPose(){
     var result = frontLeftCam.getAllUnreadResults();
     boolean check = false;
     Pose2d botPose = new Pose2d();
-    System.out.println(result.size());
+    // System.out.println(result.size());
     if(result.size() > 0 && result.get(0).hasTargets()){
       // check = result.get(0).hasTargets();
       var update = frontLeftEstimator.update(result.get(0));
       Pose3d currentPose3d = new Pose3d();
       System.out.println("print target");
-      try {
-       currentPose3d = update.get().estimatedPose;
-      } catch(Exception e){
-        System.out.println("error caught");
-      }
+      currentPose3d = update.get().estimatedPose;
+      // try {
+      //  currentPose3d = update.get().estimatedPose;
+      // } catch(Exception e){
+      //   System.out.println("error caught");
+      // }
       botPose = currentPose3d.toPose2d();
     }
 
@@ -694,11 +695,14 @@ public double distanceToTarget(PhotonTrackedTarget target){
     }
     return data;
   }
-  
+
   @Override
   public void periodic(){
     swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
-   swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
+    Pose2d currentPose2d = getCurrentPose();
+    if (!(currentPose2d.getX() == 0 && currentPose2d.getY() == 0 )){
+      swerveDrivePoseEstimator.addVisionMeasurement(currentPose2d, Timer.getFPGATimestamp());
+    }
     //printRightTargetArea();
    // printLeftTargetArea();
 
