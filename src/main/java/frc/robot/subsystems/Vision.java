@@ -9,19 +9,16 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,11 +56,6 @@ public class Vision extends SubsystemBase implements Logged {
   private PIDController visionAreaPIDController;
   private PIDController visionYawPIDController;
   private PIDController visionTiltPIDController;
-  private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
-
-  
-  
- 
 
   @Log.NT
   double forward;
@@ -126,14 +118,7 @@ public class Vision extends SubsystemBase implements Logged {
     // rearLeftEstimator.setFieldTags(fieldLayout);
     // rearRightEstimator.setFieldTags(fieldLayout);
     // currentTargetArea = VisionConstants.
-
-    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(DriveConstants.Drivetrain.kDriveKinematics, new Rotation2d(Units.degreesToRadians(drive.getAngle())), drive.getSwerveModulePosition(), drive.getPose());
   }
-
-  @Log.NT
-    public Pose2d getPoseEstimator() {
-    return swerveDrivePoseEstimator.getEstimatedPosition();
-    }
 
     /**
    * Zero the gyro heading
@@ -142,23 +127,15 @@ public class Vision extends SubsystemBase implements Logged {
     drive.zeroHeading();
   }
 
-  @Log.NT
+  // @Log.NT
   public Pose2d getCurrentPose(){
     var result = frontLeftCam.getAllUnreadResults();
     boolean check = false;
     Pose2d botPose = new Pose2d();
-    // System.out.println(result.size());
-    if(result.size() > 0 && result.get(0).hasTargets()){
+    if(result.size() > 0){
       // check = result.get(0).hasTargets();
       var update = frontLeftEstimator.update(result.get(0));
-      Pose3d currentPose3d = new Pose3d();
-      System.out.println("print target");
-      currentPose3d = update.get().estimatedPose;
-      try {
-       currentPose3d = update.get().estimatedPose;
-      } catch(Exception e){
-        System.out.println("error caught");
-      }
+      Pose3d currentPose3d = update.get().estimatedPose;
       botPose = currentPose3d.toPose2d();
     }
 
@@ -493,13 +470,12 @@ public class Vision extends SubsystemBase implements Logged {
 
             double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair\
             targetXe = targetX;
-            if(Math.abs(targetX - VisionConstants.GOAL_X_MIDDLE) > 3){ // current tag is farther right than desired
+            if(Math.abs(targetX - VisionConstants.GOAL_X_MIDDLE) > 20){ // current tag is farther right than desired
               speeds[1] = (targetX-VisionConstants.GOAL_X_MIDDLE) * VisionConstants.YawPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             // }else if(targetX < VisionConstants.GOAL_X){
             //   speeds[1] = -(targetX-VisionConstants.GOAL_X) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             }
             
-           
             tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
             if(tilt > 1.02) { // left side of id is longer than right
               speeds[2] = -(tilt-1) * VisionConstants.TiltPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
@@ -696,16 +672,11 @@ public double distanceToTarget(PhotonTrackedTarget target){
     }
     return data;
   }
-
+  
   @Override
   public void periodic(){
-    //swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
-    //Pose2d currentPose2d = getCurrentPose();
-    //if (!(currentPose2d.getX() == 0 && currentPose2d.getY() == 0 )){
-     // swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
-    //}
     printRightTargetArea();
-   printLeftTargetArea();
+    printLeftTargetArea();
 
 
     //printYaw();

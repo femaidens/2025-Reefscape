@@ -80,8 +80,8 @@ public final class Constants {
     public static final double GOAL_AREA_RIGHT = 10;
     public static final double GOAL_X_RIGHT = 140; //150; //100; //106; //225.75; // x position of apriltag crosshair
     public static final double GOAL_AREA_LEFT = 9;
-    public static final double GOAL_X_LEFT = 200; //195 //216; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_X_MIDDLE = 170; //72;
+    public static final double GOAL_X_LEFT = 202;//200; //195 //216; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_X_MIDDLE = 72;
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
