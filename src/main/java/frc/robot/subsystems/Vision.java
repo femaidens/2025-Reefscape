@@ -154,11 +154,11 @@ public class Vision extends SubsystemBase implements Logged {
       Pose3d currentPose3d = new Pose3d();
       System.out.println("print target");
       currentPose3d = update.get().estimatedPose;
-      // try {
-      //  currentPose3d = update.get().estimatedPose;
-      // } catch(Exception e){
-      //   System.out.println("error caught");
-      // }
+      try {
+       currentPose3d = update.get().estimatedPose;
+      } catch(Exception e){
+        System.out.println("error caught");
+      }
       botPose = currentPose3d.toPose2d();
     }
 
@@ -493,12 +493,13 @@ public class Vision extends SubsystemBase implements Logged {
 
             double targetX = (bottomLeft.x + bottomRight.x + topLeft.x + topRight.x) / 4; // avg to find mid point of apriltag, should be like x position of crosshair\
             targetXe = targetX;
-            if(Math.abs(targetX - VisionConstants.GOAL_X_MIDDLE) > 20){ // current tag is farther right than desired
+            if(Math.abs(targetX - VisionConstants.GOAL_X_MIDDLE) > 3){ // current tag is farther right than desired
               speeds[1] = (targetX-VisionConstants.GOAL_X_MIDDLE) * VisionConstants.YawPID.P * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             // }else if(targetX < VisionConstants.GOAL_X){
             //   speeds[1] = -(targetX-VisionConstants.GOAL_X) * 0.001 * DriveConstants.Translation.MAX_TRANSLATION_VELOCITY.in(MetersPerSecond);
             }
             
+           
             tilt = (bottomLeft.y - topLeft.y) / (bottomRight.y - topRight.y); // just to compare lengths of left & right side of fidicial id to determine which way its angled
             if(tilt > 1.02) { // left side of id is longer than right
               speeds[2] = -(tilt-1) * VisionConstants.TiltPID.P * DriveConstants.Turn.MAX_ANGULAR_VELOCITY.in(RadiansPerSecond);
@@ -698,13 +699,13 @@ public double distanceToTarget(PhotonTrackedTarget target){
 
   @Override
   public void periodic(){
-    swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
-    Pose2d currentPose2d = getCurrentPose();
-    if (!(currentPose2d.getX() == 0 && currentPose2d.getY() == 0 )){
-      swerveDrivePoseEstimator.addVisionMeasurement(currentPose2d, Timer.getFPGATimestamp());
-    }
-    //printRightTargetArea();
-   // printLeftTargetArea();
+    //swerveDrivePoseEstimator.update(new Rotation2d(Units.degreesToRadians(drive.getAngle())),drive.getSwerveModulePosition());
+    //Pose2d currentPose2d = getCurrentPose();
+    //if (!(currentPose2d.getX() == 0 && currentPose2d.getY() == 0 )){
+     // swerveDrivePoseEstimator.addVisionMeasurement(getCurrentPose(), Timer.getFPGATimestamp());
+    //}
+    printRightTargetArea();
+   printLeftTargetArea();
 
 
     //printYaw();
