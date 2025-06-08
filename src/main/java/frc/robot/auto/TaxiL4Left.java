@@ -15,9 +15,9 @@ import frc.robot.commands.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TaxiL4 extends SequentialCommandGroup {
+public class TaxiL4Left extends SequentialCommandGroup {
   /** Creates a new TaxiL4. */
-  public TaxiL4(Elevating elevating, Outtake outtake, Vision vision, CoralTransition coralTransition, Drive drive) {
+  public TaxiL4Left(Elevating elevating, Outtake outtake, Vision vision, CoralTransition coralTransition, Drive drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -30,7 +30,7 @@ public class TaxiL4 extends SequentialCommandGroup {
         elevating.scoringAlgaeBargeCmd().withTimeout(.7),
         outtake.stopMotorCmd(),
         elevating.resetDefault().withTimeout(2),
-        new RunCommand(() -> vision.driveFromVision(() -> 0,() -> 0,() -> 0.2), vision).withTimeout(2.65)
+        new RunCommand(() -> vision.driveFromVision(() -> 0,() -> 0,() -> 0.2), vision).withTimeout(2)
         .andThen(new InstantCommand(() -> vision.visionZeroHeading()))
         // new RunCommand(() -> vision.drive.drive(() -> 0.0, () -> 0.0, () -> 0.2))// vision.driveFromVision(() -> 0.0, ()   // -> 0.0, () -> 0.2))
         // .withTimeout(3),

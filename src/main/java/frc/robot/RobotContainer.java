@@ -10,7 +10,8 @@ import frc.robot.auto.Spin;
 import frc.robot.auto.Taxi;
 import frc.robot.auto.TaxiL2;
 import frc.robot.auto.TaxiL3;
-import frc.robot.auto.TaxiL4;
+import frc.robot.auto.TaxiL4Right;
+import frc.robot.auto.TaxiL4Left;
 import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
@@ -88,7 +89,7 @@ public class RobotContainer implements Logged {
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
-        autoIntake = new Trigger(()->outtake.isBeamBrokenBack());
+        autoIntake = new Trigger(()->outtake.isBeamBrokenIntake());
         configureBindings();
         configureDefaultCmds();
         configureAuton();
@@ -154,6 +155,8 @@ public class RobotContainer implements Logged {
                 .onTrue(vision.funkierMiddle())
                 .onFalse(vision.stopDriving());
 
+
+
         operJoy.povUp()
                 .whileTrue(elevator.runMotorCmd())
                 .onFalse(elevator.stopMotorCmd()
@@ -183,8 +186,14 @@ public class RobotContainer implements Logged {
         /**
          * coral transition
          */
+        // operJoy.rightTrigger()
+        //     .onTrue(coralTransition.moveCoralToOuttake());
+
+        //back up
+
         operJoy.rightTrigger()
-            .onTrue(coralTransition.moveCoralToOuttake());
+            .onTrue(coralTransition.transitionCoral());
+       
 
         operJoy.leftTrigger()
             .onTrue(outtake.stopMotorCmd()
@@ -235,7 +244,8 @@ public class RobotContainer implements Logged {
         autonChooser.addOption("taxi", new Taxi(vision));
         autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
         autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L4", new TaxiL4(elevating, outtake, vision, coralTransition, drive));
+        autonChooser.addOption("taxi L4 right", new TaxiL4Right(elevating, outtake, vision, coralTransition, drive));
+        autonChooser.addOption("taxi L4 left", new TaxiL4Left(elevating, outtake, vision, coralTransition, drive));
         autonChooser.addOption("spin", new Spin(vision));
         SmartDashboard.putData("Choose auto: ", autonChooser);
     }

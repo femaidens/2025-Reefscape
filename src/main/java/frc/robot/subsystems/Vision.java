@@ -683,5 +683,7 @@ public double distanceToTarget(PhotonTrackedTarget target){
     // SmartDashboard.putData("3d pose", (Sendable)getPose3d(getTag()));
     // SmartDashboard.putData("current pose", (Sendable)getCurrentPose());
     // funkierPrint();
+    SmartDashboard.putBoolean("front left connected", frontLeftCam.isConnected());
+    SmartDashboard.putBoolean("front right connected", frontRightCam.isConnected());
   }
 }

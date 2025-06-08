@@ -78,10 +78,10 @@ public final class Constants {
     //for a strange aligning to target manually idea
     //i think its a percentage?
     public static final double GOAL_AREA_RIGHT = 10;
-    public static final double GOAL_X_RIGHT = 140; //150; //100; //106; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_X_RIGHT = 107; //140; //150; //100; //106; //225.75; // x position of apriltag crosshair
     public static final double GOAL_AREA_LEFT = 9;
-    public static final double GOAL_X_LEFT = 202;//200; //195 //216; //225.75; // x position of apriltag crosshair
-    public static final double GOAL_X_MIDDLE = 72;
+    public static final double GOAL_X_LEFT = 195;//200; //195 //216; //225.75; // x position of apriltag crosshair
+    public static final double GOAL_X_MIDDLE = 66;
     public static final double GOAL_AREA_MIDDLE = 9;
     // public static final double GOAL_Y = 150; //220.25; // y position of apriltag crosshair
     
@@ -140,9 +140,9 @@ public final class Constants {
     public static class SetpointConstants {
       public static final double DEFAULT_LVL = 0;
       public static final double FIRST_LVL = 1.3; //2.5;
-      public static final double SECOND_LVL = 1.65; //1.6; //3.59;
+      public static final double SECOND_LVL = 1.72; //1.6; //3.59;
       public static final double ALGAE_SECOND_LVL = 1.42;
-      public static final double THIRD_LVL = 3.45; //3.4; //6.28;
+      public static final double THIRD_LVL = 3.53; //3.4; //6.28;
       public static final double ALGAE_THIRD_LVL = 3.0;
       public static final double FOURTH_LVL = 6.55; //6.5; 
       // public static final double DEFAULT_LVL = 1.54; //1.83;

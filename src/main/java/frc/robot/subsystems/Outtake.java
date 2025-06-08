@@ -109,10 +109,7 @@ public class Outtake extends SubsystemBase implements Logged{
   }
 
 
-  public boolean isBeamBrokenIntake() {
-    // System.out.println("intake");
-    return !backReceiver.get();
-  }
+
   
 
   /**
@@ -121,13 +118,13 @@ public class Outtake extends SubsystemBase implements Logged{
    */
 
   @Log.NT
-  public boolean isBeamBrokenFront() {
+  public boolean isBeamBrokenOuttake() {
     return !frontReceiver.get();
   }
 
   @Log.NT
-  public boolean isBeamBrokenBack() {
-    return !middleReceiver.get();
+  public boolean isBeamBrokenIntake() {
+    return !backReceiver.get();
   }
 
    /*
@@ -136,15 +133,16 @@ public class Outtake extends SubsystemBase implements Logged{
    * outtake beam break. IF the intake BB off while outtake BB on, it'll stop.
    */
   public boolean isCoral() {
-    return !isBeamBrokenBack() && isBeamBrokenFront();
+    return !isBeamBrokenIntake() && !isBeamBrokenOuttake();
   }
+
+
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("OUT BB front", isBeamBrokenFront());
-    SmartDashboard.putBoolean("OUT BB middle", isBeamBrokenBack());
+    SmartDashboard.putBoolean("INTAKE BB", isBeamBrokenIntake());
+    SmartDashboard.putBoolean("OUTTAKE BB", isBeamBrokenOuttake());
     SmartDashboard.putBoolean("IS CORAL", isCoral());
-    SmartDashboard.putBoolean("Intake BB", isBeamBrokenIntake());
     SmartDashboard.putData(this);
 
     SmartDashboard.updateValues();
