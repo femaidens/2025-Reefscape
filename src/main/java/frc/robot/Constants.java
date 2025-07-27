@@ -56,8 +56,8 @@ public final class Constants {
       public static double kI = 0;
       public static double kD = 0;
 
-      // public static double MAX_VELOCITY = 5;
-      // public static double MAX_ACCELERATION = 20;
+      public static double MAX_VELOCITY = 5;
+      public static double MAX_ACCELERATION = 20;
     }
 
     public class FFConstants {
@@ -83,6 +83,8 @@ public final class Constants {
       public static final double kMaxAcceleration = 10;
       public static final TrapezoidProfile.Constraints CONSTRAINTS = new TrapezoidProfile.Constraints(kMaxVelocity,
           kMaxAcceleration);
+
+    
     }
 
     public static class FeedForwardConstants {
@@ -147,5 +149,6 @@ public final class Constants {
     public static final double REMOVE_ALGAE_SPEED = 0.4; // some random value for now
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
+    public static final double OUTTAKE_ALGAE_SPEED = 0;
   }
 }

@@ -84,17 +84,17 @@ public class RobotContainer {
 
         }
 
-  private void configureDefaultCmds(){
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.drive(
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-    //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-    //   );
+//   private void configureDefaultCmds(){
+//     // drivetrain.setDefaultCommand(
+//     //   drivetrain.drive(
+//     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+//     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+//     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+//     //   );
 
-      // algaePivot.setDefaultCommand(
-      //   algaePivot.setProcessorCmd());
-  }
+//       // algaePivot.setDefaultCommand(
+//       //   algaePivot.setProcessorCmd());
+//   }
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -105,45 +105,45 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
-    // operJoy.rightBumper()
-    //   .whileTrue(algaeIntake.runRollersCmd())
-    //   .onFalse(algaeIntake.stopRollersCmd());
+//   private void configureBindings() {
+//     // operJoy.rightBumper()
+//     //   .whileTrue(algaeIntake.runRollersCmd())
+//     //   .onFalse(algaeIntake.stopRollersCmd());
 
-    // operJoy.leftBumper()
-    //   .whileTrue(algaeIntake.reverseRollersCmd())
-    //   .onFalse(algaeIntake.stopRollersCmd());
+//     // operJoy.leftBumper()
+//     //   .whileTrue(algaeIntake.reverseRollersCmd())
+//     //   .onFalse(algaeIntake.stopRollersCmd());
     
-    // operJoy.rightTrigger()
-    //   .whileTrue(algaePivot.setProcessorCmd());    
+//     // operJoy.rightTrigger()
+//     //   .whileTrue(algaePivot.setProcessorCmd());    
 
-     operJoy.rightBumper()
-                .whileTrue(outtake.intakeAlgaeCmd())
-                .onFalse(outtake.stopMotorCmd());
+//      operJoy.rightBumper()
+//                 .whileTrue(outtake.intakeAlgaeCmd())
+//                 .onFalse(outtake.stopMotorCmd());
 
-     operJoy.leftBumper()
-                .whileTrue(outtake.setOuttakeAlgaeCmd())
-                .onFalse(outtake.stopMotorCmd());
+//      operJoy.leftBumper()
+//                 .whileTrue(outtake.setOuttakeAlgaeCmd())
+//                 .onFalse(outtake.stopMotorCmd());
 
-    operJoy.x()
-                .onTrue(elevating.scoringAlgae());
+//     operJoy.x()
+//                 .onTrue(elevating.scoringAlgae());
 
-    operJoy.start()
-                .onTrue(elevating.algaeSecondLevelCmd());
+//     operJoy.start()
+//                 .onTrue(elevating.algaeSecondLevelCmd());
 
-     operJoy.a()
-                .onTrue(elevating.secondLevelCmd());
+//      operJoy.a()
+//                 .onTrue(elevating.secondLevelCmd());
                 
-    operJoy.back()
-                .onTrue(elevating.algaeThirdLevelCmd());
+//     operJoy.back()
+//                 .onTrue(elevating.algaeThirdLevelCmd());
 
-    operJoy.b()
-                .onTrue(elevating.thirdLevelCmd());
+//     operJoy.b()
+//                 .onTrue(elevating.thirdLevelCmd());
 
-    operJoy.y()
-                .onTrue(elevating.fourthLevelCmd());
+//     operJoy.y()
+//                 .onTrue(elevating.fourthLevelCmd());
 
-  }
+//   }
 
  
   /**
@@ -151,10 +151,10 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
-  }}
+//   public Command getAutonomousCommand() {
+//     // An example command will be run in autonomous
+//     return null;
+//   }
         private void configureDefaultCmds() {
                 
                 // drivetrain.setDefaultCommand(

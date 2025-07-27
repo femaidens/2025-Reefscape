@@ -22,6 +22,9 @@ public class Ports {
         public static final int REAR_LEFT_CANCODER = 3;
         public static final int REAR_RIGHT_CANCODER = 1;
     }
+    public class AlgaePivotPorts{
+      public static int INTAKE_PIVOT_MOTOR = 0;
+    }
     public class ElevatorPorts {
         public static int MOTOR_PORT = 15;
         public static int BOT_SWITCH = 7;
