@@ -104,7 +104,7 @@ public final class Autos {
       NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
 
 
-      autonChooser = AutoBuilder.buildAutoChooser("Blue Left to Reef Front");
+      autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
 
       autonChooser.addOption("No auto", Commands.none());
 
