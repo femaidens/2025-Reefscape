@@ -251,7 +251,7 @@ public class Vision extends SubsystemBase implements Logged {
     });
   }
   public Command stopDriving(){
-    return this.runOnce(()-> drive.drive(()-> 0.0, () -> 0.0, () -> 0.0));
+    return this.runOnce(()-> drive.drive(()-> 0.0, () -> 0.0, () -> 0.0)).andThen(()->drive.zeroHeading());
   }
 
   public boolean isGyro(){
