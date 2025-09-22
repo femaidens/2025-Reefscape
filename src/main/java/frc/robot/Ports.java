@@ -41,4 +41,14 @@ public class Ports {
       public class LEDPorts{
         public static int LED_PORT = 5; 
       }
+
+      public static class ArmPIDPorts {
+        public static final int TOP_MOTOR = 0;
+        public static final int MIDDLE_MOTOR = 0;
+        public static final int BOTTOM_MOTOR = 0;
+        
+
+        
+
+      }
 }

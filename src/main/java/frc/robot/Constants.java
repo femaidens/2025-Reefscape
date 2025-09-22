@@ -173,4 +173,14 @@ public final class Constants {
     public static final double VOLTAGE = 0;
     public static final int CURRENT_LIMIT = 30;
   }
+
+  public static class ArmPIDConstants {
+    public static final int CURRENT_LIMIT = 30;
+    public static final double MOTOR_SPEED = 0.5;
+    public static class ArmPIDPIDConstants {
+      public static final double kP = 0.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+    }
+  }
 }
