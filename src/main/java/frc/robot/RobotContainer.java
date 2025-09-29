@@ -9,6 +9,23 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
 import frc.robot.subsystems.*;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +34,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.auto.Taxi;
+// import frc.robot.auto.Taxi;
 
 
 /**
@@ -80,7 +97,7 @@ public class RobotContainer {
                 configureDefaultCmds();
                 autonChooser = new SendableChooser<>();
                 
-                configureAuton();
+                // configureAuton();
 
         }
 
@@ -179,10 +196,10 @@ public class RobotContainer {
                 
         }
 
-        public void configureAuton(){
-                autonChooser.addOption("taxi", new Taxi(drivetrain));
-                SmartDashboard.putData("Choose auto: ", autonChooser);
-        }
+        // public void configureAuton(){
+        //         autonChooser.addOption("taxi", new Taxi(drivetrain));
+        //         SmartDashboard.putData("Choose auto: ", autonChooser);
+        // }
 
         // // // Configure AutoBuilder last
         // // AutoBuilder.configure(drivetrain.getPose(), // Robot pose supplier
@@ -444,8 +461,13 @@ public class RobotContainer {
         // }
 
         public Command getAutonomousCommand() {
-                // An example command will be run in autonomous
-                return autonChooser.getSelected();
+                try {
+                        PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+                        return AutoBuilder.followPath(path);
+                } catch (Exception e) {
+                        DriverStation.reportError ("Big oops:" + e.getMessage(), e.getStackTrace());
+                        return Commands.none();
+                }
         }
 
 }
