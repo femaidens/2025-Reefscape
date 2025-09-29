@@ -6,9 +6,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.sim.SparkAbsoluteEncoderSim;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,18 +24,26 @@ import frc.robot.Ports.ArmPIDPorts;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmPIDConstants;
 import frc.robot.Constants.ElevatorConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmPID extends SubsystemBase {
   private static SparkMax topMotor;
   private static SparkMax middleMotor;
   private static SparkMax bottomMotor;
+  private static AbsoluteEncoder armEncoder;
+  private static AbsoluteEncoderConfig armEncoderConfig;
   private static PIDController armPID;
+  
 
   /** Creates a new ArmPID. */
   public ArmPID() {
     topMotor = new SparkMax(ArmPIDPorts.TOP_MOTOR, SparkLowLevel.MotorType.kBrushless);
     middleMotor = new SparkMax(ArmPIDPorts.MIDDLE_MOTOR, SparkLowLevel.MotorType.kBrushless);
     bottomMotor = new SparkMax(ArmPIDPorts.BOTTOM_MOTOR, SparkLowLevel.MotorType.kBrushless);
+    armEncoder = topMotor.getAbsoluteEncoder();
+    armEncoderConfig = new AbsoluteEncoderConfig();
+    armEncoderConfig.positionConversionFactor(360);
+    
     armPID = new PIDController(ArmPIDConstants.ArmPIDPIDConstants.kP, ArmPIDConstants.ArmPIDPIDConstants.kI,
         ArmPIDConstants.ArmPIDPIDConstants.kD);
 
@@ -58,20 +70,36 @@ public class ArmPID extends SubsystemBase {
   bottomMotor.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  public Command setVelocityCmd(double setpoint){
+    return this.run(() -> setVelocity(setpoint));
+  }
+
   public Command setMotorSpeedCmd() {
-    return this.run(() -> {
+    return this.runOnce(() -> {
       topMotor.set(ArmPIDConstants.MOTOR_SPEED);
-      middleMotor.set(ArmPIDConstants.MOTOR_SPEED);
-      bottomMotor.set(ArmPIDConstants.MOTOR_SPEED);
+      // middleMotor.set(ArmPIDConstants.MOTOR_SPEED);
+      // bottomMotor.set(ArmPIDConstants.MOTOR_SPEED);
     });
   }
 
-  public void armPID(){
-    
+  public Command stopMotorCmd() {
+    return this.runOnce(() -> {
+      topMotor.set(0);
+    });
+  }
+
+
+  public void setVelocity(double setpoint){
+    topMotor.setVoltage(armPID.calculate(getAngle(), setpoint));
+  }
+
+  public double getAngle(){
+    return armEncoder.getPosition();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Arm Angle: ", getAngle());
   }
 }

@@ -16,6 +16,7 @@ import frc.robot.commands.AlignToCenter;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
+import frc.robot.subsystems.ArmPID;
 // import frc.robot.commands.DriveToPoseCmd;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
@@ -61,6 +62,7 @@ public class RobotContainer implements Logged {
     //private final Intake intake;
     private final Outtake outtake;
     // private final LED led; 
+    private final ArmPID armPID;
 
     private final Elevating elevating;
     //private final DriveSim driveSim;
@@ -82,6 +84,7 @@ public class RobotContainer implements Logged {
         vision = new Vision();
         elevator = new Elevator();
         outtake = new Outtake();
+        armPID = new ArmPID();
         // led = new LED(); 
         elevating = new Elevating(elevator, outtake);
         coralTransition = new CoralTransition(outtake);
@@ -138,50 +141,59 @@ public class RobotContainer implements Logged {
      */
     private void configureBindings() {
 
+
         // RobotModeTriggers.teleop().and(autoIntake.onTrue(coralTransition.moveCoralToOuttake()));
         // autoIntake.onTrue(coralTransition.moveCoralToOuttake());
-        driveJoy.rightBumper()
-                .onTrue(vision.resetGyroFromVision());
+        // driveJoy.rightBumper()
+        //         .onTrue(vision.resetGyroFromVision());
 
-         driveJoy.rightTrigger()
-                .onTrue(vision.funkierRight())
-                 .onFalse(vision.stopDriving());
+         operJoy.rightTrigger()
+                .onTrue(armPID.setMotorSpeedCmd());
+        
+        operJoy.leftTrigger()
+                .onTrue(armPID.stopMotorCmd());
 
-        driveJoy.leftTrigger()
-                .onTrue(vision.funkierLeft())
-                .onFalse(vision.stopDriving());
+        operJoy.y()
+                .onTrue(armPID.setVelocityCmd(23));
+            
+        // operJoy.y()
+        //     .onTrue();
 
-        driveJoy.y()
-                .onTrue(vision.funkierMiddle())
-                .onFalse(vision.stopDriving());
+        // driveJoy.leftTrigger()
+        //         .onTrue(vision.funkierLeft())
+        //         .onFalse(vision.stopDriving());
+
+        // driveJoy.y()
+        //         .onTrue(vision.funkierMiddle())
+        //         .onFalse(vision.stopDriving());
 
 
 
-        operJoy.povUp()
-                .whileTrue(elevator.runMotorCmd())
-                .onFalse(elevator.stopMotorCmd()
-                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
-                );
+        // operJoy.povUp()
+        //         .whileTrue(elevator.runMotorCmd())
+        //         .onFalse(elevator.stopMotorCmd()
+        //         // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+        //         );
 
-        operJoy.povDown()
-                .whileTrue(elevator.reverseMotorCmd())
-                .onFalse(elevator.stopMotorCmd()
-                // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
-                );
+        // operJoy.povDown()
+        //         .whileTrue(elevator.reverseMotorCmd())
+        //         .onFalse(elevator.stopMotorCmd()
+        //         // .andThen(elevator.setCurrentSetpoint(elevator.getCurrentPosition()))
+        //         );
 
-        /**
-        * outtake
-        */
-        operJoy.rightBumper()
-            .whileTrue(outtake.runMotorCmd())
-            .onFalse(outtake.stopMotorCmd());
+        // /**
+        // * outtake
+        // */
+        // operJoy.rightBumper()
+        //     .whileTrue(outtake.runMotorCmd())
+        //     .onFalse(outtake.stopMotorCmd());
 
-        /**
-        * reverse outtake
-        */
-        operJoy.leftBumper()
-            .whileTrue(outtake.reverseOuttakeCmd())
-            .onFalse(outtake.stopMotorCmd());
+        // /**
+        // * reverse outtake
+        // */
+        // operJoy.leftBumper()
+        //     .whileTrue(outtake.reverseOuttakeCmd())
+        //     .onFalse(outtake.stopMotorCmd());
 
         /**
          * coral transition
@@ -191,34 +203,34 @@ public class RobotContainer implements Logged {
 
         //back up
 
-        operJoy.rightTrigger()
-            .onTrue(coralTransition.transitionCoral());
+        // operJoy.rightTrigger()
+        //     .onTrue(coralTransition.transitionCoral());
        
 
-        operJoy.leftTrigger()
-            .onTrue(outtake.stopMotorCmd()
-            .andThen(elevating.resetDefault()));
-            // .andThen(led.setGreenCmd()));
+        // operJoy.leftTrigger()
+        //     .onTrue(outtake.stopMotorCmd()
+        //     .andThen(elevating.resetDefault()));
+        //     // .andThen(led.setGreenCmd()));
 
-        operJoy.a()
-            .onTrue(elevating.secondLevelCmd());
+        // operJoy.a()
+        //     .onTrue(elevating.secondLevelCmd());
 
-        operJoy.b()
-            .onTrue(elevating.thirdLevelCmd());
+        // operJoy.b()
+        //     .onTrue(elevating.thirdLevelCmd());
             
-        operJoy.y()
-            // .onTrue(elevating.possibleFourthLevelCmd());
-            .onTrue(elevating.fourthLevelCmd());
+        // operJoy.y()
+        //     // .onTrue(elevating.possibleFourthLevelCmd());
+        //     .onTrue(elevating.fourthLevelCmd());
 
-        operJoy.x()
-            .onTrue(elevating.scoringAlgaeBargeCmd());
-            // .onFalse(outtake.stopMotorCmd());
+        // operJoy.x()
+        //     .onTrue(elevating.scoringAlgaeBargeCmd());
+        //     // .onFalse(outtake.stopMotorCmd());
 
-        operJoy.back()
-            .onTrue(elevating.algaeSecondLevelCmd());
+        // operJoy.back()
+        //     .onTrue(elevating.algaeSecondLevelCmd());
             
-        operJoy.start()
-            .onTrue(elevating.algaeThirdLevelCmd());
+        // operJoy.start()
+        //     .onTrue(elevating.algaeThirdLevelCmd());
 
         /**
          * elevator sysid
