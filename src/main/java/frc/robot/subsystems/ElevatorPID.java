@@ -15,10 +15,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmPIDConstants;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorPIDConstants;
-import frc.robot.Ports.ArmPIDPorts;
 import frc.robot.Ports.ElevatorPIDPorts;
 
 public class ElevatorPID extends SubsystemBase {
@@ -28,6 +28,8 @@ public class ElevatorPID extends SubsystemBase {
   private static AbsoluteEncoder absoluteEncoder;
   private static PIDController reverseElevatorPID;
   private static PIDController elevatorPID;
+
+  private static double lastSetpoint;
   
 
   /** Creates a new ElevatorPID. */
@@ -50,6 +52,10 @@ public class ElevatorPID extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(ElevatorPIDConstants.CURRENT_LIMIT);
 
+    rightConfig.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+
     SparkMaxConfig leftConfig = new SparkMaxConfig();
     leftConfig
         .idleMode(IdleMode.kBrake)
@@ -58,6 +64,39 @@ public class ElevatorPID extends SubsystemBase {
 
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftConfig.encoder
+        .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
+        .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
+
+        lastSetpoint = relativeEncoder.getPosition();
+  }
+
+  public Command runElevatorMotorCmd(){
+    return this.run(()-> rightMotor.set(ElevatorPIDConstants.MOTOR_SPEED));
+  }
+
+  public Command stopElevatorMotorCmd(){
+    return this.run(()-> rightMotor.set(0));
+  }
+
+ public Command reverseMotorCmd() {
+  return this.run(()-> rightMotor.set(-ElevatorPIDConstants.MOTOR_SPEED));
+ } 
+ 
+  public void elevatorPid(){
+      rightMotor.setVoltage(elevatorPID.calculate(relativeEncoder.getPosition(), lastSetpoint));
+  }
+
+  public void reverseElevatorPID(double setpoint){
+    rightMotor.setVoltage(reverseElevatorPID.calculate(relativeEncoder.getPosition(), setpoint));
+  }
+
+  public double getCurrentPosition(){
+    return relativeEncoder.getPosition();
+  }
+
+  public Command setCurrentSetpointCmd (double setpoint){
+   return this.run(()-> lastSetpoint = setpoint);
   }
 
  

@@ -191,6 +191,8 @@ public final class Constants {
     public static final double GEAR_RATIO = 1.0 / 20.0;
     public static final double POSITION_CONVERSION_FACTOR = GEAR_RATIO;
     public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+
+    public static final double VOLTS = 1.0;
     
     public static class ElevatorPIDPIDConstants {
       public static final double kP = 0.0;

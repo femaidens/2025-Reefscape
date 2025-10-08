@@ -21,6 +21,7 @@ import frc.robot.subsystems.ArmPID;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ElevatorPID;
 // import frc.robot.subsystems.LED;
 // import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Outtake;
@@ -63,6 +64,7 @@ public class RobotContainer implements Logged {
     private final Outtake outtake;
     // private final LED led; 
     private final ArmPID armPID;
+    private final ElevatorPID elevatorPID;
 
     private final Elevating elevating;
     //private final DriveSim driveSim;
@@ -83,6 +85,7 @@ public class RobotContainer implements Logged {
     public RobotContainer() {
         vision = new Vision();
         elevator = new Elevator();
+        elevatorPID = new ElevatorPID();
         outtake = new Outtake();
         armPID = new ArmPID();
         // led = new LED(); 
@@ -155,6 +158,19 @@ public class RobotContainer implements Logged {
 
         operJoy.y()
                 .onTrue(armPID.setVelocityCmd(23));
+
+                operJoy.povUp()
+                .whileTrue(elevatorPID.runElevatorMotorCmd())
+                .onFalse(elevatorPID.stopElevatorMotorCmd()
+                 .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
+                );
+
+        operJoy.povDown()
+                .whileTrue(elevatorPID.reverseMotorCmd())
+                .onFalse(elevatorPID.stopElevatorMotorCmd()
+                 .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
+                );
+
             
         // operJoy.y()
         //     .onTrue();
