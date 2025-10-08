@@ -39,8 +39,9 @@ public final class Autos {
 
   public Autos(Drive drive, Outtake outtake, Intake intake, Elevator elevator, CoralTransition transition, Elevating elevating) {
 
-    autonChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Choose Auto: ", autonChooser);
+
+    // autonChooser = AutoBuilder.buildAutoChooser();
+    
     config = new RobotConfig(
       Constants.PathPlannerConstants.massKg, 
       Constants.PathPlannerConstants.MOI,
@@ -52,6 +53,7 @@ public final class Autos {
         DriveConstants.Translation.CURRENT_LIMIT, 
         1), 
         DriveConstants.Drivetrain.TRACK_WIDTH);
+       
 
 
     this.intake = intake;
@@ -105,7 +107,7 @@ public final class Autos {
 
 
       autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
-
+      SmartDashboard.putData("Choose Auto: ", autonChooser);
       autonChooser.addOption("No auto", Commands.none());
 
       return autonChooser;
