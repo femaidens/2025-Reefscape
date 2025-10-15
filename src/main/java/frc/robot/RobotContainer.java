@@ -9,9 +9,12 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.CoralTransition;
 import frc.robot.commands.Elevating;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.DriveConstants.Translation;
+import frc.robot.subsystems.DriveConstants.Turn;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -23,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import com.pathplanner.lib.config.RobotConfig;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -35,7 +39,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 // import frc.robot.auto.Taxi;
-
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -55,21 +58,22 @@ public class RobotContainer {
         private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
         // private final AlgaeIntake algaeIntake = new AlgaeIntake();
         // private final AlgaePivot algaePivot = new AlgaePivot();
-       private final Drive drivetrain;
+        private final Drive drivetrain;
         private final Elevator elevator;
         private final Intake intake;
         private final Outtake outtake;
         private final Elevating elevating;
         private final Autos autos;
+        private RobotConfig config;
         // private final Outtake outtake;
         // private final Elevating elevating;
         // private final AlgaeCmds algaeCmds;
         // private final AlgaeIntake algaeIntake;
         // private final AlgaePivot algaePivot;
-         private final CoralTransition coralTransition;
+        private final CoralTransition coralTransition;
         // private final Intake intake;
         // private RobotConfig config;
-        // private final Camera camera; 
+        // private final Camera camera;
 
         private SendableChooser<Command> autonChooser;
 
@@ -86,8 +90,8 @@ public class RobotContainer {
                 elevating = new Elevating(elevator, outtake, intake);
                 coralTransition = new CoralTransition(intake, outtake);
 
-                autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition, elevating);
-                // camera = new Camera(); 
+                autos = new Autos(drivetrain, outtake, intake, elevator, coralTransition, elevating);
+                // camera = new Camera();
                 // algaeIntake = new AlgaeIntake();
                 // algaePivot = new AlgaePivot();
                 // intake = new Intake();
@@ -95,85 +99,124 @@ public class RobotContainer {
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
+                autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
+
                 autonChooser = new SendableChooser<>();
-                
+
                 // configureAuton();
+                config = new RobotConfig(
+                                Constants.PathPlannerConstants.massKg,
+                                Constants.PathPlannerConstants.MOI,
+                                new ModuleConfig(
+                                                DriveConstants.Translation.WHEEL_RADIUS,
+                                                DriveConstants.Drivetrain.MAX_SPEED,
+                                                DriveConstants.Drivetrain.WHEEL_COF,
+                                                DCMotor.getKrakenX60(1),
+                                                DriveConstants.Translation.CURRENT_LIMIT,
+                                                1),
+                                DriveConstants.Drivetrain.TRACK_WIDTH);
 
         }
 
-//   private void configureDefaultCmds(){
-//     // drivetrain.setDefaultCommand(
-//     //   drivetrain.drive(
-//     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
-//     //     () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
-//     //     () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
-//     //   );
+        public SendableChooser<Command> configure() {
+                try {
+                        config = RobotConfig.fromGUISettings();
+                } catch (Exception e) {
+                        // Handle exception as needed
+                        e.printStackTrace();
+                }
 
-//       // algaePivot.setDefaultCommand(
-//       //   algaePivot.setProcessorCmd());
-//   }
+                NamedCommands.registerCommand("Intake to outtake", coralTransition.moveCoralToOuttake());
+                NamedCommands.registerCommand("outtake trough", outtake.setOuttakeCoralSpeedCmd());
+                NamedCommands.registerCommand("intake", intake.runMotorCmd());
+                NamedCommands.registerCommand("elevate trough", elevating.firstLevelCmd());
+                NamedCommands.registerCommand("elevate L2", elevating.secondLevelCmd());
+                NamedCommands.registerCommand("elevate L3", elevating.thirdLevelCmd());
+                NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-//   private void configureBindings() {
-//     // operJoy.rightBumper()
-//     //   .whileTrue(algaeIntake.runRollersCmd())
-//     //   .onFalse(algaeIntake.stopRollersCmd());
+                // autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
+                SmartDashboard.putData("Choose Auto: ", autonChooser);
+                autonChooser.addOption("No auto", Commands.none());
 
-//     // operJoy.leftBumper()
-//     //   .whileTrue(algaeIntake.reverseRollersCmd())
-//     //   .onFalse(algaeIntake.stopRollersCmd());
-    
-//     // operJoy.rightTrigger()
-//     //   .whileTrue(algaePivot.setProcessorCmd());    
+                return autonChooser;
+        }
+        // private void configureDefaultCmds(){
+        // // drivetrain.setDefaultCommand(
+        // // drivetrain.drive(
+        // // () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
+        // // () -> MathUtil.applyDeadband(-driveJoy.getLeftX(), 0.1),
+        // // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1))
+        // // );
 
-//      operJoy.rightBumper()
-//                 .whileTrue(outtake.intakeAlgaeCmd())
-//                 .onFalse(outtake.stopMotorCmd());
+        // // algaePivot.setDefaultCommand(
+        // // algaePivot.setProcessorCmd());
+        // }
 
-//      operJoy.leftBumper()
-//                 .whileTrue(outtake.setOuttakeAlgaeCmd())
-//                 .onFalse(outtake.stopMotorCmd());
+        /**
+         * Use this method to define your trigger->command mappings. Triggers can be
+         * created via the
+         * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+         * an arbitrary
+         * predicate, or via the named factories in {@link
+         * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+         * {@link
+         * CommandXboxController
+         * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+         * PS4} controllers or
+         * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+         * joysticks}.
+         */
+        // private void configureBindings() {
+        // // operJoy.rightBumper()
+        // // .whileTrue(algaeIntake.runRollersCmd())
+        // // .onFalse(algaeIntake.stopRollersCmd());
 
-//     operJoy.x()
-//                 .onTrue(elevating.scoringAlgae());
+        // // operJoy.leftBumper()
+        // // .whileTrue(algaeIntake.reverseRollersCmd())
+        // // .onFalse(algaeIntake.stopRollersCmd());
 
-//     operJoy.start()
-//                 .onTrue(elevating.algaeSecondLevelCmd());
+        // // operJoy.rightTrigger()
+        // // .whileTrue(algaePivot.setProcessorCmd());
 
-//      operJoy.a()
-//                 .onTrue(elevating.secondLevelCmd());
-                
-//     operJoy.back()
-//                 .onTrue(elevating.algaeThirdLevelCmd());
+        // operJoy.rightBumper()
+        // .whileTrue(outtake.intakeAlgaeCmd())
+        // .onFalse(outtake.stopMotorCmd());
 
-//     operJoy.b()
-//                 .onTrue(elevating.thirdLevelCmd());
+        // operJoy.leftBumper()
+        // .whileTrue(outtake.setOuttakeAlgaeCmd())
+        // .onFalse(outtake.stopMotorCmd());
 
-//     operJoy.y()
-//                 .onTrue(elevating.fourthLevelCmd());
+        // operJoy.x()
+        // .onTrue(elevating.scoringAlgae());
 
-//   }
+        // operJoy.start()
+        // .onTrue(elevating.algaeSecondLevelCmd());
 
- 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-//   public Command getAutonomousCommand() {
-//     // An example command will be run in autonomous
-//     return null;
-//   }
+        // operJoy.a()
+        // .onTrue(elevating.secondLevelCmd());
+
+        // operJoy.back()
+        // .onTrue(elevating.algaeThirdLevelCmd());
+
+        // operJoy.b()
+        // .onTrue(elevating.thirdLevelCmd());
+
+        // operJoy.y()
+        // .onTrue(elevating.fourthLevelCmd());
+
+        // }
+
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        // public Command getAutonomousCommand() {
+        // // An example command will be run in autonomous
+        // return null;
+        // }
         private void configureDefaultCmds() {
-                
+
                 // drivetrain.setDefaultCommand(
                 // () -> drivetrain.drive(
                 // () -> MathUtil.applyDeadband(-driveJoy.getLeftY(), 0.1),
@@ -181,24 +224,22 @@ public class RobotContainer {
                 // () -> MathUtil.applyDeadband(-driveJoy.getRightX(), 0.1)));
 
                 drivetrain.setDefaultCommand(
-                        new RunCommand(() -> drivetrain.drive(
-                                () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
-                                () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
-                                () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)), drivetrain));
-
-        
-                
+                                new RunCommand(() -> drivetrain.drive(
+                                                () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
+                                                () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
+                                                () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)), drivetrain));
 
                 // algaePivot.setDefaultCommand(algaePivot.setProcessorCmd());
                 // elevator.setDefaultCommand(
-                //         new RunCommand(() -> elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL), elevator));
+                // new RunCommand(() ->
+                // elevator.setLevel(Constants.ElevatorConstants.SetpointConstants.FIRST_LVL),
+                // elevator));
 
-                
         }
 
         // public void configureAuton(){
-        //         autonChooser.addOption("taxi", new Taxi(drivetrain));
-        //         SmartDashboard.putData("Choose auto: ", autonChooser);
+        // autonChooser.addOption("taxi", new Taxi(drivetrain));
+        // SmartDashboard.putData("Choose auto: ", autonChooser);
         // }
 
         // // // Configure AutoBuilder last
@@ -253,104 +294,101 @@ public class RobotContainer {
          */
         private void configureBindings() {
                 driveJoy.a()
-                        .whileTrue(
-                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
-
-                driveJoy.b()
-                        .whileTrue(
-                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
-
-                driveJoy.x()
-                        .whileTrue(
-                                drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
-
-                 driveJoy.y()
-                         .whileTrue(
-                                 drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
-                
-                /* 
-           
-                driveJoy.a()
                                 .whileTrue(
-                                                elevator.quasiCmd(SysIdRoutine.Direction.kForward));
+                                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kForward));
 
                 driveJoy.b()
                                 .whileTrue(
-                                                elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
+                                                drivetrain.driveQuasistatic(SysIdRoutine.Direction.kReverse));
 
                 driveJoy.x()
                                 .whileTrue(
-                                                elevator.dynaCmd(SysIdRoutine.Direction.kForward));
+                                                drivetrain.driveDynamic(SysIdRoutine.Direction.kForward));
 
                 driveJoy.y()
-                    .whileTrue(
-                        elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
+                                .whileTrue(
+                                                drivetrain.driveDynamic(SysIdRoutine.Direction.kReverse));
+
+                /*
+                 * 
+                 * driveJoy.a()
+                 * .whileTrue(
+                 * elevator.quasiCmd(SysIdRoutine.Direction.kForward));
+                 * 
+                 * driveJoy.b()
+                 * .whileTrue(
+                 * elevator.quasiCmd(SysIdRoutine.Direction.kReverse));
+                 * 
+                 * driveJoy.x()
+                 * .whileTrue(
+                 * elevator.dynaCmd(SysIdRoutine.Direction.kForward));
+                 * 
+                 * driveJoy.y()
+                 * .whileTrue(
+                 * elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
                  */
-                
-                
 
                 driveJoy.leftBumper()
-                     .whileTrue(
-                         drivetrain.setXCmd());
+                                .whileTrue(
+                                                drivetrain.setXCmd());
 
                 driveJoy.rightBumper()
-                     .whileTrue(
-                         drivetrain.resetGyro());
+                                .whileTrue(
+                                                drivetrain.resetGyro());
 
                 driveJoy.leftTrigger()
-                     .whileTrue(
-                      drivetrain.setStraightCmd());
+                                .whileTrue(
+                                                drivetrain.setStraightCmd());
 
                 // // driveJoy.rightTrigger()
-                // //    .whileTrue(
-                // //      drivetrain.driveStraightCmd());
+                // // .whileTrue(
+                // // drivetrain.driveStraightCmd());
 
                 // // operJoy.leftStick()
-                // //   .whileTrue(
-                // //      outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be screwed
+                // // .whileTrue(
+                // // outtake.reverseOuttakeCmd()); // may not use this one cuz camera may be
+                // screwed
                 // /**
-                //  * manual elevator up
-                //  */
+                // * manual elevator up
+                // */
                 operJoy.povUp()
-                    .whileTrue(
-                        elevator.runMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
+                                .whileTrue(
+                                                elevator.runMotorCmd())
+                                .onFalse(elevator.stopMotorCmd());
                 /**
                  * manual elevator down
                  */
                 operJoy.povDown()
-                    .whileTrue(
-                        elevator.reverseMotorCmd())
-                        .onFalse(elevator.stopMotorCmd()); 
+                                .whileTrue(
+                                                elevator.reverseMotorCmd())
+                                .onFalse(elevator.stopMotorCmd());
 
                 // // operJoy.rightTrigger()
                 // // .whileTrue(
-                // //         intake.runMotorCmd())
+                // // intake.runMotorCmd())
                 // // .onFalse(
-                // //         intake.stopMotorCmd());
+                // // intake.stopMotorCmd());
 
                 // /**
-                //  * run intake manually
-                //  */
+                // * run intake manually
+                // */
                 // operJoy.leftTrigger()
                 // .whileTrue(
-                //         intake.reverseMotorCmd())
+                // intake.reverseMotorCmd())
                 // .onFalse(
-                //         intake.stopMotorCmd()
+                // intake.stopMotorCmd()
                 // );
 
-
-
                 // /**
-                //  * outtake
-                //  */
+                // * outtake
+                // */
                 // operJoy.rightBumper()
                 // .whileTrue(outtake.runMotorCmd())
                 // .onFalse(outtake.stopMotorCmd());
 
                 // /**
-                //  * reverse outtake
-                //  */
+                // * reverse outtake
+                // */
                 // operJoy.leftBumper()
                 // .whileTrue(outtake.reverseOuttakeCmd())
                 // .onFalse(outtake.stopMotorCmd());
@@ -382,49 +420,54 @@ public class RobotContainer {
                 // operJoy.rightStick()
                 // .onTrue(
                 // elevator.setLevel(ElevatorConstants.SetpointConstants.DEFAULT_LVL).until(elevator::atSetpoint).andThen(elevator.stopMotorCmd()));
-                
+
                 // operJoy.a()
                 // .whileTrue(elevator.forceReverseMotorCmd())
                 // .onFalse(elevator.stopMotorCmd());//.andThen(elevator.resetEncoder()));
 
                 // operJoy.rightBumper()
-                //         .whileTrue(algaeCmds.intakeAlgae())
-                //         .whileFalse(algaeCmds.raiseAlgae());
-                
+                // .whileTrue(algaeCmds.intakeAlgae())
+                // .whileFalse(algaeCmds.raiseAlgae());
+
                 // operJoy.leftBumper()
-                //         .whileTrue(algaeCmds.outtakeAlgae());
-                
+                // .whileTrue(algaeCmds.outtakeAlgae());
+
                 // //coralouttake
-                
+
                 // operJoy.a()
-                //         .whileTrue(elevating.firstLevelCmd());
-                
+                // .whileTrue(elevating.firstLevelCmd());
+
                 // operJoy.b()
-                //         .whileTrue(elevating.secondLevelCmd());
-                
+                // .whileTrue(elevating.secondLevelCmd());
+
                 // operJoy.y()
-                //         .whileTrue(elevating.thirdLevelCmd());
-                
+                // .whileTrue(elevating.thirdLevelCmd());
+
                 // operJoy.x()
-                //         .whileTrue(elevating.fourthLevelCmd());
-                
+                // .whileTrue(elevating.fourthLevelCmd());
+
                 // //algaeremoval
-                
+
                 // operJoy.back()
-                //         .whileTrue(elevating.algaeSecondLevelCmd());
+                // .whileTrue(elevating.algaeSecondLevelCmd());
                 ;
-                // operJoy.start() 
-                //         .whileTrue(elevating.algaeThirdLevelCmd());
-                
+                // operJoy.start()
+                // .whileTrue(elevating.algaeThirdLevelCmd());
+
                 // //reset default
                 // operJoy.leftTrigger()
-                //         .whileTrue(elevating.resetDefault());
-                
+                // .whileTrue(elevating.resetDefault());
+
                 // //transition intake to outtake
                 // operJoy.rightTrigger()
-                //         .whileTrue(coralTransition.moveCoralToOuttake());
-                
-                
+                // .whileTrue(coralTransition.moveCoralToOuttake());
+
+        }
+
+        public void configureAuton() {
+
+                SmartDashboard.putData("Choose Auto: ", autonChooser);
+                autonChooser.addOption(" auto", new PathPlannerAuto("Autos"));
         }
 
         /**
@@ -461,13 +504,15 @@ public class RobotContainer {
         // }
 
         public Command getAutonomousCommand() {
-                try {
-                        PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-                        return AutoBuilder.followPath(path);
-                } catch (Exception e) {
-                        DriverStation.reportError ("Big oops:" + e.getMessage(), e.getStackTrace());
-                        return Commands.none();
-                }
+                return autonChooser.getSelected();
+
+                // try {
+                // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+                // return AutoBuilder.followPath(path);
+                // } catch (Exception e) {
+                // DriverStation.reportError ("Big oops:" + e.getMessage(), e.getStackTrace());
+                // return Commands.none();
+                // }
         }
 
 }
