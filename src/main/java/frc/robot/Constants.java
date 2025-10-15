@@ -178,7 +178,7 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 30;
     public static final double MOTOR_SPEED = 0.5;
     public static class ArmPIDPIDConstants {
-      public static final double kP = 0.0;
+      public static final double kP = 0.001;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
     }
@@ -195,7 +195,7 @@ public final class Constants {
     public static final double VOLTS = 1.0;
     
     public static class ElevatorPIDPIDConstants {
-      public static final double kP = 0.0;
+      public static final double kP = 0.001;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
     }
@@ -203,6 +203,11 @@ public final class Constants {
       public static final double kP = 0.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
+    }
+    public static class FeedforwardConstants {
+      public static final double kS = 0.0;
+      public static final double kG = 0.0;
+      public static final double kV = 0.0;
     }
 
   }

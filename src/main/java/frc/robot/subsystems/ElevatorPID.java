@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -14,9 +17,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorPIDConstants;
 import frc.robot.Ports.ElevatorPIDPorts;
@@ -28,9 +34,18 @@ public class ElevatorPID extends SubsystemBase {
   private static AbsoluteEncoder absoluteEncoder;
   private static PIDController reverseElevatorPID;
   private static PIDController elevatorPID;
+  private static ElevatorFeedforward ff;
+  private final SysIdRoutine.Config sysIDConfig = new SysIdRoutine.Config(Volts.of(2).per(Seconds),
+      Volts.of(10),
+      Seconds.of(10),
+      null);
+
+  private final SysIdRoutine elevatorRoutine = new SysIdRoutine(
+      sysIDConfig,
+      new SysIdRoutine.Mechanism(
+          volts -> setVoltage(volts.in(Volts)), null, this));
 
   private static double lastSetpoint;
-  
 
   /** Creates a new ElevatorPID. */
   public ElevatorPID() {
@@ -39,14 +54,14 @@ public class ElevatorPID extends SubsystemBase {
     relativeEncoder = rightMotor.getEncoder();
     absoluteEncoder = rightMotor.getAbsoluteEncoder();
 
-
-     elevatorPID = new PIDController(ElevatorPIDConstants.ElevatorPIDPIDConstants.kP, ElevatorPIDConstants.ElevatorPIDPIDConstants.kI,
+    elevatorPID = new PIDController(ElevatorPIDConstants.ElevatorPIDPIDConstants.kP,
+        ElevatorPIDConstants.ElevatorPIDPIDConstants.kI,
         ElevatorPIDConstants.ElevatorPIDPIDConstants.kD);
-      reverseElevatorPID = new PIDController(ElevatorPIDConstants.ReversePIDConstants.kP, ElevatorPIDConstants.ReversePIDConstants.kI,
+    reverseElevatorPID = new PIDController(ElevatorPIDConstants.ReversePIDConstants.kP,
+        ElevatorPIDConstants.ReversePIDConstants.kI,
         ElevatorPIDConstants.ReversePIDConstants.kD);
 
-    
-      SparkMaxConfig rightConfig = new SparkMaxConfig(); //right moter is the leader
+    SparkMaxConfig rightConfig = new SparkMaxConfig(); // right moter is the leader
     rightConfig
         .inverted(false)
         .idleMode(IdleMode.kBrake)
@@ -62,44 +77,60 @@ public class ElevatorPID extends SubsystemBase {
         .smartCurrentLimit(ElevatorPIDConstants.CURRENT_LIMIT)
         .follow(rightMotor, true);
 
-        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     leftConfig.encoder
         .positionConversionFactor(Constants.ElevatorConstants.POSITION_CONVERSION_FACTOR)
         .velocityConversionFactor(Constants.ElevatorConstants.VELOCITY_CONVERSION_FACTOR);
 
-        lastSetpoint = relativeEncoder.getPosition();
+    lastSetpoint = relativeEncoder.getPosition();
+
+    ff = new ElevatorFeedforward(ElevatorPIDConstants.FeedforwardConstants.kS,
+        ElevatorPIDConstants.FeedforwardConstants.kG,
+        ElevatorPIDConstants.FeedforwardConstants.kV);
+
   }
 
-  public Command runElevatorMotorCmd(){
-    return this.run(()-> rightMotor.set(ElevatorPIDConstants.MOTOR_SPEED));
+  public Command runElevatorMotorCmd() {
+    return this.run(() -> rightMotor.set(ElevatorPIDConstants.MOTOR_SPEED));
   }
 
-  public Command stopElevatorMotorCmd(){
-    return this.run(()-> rightMotor.set(0));
+  public Command stopElevatorMotorCmd() {
+    return this.run(() -> rightMotor.set(0));
   }
 
- public Command reverseMotorCmd() {
-  return this.run(()-> rightMotor.set(-ElevatorPIDConstants.MOTOR_SPEED));
- } 
- 
-  public void elevatorPid(){
-      rightMotor.setVoltage(elevatorPID.calculate(relativeEncoder.getPosition(), lastSetpoint));
+  public Command reverseMotorCmd() {
+    return this.run(() -> rightMotor.set(-ElevatorPIDConstants.MOTOR_SPEED));
   }
 
-  public void reverseElevatorPID(double setpoint){
+  public void setVelocity() {
+    rightMotor
+        .setVoltage(ff.calculate(lastSetpoint) + elevatorPID.calculate(relativeEncoder.getPosition(), lastSetpoint));
+  }
+
+  public void reverseElevatorPID(double setpoint) {
     rightMotor.setVoltage(reverseElevatorPID.calculate(relativeEncoder.getPosition(), setpoint));
   }
 
-  public double getCurrentPosition(){
+  public double getCurrentPosition() {
     return relativeEncoder.getPosition();
   }
 
-  public Command setCurrentSetpointCmd (double setpoint){
-   return this.run(()-> lastSetpoint = setpoint);
+  public void setVoltage(double volts) {
+    rightMotor.setVoltage(volts);
   }
 
- 
+  public Command setCurrentSetpointCmd(double setpoint) {
+    return this.run(() -> lastSetpoint = setpoint);
+  }
+
+  public Command quasiCmd(SysIdRoutine.Direction direction) {
+    return elevatorRoutine.quasistatic(direction);
+  }
+
+  public Command dynaCmd(SysIdRoutine.Direction direction) {
+    return elevatorRoutine.dynamic(direction);
+  }
 
   @Override
   public void periodic() {
