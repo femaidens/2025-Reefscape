@@ -33,6 +33,7 @@ public class ArmPID extends SubsystemBase {
   private static AbsoluteEncoder armEncoder;
   private static AbsoluteEncoderConfig armEncoderConfig;
   private static PIDController armPID;
+  private static double lastSetpoint;
   
 
   /** Creates a new ArmPID. */
@@ -86,6 +87,10 @@ public class ArmPID extends SubsystemBase {
     return this.runOnce(() -> {
       topMotor.set(0);
     });
+  }
+
+  public Command setCurrentSetpointCmd(double setpoint) {
+    return this.run(() -> lastSetpoint = setpoint);
   }
 
 

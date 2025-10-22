@@ -159,17 +159,23 @@ public class RobotContainer implements Logged {
         operJoy.y()
                 .onTrue(armPID.setVelocityCmd(23));
 
-                operJoy.povUp()
-                .whileTrue(elevatorPID.runElevatorMotorCmd())
-                .onFalse(elevatorPID.stopElevatorMotorCmd()
-                 .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
+        //  operJoy.povUp()
+        //         .whileTrue(elevatorPID.runElevatorMotorCmd())
+        //         .onFalse(elevatorPID.stopElevatorMotorCmd()
+        //          .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
+        //         );
+
+               operJoy.povUp()
+                .whileTrue(armPID.setMotorSpeedCmd())
+                .onFalse(armPID.stopMotorCmd()
+                 .andThen(elevatorPID.setCurrentSetpointCmd(armPID.getAngle()))
                 );
 
-        operJoy.povDown()
-                .whileTrue(elevatorPID.reverseMotorCmd())
-                .onFalse(elevatorPID.stopElevatorMotorCmd()
-                 .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
-                );
+        // operJoy.povDown()
+        //         .whileTrue(elevatorPID.reverseMotorCmd())
+        //         .onFalse(elevatorPID.stopElevatorMotorCmd()
+        //          .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
+        //         );
 
             
         // operJoy.y()
