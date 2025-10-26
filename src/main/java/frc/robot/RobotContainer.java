@@ -99,9 +99,10 @@ public class RobotContainer {
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
-                autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
+                configureNamedCommands();
+              //  autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
 
-                autonChooser = new SendableChooser<>();
+                // autonChooser = new SendableChooser<>();
 
                 // configureAuton();
                 config = new RobotConfig(
@@ -134,7 +135,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("elevate L3", elevating.thirdLevelCmd());
                 NamedCommands.registerCommand("elevate L4", elevating.fourthLevelCmd());
 
-                // autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
+                autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
                 SmartDashboard.putData("Choose Auto: ", autonChooser);
                 autonChooser.addOption("No auto", Commands.none());
 
