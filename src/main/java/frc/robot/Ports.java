@@ -43,9 +43,9 @@ public class Ports {
       }
 
       public static class ArmPIDPorts {
-        public static final int TOP_MOTOR = 0;
-        public static final int MIDDLE_MOTOR = 0;
-        public static final int BOTTOM_MOTOR = 0;
+        public static final int TOP_MOTOR = 13; // id 4
+        public static final int MIDDLE_MOTOR = 2;//id 16
+        public static final int BOTTOM_MOTOR = 4; // id 29
         
       }
 
