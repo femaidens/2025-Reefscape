@@ -56,6 +56,7 @@ public class RobotContainer {
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
         private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
+        private SendableChooser<Command> autonChooser;
         // private final AlgaeIntake algaeIntake = new AlgaeIntake();
         // private final AlgaePivot algaePivot = new AlgaePivot();
         private final Drive drivetrain;
@@ -75,7 +76,7 @@ public class RobotContainer {
         // private RobotConfig config;
         // private final Camera camera;
 
-        private SendableChooser<Command> autonChooser;
+        
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -99,9 +100,11 @@ public class RobotContainer {
                 // elevating = new Elevating(elevator, outtake, intake, algaeIntake);
                 configureBindings();
                 configureDefaultCmds();
-                autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
-
+                // autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
+                
                 autonChooser = new SendableChooser<>();
+              //  autonChooser.setDefaultOption("Blue Left To Left", "Blue Left To Left");
+                autonChooser.addOption("No auto", Commands.none());
 
                 // configureAuton();
                 config = new RobotConfig(
@@ -136,7 +139,6 @@ public class RobotContainer {
 
                 // autonChooser = AutoBuilder.buildAutoChooser("Reef Front Left to Center");
                 SmartDashboard.putData("Choose Auto: ", autonChooser);
-                autonChooser.addOption("No auto", Commands.none());
 
                 return autonChooser;
         }
