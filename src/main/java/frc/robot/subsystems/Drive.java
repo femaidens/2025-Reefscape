@@ -91,8 +91,40 @@ public class Drive extends SubsystemBase implements Logged {
           this));
   
 
+          RobotConfig config;
+          try {
+            config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
     }
 
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetOdometry,
+        this::getCurrentChassisSpeeds,
+        (s, feedforwards) -> setChassisSpeeds(s),
+        new PPHolonomicDriveController(
+            new PIDConstants(Translation.PID.P, Translation.PID.D),
+            new PIDConstants(Turn.PID.P, Turn.PID.D)),
+        config,
+        () -> isRedAlliance(),
+        this);
+
+    }
+
+    public boolean isRedAlliance() {
+      // Boolean supplier that controls when the path will be mirrored for the red
+      // alliance
+      // This will flip the path being followed to the red side of the field.
+      // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  
+      var alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red;
+      }
+      return false;
+    }
   // consider changing to profiledpid control
   /**
    * drivin

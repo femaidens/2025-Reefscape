@@ -58,30 +58,30 @@ public final class Autos {
     this.drivetrain = drive;
     this.transition = transition;
     this.elevating = elevating;
-    AutoBuilder.configure(
-        drivetrain::getPose,
-        drivetrain::resetOdometry,
-        drivetrain::getCurrentChassisSpeeds,
-        (s, feedforwards) -> drivetrain.setChassisSpeeds(s),
-        new PPHolonomicDriveController(
-            new PIDConstants(Translation.PID.P, Translation.PID.D),
-            new PIDConstants(Turn.PID.P, Turn.PID.D)),
-        config,
-        () -> isRedAlliance(),
-        drivetrain);
+    // AutoBuilder.configure(
+    //     drivetrain::getPose,
+    //     drivetrain::resetOdometry,
+    //     drivetrain::getCurrentChassisSpeeds,
+    //     (s, feedforwards) -> drivetrain.setChassisSpeeds(s),
+    //     new PPHolonomicDriveController(
+    //         new PIDConstants(Translation.PID.P, Translation.PID.D),
+    //         new PIDConstants(Turn.PID.P, Turn.PID.D)),
+    //     config,
+    //     () -> isRedAlliance(),
+    //     drivetrain);
   }
 
-  public boolean isRedAlliance() {
-    // Boolean supplier that controls when the path will be mirrored for the red
-    // alliance
-    // This will flip the path being followed to the red side of the field.
-    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  // public boolean isRedAlliance() {
+  //   // Boolean supplier that controls when the path will be mirrored for the red
+  //   // alliance
+  //   // This will flip the path being followed to the red side of the field.
+  //   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-      return alliance.get() == DriverStation.Alliance.Red;
-    }
-    return false;
-  }
+  //   var alliance = DriverStation.getAlliance();
+  //   if (alliance.isPresent()) {
+  //     return alliance.get() == DriverStation.Alliance.Red;
+  //   }
+  //   return false;
+  // }
 
 }
