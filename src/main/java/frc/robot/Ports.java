@@ -50,8 +50,8 @@ public class Ports {
       }
 
       public static class ElevatorPIDPorts {
-        public static final int RIGHT_MOTOR = 0;
-        public static final int LEFT_MOTOR = 0;
+        // public static final int RIGHT_MOTOR = 0;
+        // public static final int LEFT_MOTOR = 0;
         
 
       }

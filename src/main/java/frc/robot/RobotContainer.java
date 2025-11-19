@@ -21,7 +21,7 @@ import frc.robot.subsystems.ArmPID;
 //import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
 //import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ElevatorPID;
+//import frc.robot.subsystems.ElevatorPID;
 // import frc.robot.subsystems.LED;
 // import frc.robot.subsystems.Intake;
 //import frc.robot.subsystems.Outtake;
@@ -157,7 +157,7 @@ public class RobotContainer implements Logged {
                 .onTrue(armPID.stopMotorCmd());
 
         operJoy.y()
-                .onTrue(armPID.setVelocityCmd(23));
+                .onTrue(armPID.setVelocityCmd(50));
 
         //  operJoy.povUp()
         //         .whileTrue(elevatorPID.runElevatorMotorCmd())
@@ -165,7 +165,7 @@ public class RobotContainer implements Logged {
         //          .andThen(elevatorPID.setCurrentSetpointCmd(elevatorPID.getCurrentPosition()))
         //         );
 
-               operJoy.povUp()
+        operJoy.povUp()
                 .whileTrue(armPID.setMotorSpeedCmd())
                 .onFalse(armPID.stopMotorCmd()
                  .andThen(armPID.setCurrentSetpointCmd(armPID.getAngle()))
