@@ -44,7 +44,7 @@ public class ArmPID extends SubsystemBase {
     armEncoder = topMotor.getAbsoluteEncoder();
     armPID = new PIDController(ArmPIDConstants.ArmPIDPIDConstants.kP, ArmPIDConstants.ArmPIDPIDConstants.kI,
         ArmPIDConstants.ArmPIDPIDConstants.kD);
-
+        
     SparkMaxConfig topConfig = new SparkMaxConfig();
     armEncoderConfig = topConfig.absoluteEncoder;
     armEncoderConfig.positionConversionFactor(360);
@@ -65,7 +65,7 @@ public class ArmPID extends SubsystemBase {
         .smartCurrentLimit(ArmPIDConstants.CURRENT_LIMIT)
         .follow(topMotor, true);
 
-  topMotor.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+   topMotor.configure(topConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   middleMotor.configure(middleConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   bottomMotor.configure(bottomConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }

@@ -6,26 +6,26 @@ package frc.robot;
 
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.auto.Spin;
-import frc.robot.auto.Taxi;
-import frc.robot.auto.TaxiL2;
-import frc.robot.auto.TaxiL3;
-import frc.robot.auto.TaxiL4Right;
-import frc.robot.auto.TaxiL4Left;
-import frc.robot.commands.AlignToCenter;
-import frc.robot.commands.Autos;
-import frc.robot.commands.CoralTransition;
-import frc.robot.commands.Elevating;
+// import frc.robot.auto.Spin;
+// import frc.robot.auto.Taxi;
+// import frc.robot.auto.TaxiL2;
+// import frc.robot.auto.TaxiL3;
+// import frc.robot.auto.TaxiL4Right;
+// import frc.robot.auto.TaxiL4Left;
+// import frc.robot.commands.AlignToCenter;
+// import frc.robot.commands.Autos;
+// import frc.robot.commands.CoralTransition;
+// import frc.robot.commands.Elevating;
 import frc.robot.subsystems.ArmPID;
 // import frc.robot.commands.DriveToPoseCmd;
-import frc.robot.subsystems.Drive;
+//import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.DriveSim;
-import frc.robot.subsystems.Elevator;
+//import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorPID;
 // import frc.robot.subsystems.LED;
 // import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Outtake;
-import frc.robot.subsystems.Vision;
+//import frc.robot.subsystems.Outtake;
+//import frc.robot.subsystems.Vision;
 import monologue.Logged;
 
 import java.lang.reflect.Field;
@@ -57,61 +57,61 @@ import static edu.wpi.first.units.Units.Seconds;
  */
 public class RobotContainer implements Logged {
     // The robot's subsystems and commands are defined here...
-    private final Drive drive = new Drive();
-    private final Vision vision;
-    private final Elevator elevator;
+    //private final Drive drive = new Drive();
+    // private final Vision vision;
+   // private final Elevator elevator;
     //private final Intake intake;
-    private final Outtake outtake;
+   // private final Outtake outtake;
     // private final LED led; 
     private final ArmPID armPID;
-    private final ElevatorPID elevatorPID;
+    // private final ElevatorPID elevatorPID;
 
-    private final Elevating elevating;
-    //private final DriveSim driveSim;
-    // private final Autos autos;
-    private final CoralTransition coralTransition;
+    // private final Elevating elevating;
+    // //private final DriveSim driveSim;
+    // // private final Autos autos;
+    // private final CoralTransition coralTransition;
 
-    // Replace with CommandPS4Controller or CommandJoystick if needed
+    // // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController driveJoy = new CommandXboxController(OperatorConstants.DRIVER_PORT);
     private final CommandXboxController operJoy = new CommandXboxController(OperatorConstants.OPERATOR_PORT);
-    private SendableChooser<Command> autonChooser;
-    private Trigger autoIntake;
+    // private SendableChooser<Command> autonChooser;
+    // private Trigger autoIntake;
 
-    // private final AlignToCenter alignToCenter;
+    // // private final AlignToCenter alignToCenter;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        vision = new Vision();
-        elevator = new Elevator();
-        elevatorPID = new ElevatorPID();
-        outtake = new Outtake();
+        // vision = new Vision();
+        // // elevator = new Elevator();
+        // // elevatorPID = new ElevatorPID();
+        // // outtake = new Outtake();
         armPID = new ArmPID();
         // led = new LED(); 
-        elevating = new Elevating(elevator, outtake);
-        coralTransition = new CoralTransition(outtake);
-        autonChooser = new SendableChooser<>();
+        // elevating = new Elevating(elevator, outtake);
+        // coralTransition = new CoralTransition(outtake);
+        // autonChooser = new SendableChooser<>();
         // autos = new Autos (drivetrain, outtake, intake, elevator, coralTransition,
         // elevating);
         // alignToCenter = new AlignToCenter(drive, vision, null);
-        autoIntake = new Trigger(()->outtake.isBeamBrokenIntake());
+        // autoIntake = new Trigger(()->outtake.isBeamBrokenIntake());
         configureBindings();
-        configureDefaultCmds();
-        configureAuton();
+        // configureDefaultCmds();
+        // configureAuton();
 
     }
 
     
 
-    private void configureDefaultCmds() {
-        vision.setDefaultCommand(
-                new RunCommand(
-                        () -> vision.driveFromVision(
-                                () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
-                                () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
-                                () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
-                        vision));
+    // private void configureDefaultCmds() {
+    //     vision.setDefaultCommand(
+    //             new RunCommand(
+    //                     () -> vision.driveFromVision(
+    //                             () -> MathUtil.applyDeadband(driveJoy.getLeftY(), 0.1),
+    //                             () -> MathUtil.applyDeadband(driveJoy.getLeftX(), 0.1),
+    //                             () -> MathUtil.applyDeadband(driveJoy.getRightX(), 0.1)),
+    //                     vision));
 
         // elevator.setDefaultCommand(
         //     elevator.stayAtLevel()
@@ -126,7 +126,7 @@ public class RobotContainer implements Logged {
         // led.setDefaultCommand(
         //     led.setScrollGPCmd() 
         // );
-    }
+    
 
     /**
      * Use this method to define your trigger->command mappings. Triggers can be
@@ -168,7 +168,7 @@ public class RobotContainer implements Logged {
                operJoy.povUp()
                 .whileTrue(armPID.setMotorSpeedCmd())
                 .onFalse(armPID.stopMotorCmd()
-                 .andThen(elevatorPID.setCurrentSetpointCmd(armPID.getAngle()))
+                 .andThen(armPID.setCurrentSetpointCmd(armPID.getAngle()))
                 );
 
         // operJoy.povDown()
@@ -274,15 +274,15 @@ public class RobotContainer implements Logged {
         //                 elevator.dynaCmd(SysIdRoutine.Direction.kReverse));
     }
 
-    public void configureAuton(){
-        autonChooser.addOption("taxi", new Taxi(vision));
-        autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
-        autonChooser.addOption("taxi L4 right", new TaxiL4Right(elevating, outtake, vision, coralTransition, drive));
-        autonChooser.addOption("taxi L4 left", new TaxiL4Left(elevating, outtake, vision, coralTransition, drive));
-        autonChooser.addOption("spin", new Spin(vision));
-        SmartDashboard.putData("Choose auto: ", autonChooser);
-    }
+    // public void configureAuton(){
+    //     autonChooser.addOption("taxi", new Taxi(vision));
+    //     autonChooser.addOption("taxi L2", new TaxiL2(elevating, outtake, vision, coralTransition));
+    //     autonChooser.addOption("taxi L3", new TaxiL3(elevating, outtake, vision, coralTransition));
+    //     autonChooser.addOption("taxi L4 right", new TaxiL4Right(elevating, outtake, vision, coralTransition, drive));
+    //     autonChooser.addOption("taxi L4 left", new TaxiL4Left(elevating, outtake, vision, coralTransition, drive));
+    //     autonChooser.addOption("spin", new Spin(vision));
+    //     SmartDashboard.putData("Choose auto: ", autonChooser);
+    // }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -290,13 +290,13 @@ public class RobotContainer implements Logged {
      * @return the command to run in autonomous
      */
 
-    public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return autonChooser.getSelected();
-        // return
-        // elevating.fourthLevelCmd().withTimeout(1)
-        // .andThen(elevating.resetDefault());
+    // public Command getAutonomousCommand() {
+    //     // An example command will be run in autonomous
+    //     // return autonChooser.getSelected();
+    //     // return
+    //     // elevating.fourthLevelCmd().withTimeout(1)
+    //     // .andThen(elevating.resetDefault());
 
-    }
+    // }
 
 }
