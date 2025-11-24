@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
